@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_secondary"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="postpc.studypartner2.HomeFragment"
+        tools:layout="@layout/fragment_home"/>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="postpc.studypartner2.SearchFragment"
+        tools:layout="@layout/fragment_search"/>
+
+    <fragment
+        android:id="@+id/conversationsFragment"
+        android:name="postpc.studypartner2.ChatFragment"
+        tools:layout="@layout/fragment_chat"/>
+<!--        todo: change to conversations -->
+
+    
+<!--    <fragment-->
+<!--        android:id="@+id/conversationsFragment"-->
+<!--        android:name="postpc.studypartner2.ConversationsFragment"-->
+<!--        tools:layout="@layout/fragment_conversations"/>-->
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="postpc.studypartner2.ProfileFragment"
+        tools:layout="@layout/fragment_profile"/>
+
+</navigation>

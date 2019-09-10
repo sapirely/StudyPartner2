@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditText
+        android:id="@+id/messageEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"/>
+
+    <ImageButton
+        android:id="@+id/send_btn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom"
+        android:background="#00FFFFFF"
+        android:contentDescription="@string/send_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_send_btn" />
+</merge>
