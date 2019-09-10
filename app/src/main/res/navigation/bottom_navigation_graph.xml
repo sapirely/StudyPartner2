@@ -8,20 +8,23 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="postpc.studypartner2.HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+    </fragment>
 
     <fragment
         android:id="@+id/searchFragment"
         android:name="postpc.studypartner2.SearchFragment"
-        tools:layout="@layout/fragment_search"/>
+        tools:layout="@layout/fragment_search">
+    </fragment>
 
     <fragment
         android:id="@+id/conversationsFragment"
         android:name="postpc.studypartner2.ChatFragment"
-        tools:layout="@layout/fragment_chat"/>
+        tools:layout="@layout/fragment_chat">
+    </fragment>
 <!--        todo: change to conversations -->
 
-    
+
 <!--    <fragment-->
 <!--        android:id="@+id/conversationsFragment"-->
 <!--        android:name="postpc.studypartner2.ConversationsFragment"-->
@@ -30,6 +33,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="postpc.studypartner2.ProfileFragment"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+    </fragment>
 
 </navigation>

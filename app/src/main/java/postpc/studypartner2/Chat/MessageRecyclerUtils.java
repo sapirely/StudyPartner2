@@ -41,12 +41,12 @@ public class MessageRecyclerUtils {
         @NonNull @Override
         public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int itemType) {
             Context context = parent.getContext();
-//            View itemView = LayoutInflater.from(context).inflate(R.layout.message_item, parent, false);
+//            View itemView = LayoutInflater.from(context).inflate(R.layout.item_message, parent, false);
 //            final MessageHolder holder = new MessageHolder(itemView);
 //            return holder;
 
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            return new MessageHolder(inflater.inflate(R.layout.message_item, parent, false));
+            return new MessageHolder(inflater.inflate(R.layout.item_message, parent, false));
 
         }
 
