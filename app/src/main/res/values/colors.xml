@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#f9a825</color>
-    <color name="colorPrimaryDark">#ff9800</color>
-    <color name="colorAccent">#ffb74d</color>
+    <color name="colorPrimary">#FFCA28</color>
+    <color name="colorPrimaryDark">#FFA726</color>
+    <color name="colorAccent">#FFC107</color>
     <color name="grey">#bfbfbf</color>
     <color name="light_grey">#E6E6E6</color>
+    <color name="dark_grey">#3D3D3D</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="search_bubble_bg">#D5D5D5</color>
 
     <color name="msgBackground">#D3D3D3</color>
 </resources>

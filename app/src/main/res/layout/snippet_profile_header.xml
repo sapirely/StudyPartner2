@@ -33,7 +33,7 @@
 <!--        android:layout_alignTop="@+id/profileImage"-->
 <!--        android:layout_centerInParent="true"-->
 <!--        android:layout_centerHorizontal="true"-->
-<!--        android:text="Name"-->
+<!--        android:nameTextView="Name"-->
 <!--        android:textColor="#000"-->
 <!--        android:textSize="22sp" />-->
 
@@ -44,7 +44,7 @@
 <!--&lt;!&ndash;            android:layout_below="@+id/profile_name"&ndash;&gt;-->
 <!--&lt;!&ndash;            android:layout_alignParentEnd="true"&ndash;&gt;-->
 <!--&lt;!&ndash;            android:layout_toEndOf="@+id/profileImage"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:text="Description"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:nameTextView="Description"&ndash;&gt;-->
 <!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
 <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
 <!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
@@ -61,7 +61,7 @@
     android:gravity="center">
 
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/profile_image"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:contentDescription="avatar"
