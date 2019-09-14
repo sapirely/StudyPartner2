@@ -32,8 +32,7 @@ public class MessageRecyclerUtils {
         void onMessageLongClick(Message message);
     }
 
-    // todo: changed to public for testing, delete it once the fragment is done
-    public static class MessagesAdapter extends ListAdapter<Message, MessageHolder>{
+    static class MessagesAdapter extends ListAdapter<Message, MessageHolder>{
         public MessagesAdapter() { super(new MessageCallBack()); }
 
         public MessageClickCallBack callBack;
@@ -65,8 +64,7 @@ public class MessageRecyclerUtils {
 
     }
 
-    // todo changed to public, delete after fragments
-    public static class MessageHolder
+    static class MessageHolder
             extends RecyclerView.ViewHolder {
 
         public final TextView text;

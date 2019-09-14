@@ -1,4 +1,4 @@
-package postpc.studypartner2;
+package postpc.studypartner2.Chat;
 
 import android.content.Context;
 import android.net.Uri;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import postpc.studypartner2.Chat.Message;
 import postpc.studypartner2.Chat.MessageRecyclerUtils;
+import postpc.studypartner2.R;
 
 
 public class ChatFragment extends Fragment implements MessageRecyclerUtils.MessageClickCallBack {
