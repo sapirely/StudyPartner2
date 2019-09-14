@@ -11,6 +11,12 @@
         tools:layout="@layout/fragment_home">
     </fragment>
 
+<!--    <fragment-->
+<!--        android:id="@+id/searchFragment"-->
+<!--        android:name="postpc.studypartner2.Search.SearchResultsFragment"-->
+<!--        tools:layout="@layout/fragment_search_results">-->
+<!--    </fragment>-->
+    <!--        todo: change to search -->
     <fragment
         android:id="@+id/searchFragment"
         android:name="postpc.studypartner2.SearchFragment"
@@ -19,7 +25,7 @@
 
     <fragment
         android:id="@+id/conversationsFragment"
-        android:name="postpc.studypartner2.ChatFragment"
+        android:name="postpc.studypartner2.Chat.ChatFragment"
         tools:layout="@layout/fragment_chat">
     </fragment>
 <!--        todo: change to conversations -->
@@ -32,7 +38,7 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="postpc.studypartner2.ProfileFragment"
+        android:name="postpc.studypartner2.Profile.ProfileFragment"
         tools:layout="@layout/fragment_profile">
     </fragment>
 

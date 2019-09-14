@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import postpc.studypartner2.Chat.Message;
 import postpc.studypartner2.Chat.MessageRecyclerUtils;
+import postpc.studypartner2.Profile.UserRoomDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 //    private final String EMPTY_MSG_TOAST = "Empty Message";
     private final String EDIT_TEXT_KEY = "edit_text_state";
     private final String KEY_RECYCLER_STATE = "recycler_state";
+
+    private static String current_user_uid;
 
 //    private TextView textView;
 //    private EditText editText;
@@ -44,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "onCreate: getting room DB");
+        UserRoomDatabase room = UserRoomDatabase.getDatabase(this);
+
+        current_user_uid = "1"; // todo delete
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nvaigation_view);
 
@@ -51,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
 //        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
+    }
+
+    public static String getCurrentUserID(){
+        // todo : is this ok? MainActivity is supposed to be always up so maybe?
+        return current_user_uid;
+    }
 
 //        // set views
 //        this.textView = findViewById(R.id.msgText);
@@ -93,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //        // log message list size
 //        Log.d(TAG, "onCreate: current_size_of_msg_list: "+messages.size());
-    }
+//    }
 
 
 //    private Message sendMessage(String msgContent) {
