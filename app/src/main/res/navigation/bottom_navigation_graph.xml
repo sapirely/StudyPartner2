@@ -11,17 +11,17 @@
         tools:layout="@layout/fragment_home">
     </fragment>
 
-<!--    <fragment-->
-<!--        android:id="@+id/searchFragment"-->
-<!--        android:name="postpc.studypartner2.Search.SearchResultsFragment"-->
-<!--        tools:layout="@layout/fragment_search_results">-->
-<!--    </fragment>-->
-    <!--        todo: change to search -->
     <fragment
         android:id="@+id/searchFragment"
-        android:name="postpc.studypartner2.SearchFragment"
-        tools:layout="@layout/fragment_search">
+        android:name="postpc.studypartner2.Search.SearchResultsFragment"
+        tools:layout="@layout/fragment_search_results">
     </fragment>
+    <!--        todo: change to search -->
+<!--    <fragment-->
+<!--        android:id="@+id/searchFragment"-->
+<!--        android:name="postpc.studypartner2.SearchFragment"-->
+<!--        tools:layout="@layout/fragment_search">-->
+<!--    </fragment>-->
 
     <fragment
         android:id="@+id/conversationsFragment"

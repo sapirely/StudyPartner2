@@ -12,11 +12,11 @@ import java.util.List;
 @Dao
 public interface UserDao {
 
-    @Insert (onConflict = OnConflictStrategy.REPLACE)
+    @Insert (onConflict = OnConflictStrategy.REPLACE) // network should be able to overwrite
     void insertUser(User user);
 
     @Query("SELECT * FROM users where uid = :user_id LIMIT 1")
-    User loadUser(String user_id);
+    LiveData<User> loadUser(String user_id);
 
     @Delete
     void deleteUser(User user);

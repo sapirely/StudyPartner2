@@ -2,11 +2,12 @@ package postpc.studypartner2.Profile;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+
+import postpc.studypartner2.Utils.Log;
 
 /***
  * Handles data operations: gets user info from database or from cache.
@@ -25,7 +26,7 @@ public class UserRepository {
         mAllUsers = mUserDao.getAllUsers();
     }
 
-    protected User getUser(String uid){
+    protected LiveData<User> getUser(String uid){
         Log.d(TAG, "getUser: ");
         return mUserDao.loadUser(uid);
 //        new insertAsyncLoadTask(mUserDao).execute(uid);
@@ -46,7 +47,7 @@ public class UserRepository {
     }
 
     /***
-     * Insert user to room database.
+     * Insert user to room database - async.
      */
     private static class insertUserToDBAsync extends AsyncTask<User, Void, Void> {
 
@@ -58,7 +59,10 @@ public class UserRepository {
 
         @Override
         protected Void doInBackground(final User... params) {
-            Log.d(TAG, "doInBackground: populating room db ");
+            if (params == null || params[0] == null){
+                throw new NullPointerException("doInBackground: User is null");
+            }
+            Log.d(TAG, "doInBackground: inserting user "+params[0].getUid()+" to room DB.");
             mDao.insertUser(params[0]);
             return null;
         }

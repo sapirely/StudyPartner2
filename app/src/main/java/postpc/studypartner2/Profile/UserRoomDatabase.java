@@ -2,7 +2,6 @@ package postpc.studypartner2.Profile;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -10,11 +9,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.google.type.Date;
-
 import java.util.Calendar;
 
-@Database(entities = {User.class}, version = 1)
+import postpc.studypartner2.Utils.Log;
+
+@Database(entities = {User.class}, version = 1, exportSchema = false)
 public abstract class UserRoomDatabase extends RoomDatabase {
 
     private static final String TAG = "UserRoomDatabase";
@@ -23,6 +22,9 @@ public abstract class UserRoomDatabase extends RoomDatabase {
 
     private static volatile UserRoomDatabase INSTANCE;
 
+    /***
+     * Returns an instance of the UserRoomDatabase. (Singleton)
+     */
     public static UserRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             Log.d(TAG, "getDatabase: Initiating room DB");
@@ -40,6 +42,9 @@ public abstract class UserRoomDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    /***
+     * What happens when the UserRoomDatabase instance is initiated.
+     */
     private static RoomDatabase.Callback sRoomDatabaseCallback =
             new RoomDatabase.Callback(){
 
@@ -47,11 +52,15 @@ public abstract class UserRoomDatabase extends RoomDatabase {
                 public void onOpen (@NonNull SupportSQLiteDatabase db){
                     super.onOpen(db);
                     Log.d(TAG, "onOpen: RoomDatabase.Callback");
+
                     new PopulateDbAsync(INSTANCE).execute();
                 }
             };
 
 
+    /***
+     * Adds a pre-configured user to the room db.
+     */
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final UserDao mDao;
