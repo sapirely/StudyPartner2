@@ -17,6 +17,7 @@ public class UserViewModel extends AndroidViewModel {
     private UserRepository mRepository;
     private FirestoreRepository fRepository;
     private LiveData<List<User>> mAllUsers;
+    private boolean isUserInRoom;
 
     public UserViewModel(Application application) {
         super(application);
@@ -28,9 +29,19 @@ public class UserViewModel extends AndroidViewModel {
     LiveData<List<User>> getAllUsers() {
         return mAllUsers; }
 
+    public LiveData<Boolean> isUserRegistered(String uid){
+        android.util.Log.d(TAG, "isUserRegistered: ");
+        return fRepository.isUserRegistered(uid);
+    }
+
     public LiveData<User> getUser(String uid)  {
         Log.d(TAG, "getUser: ");
-        return mRepository.getUser(uid); }
+        return mRepository.getUser(uid);
+    }
+
+    public LiveData<User> loadUser(String uid){
+        return fRepository.loadUser(uid);
+    }
 
     public void addUser(User user){
         // Add to netowrk db (Firestore)
@@ -41,8 +52,5 @@ public class UserViewModel extends AndroidViewModel {
     }
 
 //    private void insertUserToRoom(User user) { mRepository.insert(user); }
-
-//    String uid;
-//    MutableLiveData<User> user = new MutableLiveData<>();
 
 }

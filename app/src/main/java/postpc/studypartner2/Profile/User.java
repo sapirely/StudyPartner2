@@ -25,7 +25,7 @@ public class User {
     private String name;
     private String description;
     private String image_url;
-
+    private boolean loaded;
 
     public User(){}
 
@@ -36,6 +36,7 @@ public class User {
         this.name = name;
         this.description = description;
         this.image_url = image_url;
+        this.loaded = false;
     }
 
     /* Getters and Setters */
@@ -72,4 +73,11 @@ public class User {
         this.image_url = image_url;
     }
 
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
+    }
 }

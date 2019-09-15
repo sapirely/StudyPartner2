@@ -37,10 +37,10 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 //        viewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        email = (EditText) findViewById(R.id.editTextEmail);
-        password = (EditText) findViewById(R.id.editTextPassword);
-        registerButton = (Button) findViewById(R.id.registerBtn);
-        loginButton = (Button) findViewById(R.id.SignInBtn);
+//        email = (EditText) findViewById(R.id.editTextEmail);
+//        password = (EditText) findViewById(R.id.editTextPassword);
+//        registerButton = (Button) findViewById(R.id.registerBtn);
+//        loginButton = (Button) findViewById(R.id.SignInBtn);
 
 
     }

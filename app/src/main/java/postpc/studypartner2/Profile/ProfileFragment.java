@@ -65,7 +65,8 @@ public class ProfileFragment extends Fragment {
 //        java.util.Date currentTime = Calendar.getInstance().getTime();
 //        User second_u = new User("2", "second User", currentTime.toString(), "");
 //        viewModel.insertUser(second_u);
-        viewModel.getUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
+//        viewModel.getUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
+        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
 
             @Override
             public void onChanged(User user) {

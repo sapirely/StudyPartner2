@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import postpc.studypartner2.Utils.Log;
 
@@ -20,6 +22,7 @@ class FirestoreRepository {
     private FirebaseFirestore firestoreDB;
     private FirebaseUser fbUser;
     private MutableLiveData<User> curUser;
+    private MutableLiveData<Boolean> isRegistered;
 
     // save user to firebase
 
@@ -53,6 +56,32 @@ class FirestoreRepository {
             }
         });
         return curUser;
+    }
+
+    public LiveData<Boolean> isUserRegistered(String uid){
+        firestoreDB.collection("users")
+                .whereEqualTo("uid", uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.getData().isEmpty()){
+                                    isRegistered.postValue(false);
+                                } else {
+                                    isRegistered.postValue(true);
+                                }
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            isRegistered.postValue(false);
+                            Log.d(TAG, "Error getting documents: "+ task.getException());
+                        }
+                    }
+                });
+        return isRegistered;
+
     }
 
 }

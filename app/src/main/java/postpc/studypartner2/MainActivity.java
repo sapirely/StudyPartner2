@@ -1,6 +1,7 @@
 package postpc.studypartner2;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -86,12 +88,23 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onStart: user "+user.getUid()+" is logged in");
             current_user_uid = user.getUid();
 
-            // insert user todo: temp. add same as db
-            User second_u = new User(current_user_uid, user.getDisplayName(), user.getEmail(), "");
+            final UserViewModel viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+            //load user
+            viewModel.isUserRegistered(current_user_uid).observe(this, new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean isRegistered) {
+                    if (isRegistered){
+                        Log.d(TAG, "onChanged: user is in db");
+                    } else {
+                        // Register user
+                        // insert user todo: temp. add same as db
+                        User second_u = new User(current_user_uid, user.getDisplayName(), user.getEmail(), "");
+                        viewModel.addUser(second_u);
+                    }
+                }
+            });
 
 
-            UserViewModel viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-            viewModel.addUser(second_u);
         } else {
             Log.d(TAG, "onStart: no user is logged in");
         }
@@ -103,11 +116,18 @@ public class MainActivity extends AppCompatActivity {
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build());
 
+        AuthMethodPickerLayout loginLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.activity_login)
+                .setGoogleButtonId(R.id.googleLoginBtn)
+                .setEmailButtonId(R.id.emailLoginBtn)
+                .build();
+
         // Create and launch sign-in intent
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setAuthMethodPickerLayout(loginLayout)
                         .build(),
                 RC_SIGN_IN);
     }
