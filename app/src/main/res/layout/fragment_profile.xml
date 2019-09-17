@@ -30,7 +30,6 @@
             android:background="#00FFFFFF"
             android:text="edit profile"
             android:textAllCaps="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:layout_gravity="center"/>
 
     </LinearLayout>

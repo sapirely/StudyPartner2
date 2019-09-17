@@ -1,7 +1,6 @@
 package postpc.studypartner2;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
@@ -26,7 +24,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import postpc.studypartner2.Profile.User;
@@ -40,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final int RESULT_NOT_REGISTERED = 777;
     public final static int LOGIN_REQUEST = 888;
+    public final static int REGISTER_REQUEST = 789;
     public final static String KEY_AUTH = "key_auth";
     private final int RC_SIGN_IN = 123;
 
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null){
             Log.d(TAG, "onCreate: didn't get user from auth ");
-            logIn();
+            authenticateUser();
         } else {
             Log.d(TAG, "onCreate: got user "+currentUser.getUid());
 
@@ -83,26 +81,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        final FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null){
-            Log.d(TAG, "onStart: user "+user.getUid()+" is logged in");
-            current_user_uid = user.getUid();
+        final FirebaseUser authCurrentUser = mAuth.getCurrentUser();
+        if (authCurrentUser != null){
+            Log.d(TAG, "onStart: user "+authCurrentUser.getUid()+" is logged in");
+            current_user_uid = authCurrentUser.getUid();
 
+            // init view model
             final UserViewModel viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
             //load user
-            viewModel.isUserRegistered(current_user_uid).observe(this, new Observer<Boolean>() {
+            viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
+
                 @Override
-                public void onChanged(Boolean isRegistered) {
-                    if (isRegistered){
-                        Log.d(TAG, "onChanged: user is in db");
-                    } else {
-                        // Register user
-                        // insert user todo: temp. add same as db
-                        User second_u = new User(current_user_uid, user.getDisplayName(), user.getEmail(), "");
-                        viewModel.addUser(second_u);
+                public void onChanged(User loadedUser) {
+                    postpc.studypartner2.Utils.Log.d(TAG, "onChanged: observed user change");
+                    try {
+                        if (loadedUser.getUid() == "-1"){
+                            Log.d(TAG, "onChanged: user doesn't exist in db");
+                            // go to edit profile screen
+                            firstLogIn(viewModel, authCurrentUser);
+                        } else {
+                            Log.d(TAG, "onChanged: got user, continue in home fragment");
+                            // send user data to home
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("user", loadedUser);
+                            }
+                    } catch (Exception e){
+                        // todo handle exception
+                        postpc.studypartner2.Utils.Log.e(TAG, "onChanged: Error observing user. ", e);
                     }
                 }
             });
+
 
 
         } else {
@@ -110,12 +120,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void logIn(){
+    private void firstLogIn(UserViewModel viewModel, FirebaseUser authCurrentUser){
+        Log.d(TAG, "firstLogIn: user: "+authCurrentUser.getUid());
+        // register
+        User newUser = new User(getCurrentUserID(), authCurrentUser.getDisplayName(), "", "");
+        viewModel.addUser(newUser);
+
+        // bundle user info
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user", newUser);
+
+        // navigate to edit profile
+        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_profileFragment, bundle);
+        Toast.makeText(this, "please edit your profile", Toast.LENGTH_LONG).show();
+    }
+
+    private void authenticateUser(){
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build());
 
+        // Customize layout
         AuthMethodPickerLayout loginLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.activity_login)
                 .setGoogleButtonId(R.id.googleLoginBtn)
@@ -136,24 +162,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                Log.d(TAG, "onActivityResult: Sign in succeeded");
-                if (response == null) {
-                    // the user canceled the sign-in flow using the back button
-                    Log.d(TAG, "onActivityResult: User canceled sign in");
-                } else {
-                    // handle error - todo
-                    Exception e = response.getError();
-                    Log.w(TAG, "onActivityResult: error: ", e);
+        switch (requestCode){
+            // Fire auth sign in
+            case RC_SIGN_IN:
+                IdpResponse response = IdpResponse.fromResultIntent(data);
+                if (resultCode == RESULT_OK) {
+                    // Successfully signed in
+                    Log.d(TAG, "onActivityResult: Sign in succeeded");
+                    if (response == null) {
+                        // the user canceled the sign-in flow using the back button
+                        Log.d(TAG, "onActivityResult: User canceled sign in");
+                    } else {
+                        // handle error - todo
+                        Exception e = response.getError();
+                        Log.w(TAG, "onActivityResult: error: ", e);
+                    }
                 }
-            }
+                break;
         }
     }
-
 
     private void setUpNavigation(){
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nvaigation_view);

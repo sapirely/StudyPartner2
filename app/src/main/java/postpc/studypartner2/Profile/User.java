@@ -1,6 +1,9 @@
 package postpc.studypartner2.Profile;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -15,7 +18,7 @@ import androidx.room.PrimaryKey;
  */
 
 @Entity(tableName = "users")
-public class User {
+public class User implements Parcelable {
 
     @NonNull
     @PrimaryKey
@@ -38,6 +41,44 @@ public class User {
         this.image_url = image_url;
         this.loaded = false;
     }
+
+
+
+    protected User(Parcel in) {
+        uid = in.readString();
+        name = in.readString();
+        description = in.readString();
+        image_url = in.readString();
+        loaded = in.readByte() != 0;
+    }
+
+    /* Parcelable */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(uid);
+        parcel.writeString(name);
+        parcel.writeString(description);
+        parcel.writeString(image_url);
+        parcel.writeByte((byte) (loaded ? 1 : 0));
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     /* Getters and Setters */
 

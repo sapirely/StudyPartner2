@@ -29,18 +29,22 @@ public class UserViewModel extends AndroidViewModel {
     LiveData<List<User>> getAllUsers() {
         return mAllUsers; }
 
-    public LiveData<Boolean> isUserRegistered(String uid){
-        android.util.Log.d(TAG, "isUserRegistered: ");
-        return fRepository.isUserRegistered(uid);
-    }
+//    public LiveData<Boolean> isUserRegistered(String uid){
+//        android.util.Log.d(TAG, "isUserRegistered: ");
+//        return fRepository.isUserRegistered(uid);
+//    }
 
-    public LiveData<User> getUser(String uid)  {
-        Log.d(TAG, "getUser: ");
-        return mRepository.getUser(uid);
-    }
+//    public LiveData<User> getUser(String uid)  {
+//        Log.d(TAG, "getUser: ");
+//        return mRepository.getUser(uid);
+//    }
 
     public LiveData<User> loadUser(String uid){
         return fRepository.loadUser(uid);
+    }
+
+    public void updateUser(String uid, String key, String value){
+        fRepository.updateUser(uid, key, value);
     }
 
     public void addUser(User user){
