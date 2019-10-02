@@ -83,29 +83,29 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         setUpProfileImage(view, image_url);
 
         // Set up recycler
-        mRecyclerView.setAdapter(adapter);
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(
-                3,
-                StaggeredGridLayoutManager.VERTICAL
-        );
-        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
-        adapter.callBack = this;
-
-        addCourseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                switch(view.getId()) {
-                    case R.id.btn_add_course:
-                        // send and add to database
-                        Course m = sendCourse("67577", "IML");
-                        break;
-                }
-            }
-        });
-
-        Course sampleCourse = new Course("61111", "Made Up");
-        courses.add(sampleCourse);
-        adapter.submitList(courses);
+//        mRecyclerView.setAdapter(adapter);
+//        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(
+//                3,
+//                StaggeredGridLayoutManager.VERTICAL
+//        );
+//        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+//        adapter.callBack = this;
+//
+//        addCourseBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view){
+//                switch(view.getId()) {
+//                    case R.id.btn_add_course:
+//                        // send and add to database
+//                        Course m = sendCourse("67577", "IML");
+//                        break;
+//                }
+//            }
+//        });
+//
+//        Course sampleCourse = new Course("61111", "Made Up");
+//        courses.add(sampleCourse);
+//        adapter.submitList(courses);
 
         // todo change to get user by id
 //        java.util.Date currentTime = Calendar.getInstance().getTime();
