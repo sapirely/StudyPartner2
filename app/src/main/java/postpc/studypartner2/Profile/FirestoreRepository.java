@@ -79,6 +79,10 @@ class FirestoreRepository {
         return usersQuery;
     }
 
+    public LiveData<List<User>> getLastQuery(){
+        return usersQuery;
+    }
+
     public void updateUser(final String uid, final String key, final String value){
         DocumentReference docRef = firestoreDB.collection("users").document(uid);
         docRef

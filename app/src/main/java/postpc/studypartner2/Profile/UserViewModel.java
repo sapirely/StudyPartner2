@@ -45,6 +45,10 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.getUsersByCourse(courseNum);
     }
 
+    public LiveData<List<User>> getLastQuery(){
+        return fRepository.getLastQuery();
+    }
+
     public void updateUser(String uid, String key, String value){
         fRepository.updateUser(uid, key, value);
     }
