@@ -11,9 +11,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
+
 import postpc.studypartner2.Utils.Log;
 
 class FirestoreRepository {
@@ -22,6 +27,7 @@ class FirestoreRepository {
     private FirebaseFirestore firestoreDB;
     private FirebaseUser fbUser;
     private MutableLiveData<User> curUser;
+    private MutableLiveData<List<User>> usersQuery;
     private MutableLiveData<Boolean> isRegistered;
 
     // save user to firebase
@@ -59,6 +65,18 @@ class FirestoreRepository {
             }
         });
         return curUser;
+    }
+
+    public LiveData<List<User>> getUsersByCourse(String courseNum){
+        CollectionReference colRef = firestoreDB.collection("users");
+        colRef.whereArrayContains("courses", courseNum).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                android.util.Log.d(TAG, "onSuccess: successful query");
+                usersQuery.postValue(queryDocumentSnapshots.toObjects(User.class));
+            }
+        });
+        return usersQuery;
     }
 
     public void updateUser(final String uid, final String key, final String value){

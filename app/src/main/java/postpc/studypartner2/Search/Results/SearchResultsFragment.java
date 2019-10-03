@@ -1,4 +1,4 @@
-package postpc.studypartner2.Search;
+package postpc.studypartner2.Search.Results;
 
 
 import android.os.Bundle;
@@ -11,16 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import postpc.studypartner2.R;
-import postpc.studypartner2.Search.ResultRecyclerUtils;
 
 
 /**

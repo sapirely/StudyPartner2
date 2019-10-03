@@ -1,4 +1,4 @@
-package postpc.studypartner2.Search;
+package postpc.studypartner2.Search.Results;
 
 public class Result {
 

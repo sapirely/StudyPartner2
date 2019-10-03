@@ -1,4 +1,4 @@
-package postpc.studypartner2.Search;
+package postpc.studypartner2.Search.Results;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
 
