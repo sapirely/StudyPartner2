@@ -15,6 +15,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
@@ -36,6 +37,7 @@ class FirestoreRepository {
         firestoreDB = FirebaseFirestore.getInstance();
         fbUser = FirebaseAuth.getInstance().getCurrentUser();
         curUser = new MutableLiveData<>();
+        usersQuery = new MutableLiveData<>();
     }
 
     public void addUser(User user) {
@@ -69,13 +71,31 @@ class FirestoreRepository {
 
     public LiveData<List<User>> getUsersByCourse(String courseNum){
         CollectionReference colRef = firestoreDB.collection("users");
-        colRef.whereArrayContains("courses", courseNum).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        colRef.whereArrayContains("courses", "67666").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                android.util.Log.d(TAG, "onSuccess: successful query");
-                usersQuery.postValue(queryDocumentSnapshots.toObjects(User.class));
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    android.util.Log.d(TAG, "onComplete: successful query");
+                    QuerySnapshot queryDocumentSnapshots = task.getResult();
+                    if (queryDocumentSnapshots.isEmpty()){
+                        android.util.Log.d(TAG, "onComplete: empty query ");
+                    } else {
+                        android.util.Log.d(TAG, "onComplete: posting value");
+                        usersQuery.postValue(queryDocumentSnapshots.toObjects(User.class));
+                    }
+                }
             }
         });
+
+
+
+//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                android.util.Log.d(TAG, "onSuccess: successful query");
+//                usersQuery.postValue(queryDocumentSnapshots.toObjects(User.class));
+//            }
+//        });
         return usersQuery;
     }
 

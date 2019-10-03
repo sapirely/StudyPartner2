@@ -84,12 +84,12 @@ public class SearchFragment extends Fragment {
             public void onClick(View view){
                 switch(view.getId()) {
                     case R.id.button_search:
-//                        viewModel.getUsersByCourse(courseNum.getText().toString()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
-//                            @Override
-//                            public void onChanged(List<User> users) {
-//                                Log.d(TAG, "onChanged: updated query ");
-//                            }
-//                        });
+                        viewModel.getUsersByCourse(courseNum.getText().toString()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+                            @Override
+                            public void onChanged(List<User> users) {
+                                Log.d(TAG, "onChanged: updated query ");
+                            }
+                        });
                         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                         navController.navigate(R.id.action_searchFragment_to_searchResultsFragment);
                         break;
