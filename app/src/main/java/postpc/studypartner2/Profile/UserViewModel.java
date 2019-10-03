@@ -7,8 +7,6 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import postpc.studypartner2.Utils.Log;
-
 
 public class UserViewModel extends AndroidViewModel {
 
@@ -41,6 +39,10 @@ public class UserViewModel extends AndroidViewModel {
 
     public LiveData<User> loadUser(String uid){
         return fRepository.loadUser(uid);
+    }
+
+    public LiveData<List<User>> getUsersByCourse(String courseNum) {
+        return fRepository.getUsersByCourse(courseNum);
     }
 
     public void updateUser(String uid, String key, String value){

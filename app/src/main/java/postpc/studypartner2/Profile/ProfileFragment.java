@@ -49,15 +49,15 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        // init ViewModel
-        Log.d(TAG, "onCreate: ViewModel initiated");
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
-    }
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//
+//        super.onCreate(savedInstanceState);
+//        // init ViewModel
+//        Log.d(TAG, "onCreate: ViewModel initiated");
+//        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+//
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,7 +111,9 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 //        User second_u = new User("2", "second User", currentTime.toString(), "");
 //        viewModel.insertUser(second_u);
 //        viewModel.getUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
-        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
+
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(getViewLifecycleOwner(), new Observer<User>(){
 
             @Override
             public void onChanged(User user) {
@@ -127,6 +129,14 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
         return view;
     }
+
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        // init ViewModel
+//
+//        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+//    }
 
     private Course sendCourse(String courseId, String courseName) {
         // add the message to the list of messages
