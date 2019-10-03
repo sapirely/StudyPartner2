@@ -8,8 +8,15 @@
     <string name="courses_title">Courses</string>
     <string name="list_of_courses">67521</string>
 
+    <!-- Titles -->
+    <!-- menu items -->
     <string name="menu_home">Home</string>
     <string name="menu_search">Search</string>
     <string name="menu_chat">Inbox</string>
     <string name="menu_profile">Profile</string>
+
+    <string name="register_title">Welcome</string>
+
+
+
 </resources>

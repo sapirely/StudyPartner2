@@ -6,9 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +21,6 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
-import postpc.studypartner2.Search.Result;
-import postpc.studypartner2.Search.ResultRecyclerUtils;
 import postpc.studypartner2.Utils.Log;
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
@@ -38,6 +34,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
     private TextView profileName;
     private TextView profileDesc;
+    private TextView coursesList; // todo remove
     private ImageView profilePic;
     private EditText editProfileName;
     private EditText editProfileDesc;
@@ -76,6 +73,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileName = view.findViewById(R.id.edit_profile_name);
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
+
+        coursesList = view.findViewById(R.id.textViewCoursesList); // todo remove
 
         // Set up UI
         Log.d(TAG, "onCreateView: setting up ui ");
@@ -153,6 +152,12 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         setUpProfileImage(view, user.getImage_url());
         profileName.setText(user.getName());
         profileDesc.setText(user.getDescription());
+
+        // change the courses
+        if (user.getCoursesList() != null){
+            coursesList.setText(user.getCoursesList().toString());
+        }
+
         //todo more stuff
     }
 

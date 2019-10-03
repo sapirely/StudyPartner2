@@ -51,7 +51,7 @@ class FirestoreRepository {
                         curUser.postValue(document.toObject(User.class));
                     } else {
                         Log.d(TAG, "No such document");
-                        curUser.postValue(new User("-1", null, null, null));
+                        curUser.postValue(new User("-1", null, null, null, ""));
                     }
                 } else {
                     Log.e(TAG, "get failed with ", task.getException());

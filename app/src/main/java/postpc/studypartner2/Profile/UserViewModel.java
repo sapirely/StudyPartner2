@@ -14,16 +14,16 @@ public class UserViewModel extends AndroidViewModel {
 
     private static final String TAG = "UserViewModel";
 
-    private UserRepository mRepository;
+//    private UserRepository mRepository; // todo uncomment - room
     private FirestoreRepository fRepository;
     private LiveData<List<User>> mAllUsers;
     private boolean isUserInRoom;
 
     public UserViewModel(Application application) {
         super(application);
-        mRepository = new UserRepository(application);
+//        mRepository = new UserRepository(application); // todo uncomment - room
         fRepository = new FirestoreRepository();
-        mAllUsers = mRepository.getAllUsers();
+//        mAllUsers = mRepository.getAllUsers(); // todo uncomment - room
     }
 
     LiveData<List<User>> getAllUsers() {
@@ -52,7 +52,7 @@ public class UserViewModel extends AndroidViewModel {
         fRepository.addUser(user);
 
         // Add to local db (Room)
-        mRepository.insert(user);
+//        mRepository.insert(user);
     }
 
 //    private void insertUserToRoom(User user) { mRepository.insert(user); }

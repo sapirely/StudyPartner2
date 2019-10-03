@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public final static int REGISTER_REQUEST = 789;
     public final static String KEY_AUTH = "key_auth";
     private final int RC_SIGN_IN = 123;
+    private final int RC_REGISTER = 124;
 
     // Firebase Authentication
     private FirebaseFirestore db;
@@ -49,11 +50,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser curAuthUser;
 
     private static String current_user_uid;
+    private User current_logged_in_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        current_logged_in_user = new User();
 
         // Auth set up
         List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -123,12 +127,18 @@ public class MainActivity extends AppCompatActivity {
     private void firstLogIn(UserViewModel viewModel, FirebaseUser authCurrentUser){
         Log.d(TAG, "firstLogIn: user: "+authCurrentUser.getUid());
         // register
-        User newUser = new User(getCurrentUserID(), authCurrentUser.getDisplayName(), "", "");
-        viewModel.addUser(newUser);
+        Intent registerIntent = new Intent(this, RegisterActivity.class);
+//        startActivityForResult(registerIntent, RC_REGISTER);
+//        User newUser = new User(getCurrentUserID(), authCurrentUser.getDisplayName(), "", "", "");
+        current_logged_in_user.setUid(getCurrentUserID());
+        current_logged_in_user.setName(authCurrentUser.getDisplayName());
+        current_logged_in_user.setImage_url("");
+        viewModel.addUser(current_logged_in_user);
 
         // bundle user info
         Bundle bundle = new Bundle();
-        bundle.putParcelable("user", newUser);
+//        bundle.putParcelable("user", newUser);
+        bundle.putParcelable("user", current_logged_in_user);
 
         // navigate to edit profile
         Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_profileFragment, bundle);
@@ -161,11 +171,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        IdpResponse response;
 
         switch (requestCode){
             // Fire auth sign in
             case RC_SIGN_IN:
-                IdpResponse response = IdpResponse.fromResultIntent(data);
+                response = IdpResponse.fromResultIntent(data);
                 if (resultCode == RESULT_OK) {
                     // Successfully signed in
                     Log.d(TAG, "onActivityResult: Sign in succeeded");
@@ -179,6 +190,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 break;
+            case RC_REGISTER:
+                response = IdpResponse.fromResultIntent(data);
+                if (resultCode == RESULT_OK) {
+                    // Successfully Registered
+                    current_logged_in_user.setDescription(data.getStringExtra("Description"));
+                    current_logged_in_user.addCourseToList(data.getStringExtra("CourseNum"));
+
+                    Log.d(TAG, "onActivityResult: Registration succeeded");
+                    if (response == null) {
+                        // the user canceled the sign-in flow using the back button
+                        Log.d(TAG, "onActivityResult: User canceled registration");
+                    } else {
+                        // handle error - todo
+                        Exception e = response.getError();
+                        Log.w(TAG, "onActivityResult: error: ", e);
+                    }
+                }
+                break;
+
         }
     }
 
