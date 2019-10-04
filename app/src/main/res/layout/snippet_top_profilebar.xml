@@ -4,8 +4,9 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_margin"
-        android:background="@drawable/white_gray_border_bottom"
-        >
+        android:background="@color/white">
+<!--        android:background="@drawable/white_gray_border_bottom"-->
+<!--        >-->
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"

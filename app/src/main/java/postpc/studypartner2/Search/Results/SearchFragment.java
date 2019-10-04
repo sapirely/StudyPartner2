@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     private ImageButton searchBtn;
     private LinearLayout searchFiltersLayout;
     private RecyclerView mRecyclerView;
+    private ProgressBar progressBar;
 
     private UserViewModel viewModel;
     private ResultRecyclerUtils.ResultsAdapter adapter = new ResultRecyclerUtils.ResultsAdapter();
@@ -55,8 +57,9 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
         searchBtn = view.findViewById(R.id.button_search);
         searchFiltersLayout = view.findViewById(R.id.search_filters_layout);
         mRecyclerView = view.findViewById(R.id.searchRecyclerView);
+        progressBar = view.findViewById(R.id.progressBarSearch);
 
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        // Set up results
         setUpRecyclerView(view);
 
         return view;
@@ -66,25 +69,14 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
                 switch(view.getId()) {
                     case R.id.button_search:
-
-                        viewModel.getUsersByCourse(courseNum.getText().toString()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
-                            @Override
-                            public void onChanged(List<User> users) {
-                                Log.d(TAG, "onChanged: updated query ");
-//                                viewModel.setLastUsersQuery(users);
-                                adapter.setResults(users);
-                            }
-                        });
-                        
-                        searchFiltersLayout.setVisibility(View.GONE);
-                        mRecyclerView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        loadResults();
+                        updateUI();
                         break;
                 }
             }
@@ -92,9 +84,27 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
 
     }
 
+    private void loadResults(){
+        viewModel.getUsersByCourse(courseNum.getText().toString())
+                .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+                    @Override
+                    public void onChanged(List<User> users) {
+                        Log.d(TAG, "onChanged: updated query ");
+                        adapter.setResults(users);
+                    }
+                });
+    }
+
+    private void updateUI(){
+        // Hide search filters and show results
+        searchFiltersLayout.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
     private void setUpRecyclerView(View view) {
 
-        this.mRecyclerView = (RecyclerView) view.findViewById(R.id.searchRecyclerView);
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mRecyclerView.setAdapter(adapter);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(
