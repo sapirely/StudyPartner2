@@ -71,7 +71,7 @@ class FirestoreRepository {
 
     public LiveData<List<User>> getUsersByCourse(String courseNum){
         CollectionReference colRef = firestoreDB.collection("users");
-        colRef.whereArrayContains("courses", "67521").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        colRef.whereArrayContains("courses", courseNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -86,16 +86,6 @@ class FirestoreRepository {
                 }
             }
         });
-
-
-
-//                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                android.util.Log.d(TAG, "onSuccess: successful query");
-//                usersQuery.postValue(queryDocumentSnapshots.toObjects(User.class));
-//            }
-//        });
         return usersQuery;
     }
 

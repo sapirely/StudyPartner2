@@ -5,27 +5,20 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".Search.Results.SearchResultsFragment">
 
-    <TextView
-        android:id="@+id/tv_click_me"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="click me"
-        android:layout_gravity="center"/>
+<!--    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--        android:id="@+id/search_rel_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        tools:context="postpc.studypartner2.MainActivity">-->
 
-    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/search_rel_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="postpc.studypartner2.MainActivity">
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/searchRecyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            tools:listitem="@layout/item_partner"-->
+<!--            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"/>-->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searchRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            tools:listitem="@layout/item_partner"
-            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"/>
-
-    </RelativeLayout>
+<!--    </RelativeLayout>-->
 
 </FrameLayout>

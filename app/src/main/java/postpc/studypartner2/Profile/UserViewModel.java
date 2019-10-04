@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
@@ -15,12 +16,14 @@ public class UserViewModel extends AndroidViewModel {
 //    private UserRepository mRepository; // todo uncomment - room
     private FirestoreRepository fRepository;
     private LiveData<List<User>> mAllUsers;
+    private MutableLiveData<List<User>> mQueryUsers;
     private boolean isUserInRoom;
 
     public UserViewModel(Application application) {
         super(application);
 //        mRepository = new UserRepository(application); // todo uncomment - room
         fRepository = new FirestoreRepository();
+        mQueryUsers = new MutableLiveData<>();
 //        mAllUsers = mRepository.getAllUsers(); // todo uncomment - room
     }
 
@@ -47,6 +50,13 @@ public class UserViewModel extends AndroidViewModel {
 
     public LiveData<List<User>> getLastQuery(){
         return fRepository.getLastQuery();
+    }
+
+    public LiveData<List<User>> getLastUsersQuery(){
+        return mQueryUsers;
+    }
+    public void setLastUsersQuery(List<User> users){
+        mQueryUsers.postValue(users);
     }
 
     public void updateUser(String uid, String key, String value){

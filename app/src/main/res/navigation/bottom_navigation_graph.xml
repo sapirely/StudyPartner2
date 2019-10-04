@@ -24,7 +24,7 @@
     <!--        todo: change to search -->
     <fragment
         android:id="@+id/searchFragment"
-        android:name="postpc.studypartner2.Search.SearchFragment"
+        android:name="postpc.studypartner2.Search.Results.SearchFragment"
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_searchResultsFragment"

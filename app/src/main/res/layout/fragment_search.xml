@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Search.SearchFragment">
+    tools:context=".Search.Results.SearchFragment">
 
 
     <LinearLayout
+        android:id="@+id/search_filters_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_rectangle"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        android:visibility="visible">
 
         <ImageButton
             android:id="@+id/button_search"
@@ -35,6 +37,15 @@
             />
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        tools:listitem="@layout/item_partner"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        android:visibility="invisible"/>
 
 <!--    <ImageView-->
 <!--        android:id="@+id/imageView"-->

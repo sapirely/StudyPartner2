@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,29 +66,6 @@ public class SearchResultsFragment extends Fragment implements ResultRecyclerUti
 //        this.mRecyclerView = (RecyclerView)view.findViewById(R.id.searchRecyclerView);
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
         setUpRecyclerView(view);
-
-//        mRecyclerView.setAdapter(adapter);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-//                view.getContext(),
-//                LinearLayoutManager.VERTICAL,
-//                false);
-//        mRecyclerView.setLayoutManager(linearLayoutManager);
-//        adapter.callBack = this;
-
-//        clickMeTextView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view){
-//                switch(view.getId()) {
-//                    case R.id.tv_click_me:
-//                        // send and add to database
-//                        Result m = sendResult("A");
-//                        break;
-//                }
-//            }
-//        });
-//
-//        adapter.submitList(results);
-
         // log message list size
         Log.d(TAG, "onCreate: current size of results list: "+results.size());
 
@@ -104,12 +82,17 @@ public class SearchResultsFragment extends Fragment implements ResultRecyclerUti
                 LinearLayoutManager.VERTICAL,
                 false));
 
+        EditText courseNum = view.findViewById(R.id.edit_text_search);
 
-        viewModel.getUsersByCourse("0").observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+//        viewModel.getUsersByCourse(courseNum.getText().toString()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+//        viewModel.getLastUsersQuery().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+        viewModel.getLastQuery().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                adapter.setResults(users);
+//                adapter.setResults(users);
+                adapter.submitList(users);
             }
+
         });
 
 //        Query query = colRef.orderBy("name", Query.Direction.ASCENDING);

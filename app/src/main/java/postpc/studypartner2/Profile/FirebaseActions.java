@@ -1,13 +1,22 @@
 package postpc.studypartner2.Profile;
 
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 // Singleton
 public class FirebaseActions {
+
+    private static final String TAG = "FirebaseActions";
 
     private final String USERS_DB = "users";
 
@@ -58,4 +67,6 @@ public class FirebaseActions {
         //todo
         return null;
     }
+
+
 }
