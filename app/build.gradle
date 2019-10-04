@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.0.0'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-analytics:17.0.1'
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation 'com.google.firebase:firebase-firestore:21.0.0'
     implementation 'com.google.firebase:firebase-core:17.0.1'
     // FirebaseUI for Firebase Realtime Database
@@ -51,12 +51,15 @@ dependencies {
     // FirebaseUI for Cloud Firestore
     implementation 'com.firebaseui:firebase-ui-firestore:6.0.2'
 
+    // Cloud Messaging
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+
+
     // ViewModel and LiveData
     def lifecycle_version = "2.2.0-alpha03"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
-
     // Saved state module
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha03"
 

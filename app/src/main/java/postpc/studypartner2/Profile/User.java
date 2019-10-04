@@ -12,6 +12,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -162,6 +163,14 @@ public class User implements Parcelable {
 
     public List<String> getCoursesList(){
         return this.coursesList; 
+    }
+
+    public List<Course> getCoursesList_courseType(){
+        List<Course> listOfCourses = new ArrayList<>();
+        for (String course: coursesList){
+            listOfCourses.add(new Course(course, ""));
+        }
+        return listOfCourses;
     }
 
     public class CoursesListConverter {

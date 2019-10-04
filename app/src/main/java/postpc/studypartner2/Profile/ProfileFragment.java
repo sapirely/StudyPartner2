@@ -6,7 +6,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,7 +77,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
 
-        coursesList = view.findViewById(R.id.textViewCoursesList); // todo remove
+//        coursesList = view.findViewById(R.id.textViewCoursesList); // todo remove
 
         // Set up UI
         Log.d(TAG, "onCreateView: setting up ui ");
@@ -113,6 +116,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 //        viewModel.getUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
 
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        setUpRecyclerView(view);
         viewModel.loadUser(MainActivity.getCurrentUserID()).observe(getViewLifecycleOwner(), new Observer<User>(){
 
             @Override
@@ -127,6 +131,9 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
             }
         });
 
+        // Set up recycler
+
+
         return view;
     }
 
@@ -138,20 +145,34 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 //        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
 //    }
 
-    private Course sendCourse(String courseId, String courseName) {
-        // add the message to the list of messages
-        ArrayList<Course> coursesCopy = new ArrayList<>(courses);
-        courses = coursesCopy;
-        Course new_course = new Course(courseId, courseName);
-        courses.add(new_course);
-        adapter.submitList(courses);
-
-        return new_course;
-    }
+//    private Course sendCourse(String courseId, String courseName) {
+//        // add the message to the list of messages
+//        ArrayList<Course> coursesCopy = new ArrayList<>(courses);
+//        courses = coursesCopy;
+//        Course new_course = new Course(courseId, courseName);
+//        courses.add(new_course);
+//        adapter.submitList(courses);
+//
+//        return new_course;
+//    }
 
     @Override
     public void onCourseLongClick(Course course) {
 
+    }
+
+
+    private void setUpRecyclerView(View view) {
+
+        mRecyclerView.setAdapter(adapter);
+
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(
+//                view.getContext(),
+//                LinearLayoutManager.VERTICAL,
+//                false));
+
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
+                StaggeredGridLayoutManager.HORIZONTAL));
     }
 
     private void updateUI(View view, User user) throws Exception {
@@ -163,10 +184,11 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         profileName.setText(user.getName());
         profileDesc.setText(user.getDescription());
 
-        // change the courses
-        if (user.getCoursesList() != null){
-            coursesList.setText(user.getCoursesList().toString());
-        }
+//        // change the courses
+//        if (user.getCoursesList() != null){
+//            coursesList.setText(user.getCoursesList().toString());
+//        }
+        adapter.setCourses(user.getCoursesList_courseType());
 
         //todo more stuff
     }

@@ -23,17 +23,18 @@
             android:layout_gravity="center"
             android:layout_marginStart="5dp"/>
         <EditText
-            android:id="@+id/edit_text_search"
+            android:id="@+id/edit_text_search_course"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:hint="Search"
+            android:hint="Course Number"
             android:textSize="18sp"
             android:gravity="bottom"
             android:alpha="0.8"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="5dp"
             android:singleLine="true"
+            android:inputType="number"
             />
 
     </LinearLayout>

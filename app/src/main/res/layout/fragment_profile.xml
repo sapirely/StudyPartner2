@@ -18,39 +18,39 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"/>
 
-<!--        <include layout="@layout/snippet_profile_courses"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="20dp"/>-->
+        <include layout="@layout/snippet_profile_courses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"/>
 
 
         <!-- TEMP todo remove-->
-        <LinearLayout
-            android:id="@+id/titleCourses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/titleCourses"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:orientation="vertical">-->
 
-            <TextView
-                android:id="@+id/textViewTitleCourses"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/courses_title"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+<!--            <TextView-->
+<!--                android:id="@+id/textViewTitleCourses"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:text="@string/courses_title"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold"/>-->
 
-            <TextView
-                android:id="@+id/textViewCoursesList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="courses list "/>
+<!--            <TextView-->
+<!--                android:id="@+id/textViewCoursesList"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="courses list "/>-->
 
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
 
     <!-- end of temp-->
