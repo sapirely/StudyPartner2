@@ -1,6 +1,8 @@
 package postpc.studypartner2.Search.Results;
 
-public class Result {
+import postpc.studypartner2.Profile.User;
+
+public class Result extends User {
 
     private String uid;
 

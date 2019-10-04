@@ -23,6 +23,7 @@ tools:context=".Search.Results.SearchResultsFragment">
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            tools:listitem="@layout/item_partner"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"/>
 
     </RelativeLayout>
