@@ -28,6 +28,8 @@ import postpc.studypartner2.Utils.Log;
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 
+// todo: edit profile
+
 public class ProfileFragment extends Fragment implements CourseRecyclerUtils.CourseClickCallBack {
 
     private static final String TAG = "ProfileFragment";
@@ -37,7 +39,6 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
     private TextView profileName;
     private TextView profileDesc;
-    private TextView coursesList; // todo remove
     private ImageView profilePic;
     private EditText editProfileName;
     private EditText editProfileDesc;
@@ -46,21 +47,9 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private CourseRecyclerUtils.CoursesAdapter adapter = new CourseRecyclerUtils.CoursesAdapter();
     public ArrayList<Course> courses = new ArrayList<>();
 
-    // todo add course + other stuff
-
     public ProfileFragment() {
         // Required empty public constructor
     }
-
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//
-//        super.onCreate(savedInstanceState);
-//        // init ViewModel
-//        Log.d(TAG, "onCreate: ViewModel initiated");
-//        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-//
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,52 +66,25 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
 
-//        coursesList = view.findViewById(R.id.textViewCoursesList); // todo remove
+        loadUser(view);
 
-        // Set up UI
-        Log.d(TAG, "onCreateView: setting up ui ");
-        String image_url = ""; // todo change to actual url
-        setUpProfileImage(view, image_url);
+        return view;
+    }
 
-        // Set up recycler
-//        mRecyclerView.setAdapter(adapter);
-//        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(
-//                3,
-//                StaggeredGridLayoutManager.VERTICAL
-//        );
-//        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
-//        adapter.callBack = this;
-//
-//        addCourseBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view){
-//                switch(view.getId()) {
-//                    case R.id.btn_add_course:
-//                        // send and add to database
-//                        Course m = sendCourse("67577", "IML");
-//                        break;
-//                }
-//            }
-//        });
-//
-//        Course sampleCourse = new Course("61111", "Made Up");
-//        courses.add(sampleCourse);
-//        adapter.submitList(courses);
+    @Override
+    public void onCourseLongClick(Course course) {
 
-        // todo change to get user by id
-//        java.util.Date currentTime = Calendar.getInstance().getTime();
-//        User second_u = new User("2", "second User", currentTime.toString(), "");
-//        viewModel.insertUser(second_u);
-//        viewModel.getUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
+    }
 
+    private void loadUser(final View view){
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        setUpRecyclerView(view);
         viewModel.loadUser(MainActivity.getCurrentUserID()).observe(getViewLifecycleOwner(), new Observer<User>(){
 
             @Override
             public void onChanged(User user) {
                 Log.d(TAG, "onChanged: observed user change");
                 try {
+                    Log.d(TAG, "onChanged: setting up ui ");
                     updateUI(view, user);
                 } catch (Exception e){
                     // todo handle exception
@@ -130,48 +92,13 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 }
             }
         });
-
-        // Set up recycler
-
-
-        return view;
-    }
-
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        // init ViewModel
-//
-//        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-//    }
-
-//    private Course sendCourse(String courseId, String courseName) {
-//        // add the message to the list of messages
-//        ArrayList<Course> coursesCopy = new ArrayList<>(courses);
-//        courses = coursesCopy;
-//        Course new_course = new Course(courseId, courseName);
-//        courses.add(new_course);
-//        adapter.submitList(courses);
-//
-//        return new_course;
-//    }
-
-    @Override
-    public void onCourseLongClick(Course course) {
-
     }
 
 
-    private void setUpRecyclerView(View view) {
-
+    private void setUpRecyclerView() {
+        final int NUM_OF_COLS = 2;
         mRecyclerView.setAdapter(adapter);
-
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(
-//                view.getContext(),
-//                LinearLayoutManager.VERTICAL,
-//                false));
-
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(NUM_OF_COLS,
                 StaggeredGridLayoutManager.HORIZONTAL));
     }
 
@@ -183,16 +110,11 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         setUpProfileImage(view, user.getImage_url());
         profileName.setText(user.getName());
         profileDesc.setText(user.getDescription());
-
-//        // change the courses
-//        if (user.getCoursesList() != null){
-//            coursesList.setText(user.getCoursesList().toString());
-//        }
+        setUpRecyclerView();
         adapter.setCourses(user.getCoursesList_courseType());
 
         //todo more stuff
     }
-
 
     private void setUpProfileImage(View currentView, String image_uri){
         ImageView imageView = (ImageView) currentView.findViewById(R.id.profile_image);
