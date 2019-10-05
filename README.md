@@ -1,8 +1,28 @@
 # StudyPartner2
 
-- added navigation jetpack
-- chat works one sided
+Partners:
+- UI - is that how we want it to look? do we need a calendar?
+- DB - maybe change structure?
+- Notifications
 
-issues:
-- low:
-  - when typing, window is annoying. too small and you can't see the message you just sent
+Chat:
+- DB structure:
+(collection: messages)
+    - uid1/uid2: (document: list of messages)
+        - msg: (field: msg)
+            - sender (sub-field: String)
+            - text (sub-field: String)
+
+- RecyclerView for the conversations, plus sign to add to partners
+- Notifications
+
+Profile:
+- Edit profile
+
+OTHERS:
+- graphics:
+    - logo
+    - splash?
+- presentation
+- google play page 
+

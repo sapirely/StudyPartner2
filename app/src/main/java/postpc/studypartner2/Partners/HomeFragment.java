@@ -68,7 +68,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadPartners(){
-        // todo CHANGE TO LOAD ACTUAL PARTNERS 
+        // todo CHANGE TO LOAD ACTUAL PARTNERS
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
         viewModel.getUsersByCourse("67521")
 //        viewModel.getPartners(MainActivity.getCurrentUserID())
