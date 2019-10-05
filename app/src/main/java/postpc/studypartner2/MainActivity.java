@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             authenticateUser();
         } else {
             Log.d(TAG, "onCreate: got user "+currentUser.getUid());
+            current_user_uid = currentUser.getUid();
 
         }
         // Navigation set up

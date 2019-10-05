@@ -4,22 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HomeFragment">
+    tools:context=".Partners.HomeFragment">
 
-    <TextView
-        android:text="this is home"
-        android:textSize="26sp"
-        android:gravity="center"
+<!--    <TextView-->
+<!--        android:text="this is home"-->
+<!--        android:textSize="26sp"-->
+<!--        android:gravity="center"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+<!--    </TextView>-->
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:gravity="right"-->
+<!--        android:layout_gravity="bottom">-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-    </TextView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:layout_gravity="bottom">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton"
@@ -30,9 +34,20 @@
             android:layout_marginBottom="32dp"
             android:baselineAlignBottom="true"
             android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_add_person" />
-    </RelativeLayout>
+<!--    </RelativeLayout>-->
 
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/partnerRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_partner"
+            android:scrollbarAlwaysDrawVerticalTrack="true"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

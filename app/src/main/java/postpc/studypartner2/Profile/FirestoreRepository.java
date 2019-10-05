@@ -15,11 +15,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import postpc.studypartner2.Partners.PartnerList;
 import postpc.studypartner2.Utils.Log;
 
 class FirestoreRepository {
@@ -29,6 +30,7 @@ class FirestoreRepository {
     private FirebaseUser fbUser;
     private MutableLiveData<User> curUser;
     private MutableLiveData<List<User>> usersQuery;
+    private MutableLiveData<List<User>> partners;
     private MutableLiveData<Boolean> isRegistered;
 
     // save user to firebase
@@ -38,6 +40,7 @@ class FirestoreRepository {
         fbUser = FirebaseAuth.getInstance().getCurrentUser();
         curUser = new MutableLiveData<>();
         usersQuery = new MutableLiveData<>();
+        partners = new MutableLiveData<>();
     }
 
     public void addUser(User user) {
@@ -87,6 +90,54 @@ class FirestoreRepository {
             }
         });
         return usersQuery;
+    }
+
+    public LiveData<List<User>> getPartners(String uid){
+//        CollectionReference partnersRef = firestoreDB.collection("partners");
+//        partnersRef.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        DocumentReference docRef = firestoreDB.collection("partners").document(uid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    android.util.Log.d(TAG, "onComplete: successfully got partners");
+                    DocumentSnapshot document = task.getResult();
+                    PartnerList partnerList = document.toObject(PartnerList.class);
+                    // todo:
+//                    List<User> approvedPartners = PartnerList.mapToList(partnerList.getApproved());
+                    List<DocumentReference> approvedPartners = partnerList.getApproved();
+                    List<User> userList = docrefToUser(approvedPartners);
+                    partners.postValue(userList);
+                } else {
+                        android.util.Log.d(TAG, "onComplete: failed getting partners");;
+                    }
+            }
+        });
+        return partners;
+    }
+
+
+    private List<User> docrefToUser(List<DocumentReference> docref){
+        MutableLiveData<List<User>> liveUserList = new MutableLiveData<>();
+        final ArrayList<User> userList = new ArrayList<>();
+        for (DocumentReference doc:docref) {
+            doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            userList.add(document.toObject(User.class));
+                        }
+                    } else {
+                        Log.e(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
+        liveUserList.postValue(userList);
+        return userList;
     }
 
     public LiveData<List<User>> getLastQuery(){

@@ -12,6 +12,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +63,7 @@ public class User implements Parcelable {
         this.loaded = false;
         this.coursesList = coursesList;
     }
+
 
     protected User(Parcel in) {
         uid = in.readString();

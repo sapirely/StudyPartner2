@@ -7,6 +7,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -75,6 +80,12 @@ public class UserViewModel extends AndroidViewModel {
         // Add to local db (Room)
 //        mRepository.insert(user);
     }
+
+    public LiveData<List<User>> getPartners(String uid){
+//        return fRepository.getPartners(uid);
+        return fRepository.getPartners(uid);
+    }
+
 
 //    private void insertUserToRoom(User user) { mRepository.insert(user); }
 
