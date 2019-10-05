@@ -1,15 +1,19 @@
 package postpc.studypartner2;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,18 +30,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import postpc.studypartner2.Profile.User;
 import postpc.studypartner2.Profile.UserViewModel;
+import postpc.studypartner2.Utils.HelperFunctions;
 
 public class MainActivity extends AppCompatActivity {
 
     // Constants
     private static final String TAG = "MainActivity";
-
+    private final String[] PERMISSIONS =
+            {Manifest.permission.ACCESS_FINE_LOCATION};
+    private final int PERMISSION_REQUEST_CODE = 101;
 
     private final int RESULT_NOT_REGISTERED = 777;
     public final static int LOGIN_REQUEST = 888;
@@ -53,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent authIntent;
     private FirebaseUser curAuthUser;
 
+    private UserViewModel viewModel;
     private static String current_user_uid;
     private User current_logged_in_user;
 
@@ -62,7 +72,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!checkPermissions(PERMISSIONS)){
+           requestRemainingPermissions(PERMISSIONS);
+        }
+        initApp();
 
+    }
+
+    private void initApp(){
         current_logged_in_user = new User();
 
         // Auth set up
@@ -79,11 +96,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: got user "+currentUser.getUid());
 
         }
-
-//        Log.d(TAG, "onCreate: getting room DB");
-        // Database set up
-//        UserRoomDatabase room = UserRoomDatabase.getDatabase(this);
-
         // Navigation set up
         setUpNavigation();
     }
@@ -97,9 +109,10 @@ public class MainActivity extends AppCompatActivity {
             current_user_uid = authCurrentUser.getUid();
 
             // init view model
-            final UserViewModel viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+//            final UserViewModel viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
             //load user
+            viewModel = new ViewModelProvider(this).get(UserViewModel.class);
             viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
 
                 @Override
@@ -123,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            saveLocation();
             // init location services // todo
 //            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 //            fusedLocationClient.getLastLocation()
@@ -133,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 //                            if (location != null) {
 //                                // Logic to handle location object
 //                                Log.d(TAG, "onSuccess: got location "+location.toString());
-//                                viewModel.updateUser(current_user_uid, "location", location.toString());
+//                                viewModel.updateUser(current_user_uid, "location", location);
 //                            } else {
 //                                Log.d(TAG, "onSuccess: location is null");
 //                            }
@@ -145,6 +159,80 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             Log.d(TAG, "onStart: no user is logged in");
+        }
+    }
+
+    private void saveLocation(){
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            Log.d(TAG, "onSuccess: got location "+location.toString());
+                            GeoPoint geo = HelperFunctions.locationToGeoPoint(location);
+                            viewModel.updateUser(current_user_uid, "location", geo);
+                        } else {
+                            Log.d(TAG, "onSuccess: location is null");
+                        }
+                    }
+                });
+    }
+
+    private boolean checkPermissions(String[] permissions){
+        Log.d(TAG, "checkPermissions: checking permissions");
+        for(String permission : permissions){
+            if(checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
+                Log.d(TAG, "checkPermissions: permission not granted for "+permission);
+                return false;
+        }
+        Log.d(TAG, "checkPermissions: permissions granted");
+        return true;
+    }
+
+    private void requestRemainingPermissions(String[] permissions) {
+        List<String> remainingPermissions = new ArrayList<String>();
+        for (String permission : permissions) {
+            Log.d(TAG, "requestRemainingPermissions: requesting permission for "+permission);
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                remainingPermissions.add(permission);
+            }
+        }
+        if (!remainingPermissions.isEmpty()) {
+            requestPermissions(remainingPermissions.toArray(new String[remainingPermissions.size()]), PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,@NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == PERMISSION_REQUEST_CODE){
+            for(int i=0; i<grantResults.length; i++){
+                if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
+                    if(shouldShowRequestPermissionRationale(permissions[i])){
+                        new AlertDialog.Builder(this)
+                                .setMessage("The app needs Internet and Location permissions to work correctly.")
+                                .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                        requestRemainingPermissions(PERMISSIONS);
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .create()
+                                .show();
+                    }
+                    return;
+                }
+            }
+            //all is good, continue flow
         }
     }
 

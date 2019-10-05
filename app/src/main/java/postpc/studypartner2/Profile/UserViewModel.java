@@ -1,6 +1,7 @@
 package postpc.studypartner2.Profile;
 
 import android.app.Application;
+import android.location.Location;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -60,6 +61,10 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public void updateUser(String uid, String key, String value){
+        fRepository.updateUser(uid, key, value);
+    }
+
+    public void updateUser(String uid, String key, Object value){
         fRepository.updateUser(uid, key, value);
     }
 

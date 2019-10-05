@@ -93,7 +93,7 @@ class FirestoreRepository {
         return usersQuery;
     }
 
-    public void updateUser(final String uid, final String key, final String value){
+    public void updateUser(final String uid, final String key, final Object value){
         DocumentReference docRef = firestoreDB.collection("users").document(uid);
         docRef
                 .update(key, value)
