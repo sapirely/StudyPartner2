@@ -11,13 +11,13 @@
     app:cardBackgroundColor="@color/white"
     app:strokeColor="@color/light_grey"
     app:strokeWidth="1dp"
-    android:padding="10dp">
+    android:padding="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:padding="15dp"
+        android:padding="5dp"
         android:layout_margin="10dp">
 
         <ImageView
