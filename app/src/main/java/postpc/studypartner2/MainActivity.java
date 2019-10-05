@@ -10,6 +10,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,6 +18,9 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static String current_user_uid;
     private User current_logged_in_user;
+
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +122,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            // init location services // todo
+//            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//            fusedLocationClient.getLastLocation()
+//                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                        @Override
+//                        public void onSuccess(Location location) {
+//                            // Got last known location. In some rare situations this can be null.
+//                            if (location != null) {
+//                                // Logic to handle location object
+//                                Log.d(TAG, "onSuccess: got location "+location.toString());
+//                                viewModel.updateUser(current_user_uid, "location", location.toString());
+//                            } else {
+//                                Log.d(TAG, "onSuccess: location is null");
+//                            }
+//                        }
+//                    });
+
 
 
 
