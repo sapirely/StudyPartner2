@@ -106,60 +106,42 @@ public class MainActivity extends AppCompatActivity {
         final FirebaseUser authCurrentUser = mAuth.getCurrentUser();
         if (authCurrentUser != null){
             Log.d(TAG, "onStart: user "+authCurrentUser.getUid()+" is logged in");
+
+            // update the user id
             current_user_uid = authCurrentUser.getUid();
 
-            // init view model
-//            final UserViewModel viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
-            //load user
-            viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-            viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
-
-                @Override
-                public void onChanged(User loadedUser) {
-                    postpc.studypartner2.Utils.Log.d(TAG, "onChanged: observed user change");
-                    try {
-                        if (loadedUser.getUid() == "-1"){
-                            Log.d(TAG, "onChanged: user doesn't exist in db");
-                            // go to edit profile screen
-                            firstLogIn(viewModel, authCurrentUser);
-                        } else {
-                            Log.d(TAG, "onChanged: got user, continue in home fragment");
-                            // send user data to home
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("user", loadedUser);
-                            }
-                    } catch (Exception e){
-                        // todo handle exception
-                        postpc.studypartner2.Utils.Log.e(TAG, "onChanged: Error observing user. ", e);
-                    }
-                }
-            });
-
+            loadUser(authCurrentUser);
             saveLocation();
-            // init location services // todo
-//            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-//            fusedLocationClient.getLastLocation()
-//                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                        @Override
-//                        public void onSuccess(Location location) {
-//                            // Got last known location. In some rare situations this can be null.
-//                            if (location != null) {
-//                                // Logic to handle location object
-//                                Log.d(TAG, "onSuccess: got location "+location.toString());
-//                                viewModel.updateUser(current_user_uid, "location", location);
-//                            } else {
-//                                Log.d(TAG, "onSuccess: location is null");
-//                            }
-//                        }
-//                    });
-
-
-
 
         } else {
             Log.d(TAG, "onStart: no user is logged in");
         }
+    }
+
+    private void loadUser(final FirebaseUser authCurrentUser){
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>(){
+
+            @Override
+            public void onChanged(User loadedUser) {
+                postpc.studypartner2.Utils.Log.d(TAG, "onChanged: observed user change");
+                try {
+                    if (loadedUser.getUid() == "-1"){
+                        Log.d(TAG, "onChanged: user doesn't exist in db");
+                        // go to edit profile screen
+                        firstLogIn(viewModel, authCurrentUser);
+                    } else {
+                        Log.d(TAG, "onChanged: got user, continue in home fragment");
+                        // send user data to home
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("user", loadedUser);
+                    }
+                } catch (Exception e){
+                    // todo handle exception
+                    postpc.studypartner2.Utils.Log.e(TAG, "onChanged: Error observing user. ", e);
+                }
+            }
+        });
     }
 
     private void saveLocation(){
