@@ -24,5 +24,5 @@ OTHERS:
     - logo
     - splash?
 - presentation
-- google play page 
+- google play page
 

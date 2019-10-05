@@ -1,7 +1,9 @@
 package postpc.studypartner2.Profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,11 +27,15 @@ import postpc.studypartner2.Utils.Log;
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 
+import static android.app.Activity.RESULT_OK;
+
 // todo: edit profile
 
 public class ProfileFragment extends Fragment implements CourseRecyclerUtils.CourseClickCallBack {
 
     private static final String TAG = "ProfileFragment";
+
+    private final int PROFILE_IMG_REQUEST_CODE = 9239;
 
     private UserViewModel viewModel;
     private RecyclerView mRecyclerView;
@@ -40,6 +46,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private EditText editProfileName;
     private EditText editProfileDesc;
     private ImageButton addCourseBtn;
+    private ImageView imageView;
 
     private CourseRecyclerUtils.CoursesAdapter adapter = new CourseRecyclerUtils.CoursesAdapter();
     public ArrayList<Course> courses = new ArrayList<>();
@@ -62,6 +69,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileName = view.findViewById(R.id.edit_profile_name);
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
+        imageView = (ImageView) view.findViewById(R.id.profile_image);
 
         loadUser(view);
 
@@ -114,7 +122,17 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     }
 
     private void setUpProfileImage(View currentView, String image_uri){
-        ImageView imageView = (ImageView) currentView.findViewById(R.id.profile_image);
+
+        loadImage(image_uri);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickProfileImage();
+            }
+        });
+    }
+
+    private void loadImage(String image_uri){
         Glide.with(this)
                 .load(image_uri)
                 .placeholder(R.drawable.girl)
@@ -122,4 +140,22 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 .into(imageView);
     }
 
+    private void pickProfileImage(){
+        Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
+        myIntent.setType("image/*");
+        startActivityForResult(myIntent, PROFILE_IMG_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PROFILE_IMG_REQUEST_CODE){
+            if (resultCode == RESULT_OK){
+                String filePath = data.getData().getPath();
+                android.util.Log.d(TAG, "onActivityResult: filepath is "+filePath);
+                // todo: doesn't load the image
+                loadImage(filePath);
+            }
+        }
+    }
 }
