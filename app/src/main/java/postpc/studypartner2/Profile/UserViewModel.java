@@ -24,12 +24,14 @@ public class UserViewModel extends AndroidViewModel {
     private LiveData<List<User>> mAllUsers;
     private MutableLiveData<List<User>> mQueryUsers;
     private boolean isUserInRoom;
+    private MutableLiveData<String> mUid;
 
     public UserViewModel(Application application) {
         super(application);
 //        mRepository = new UserRepository(application); // todo uncomment - room
         fRepository = new FirestoreRepository();
         mQueryUsers = new MutableLiveData<>();
+        mUid = new MutableLiveData<>();
 //        mAllUsers = mRepository.getAllUsers(); // todo uncomment - room
     }
 
@@ -46,6 +48,14 @@ public class UserViewModel extends AndroidViewModel {
 //        return mRepository.getUser(uid);
 //    }
 
+    public LiveData<String> getLoggedInUID(){
+        return mUid;
+    }
+
+    public void setLoggedInUID(String uid){
+        mUid.postValue(uid);
+    }
+
     public LiveData<User> loadUser(String uid){
         return fRepository.loadUser(uid);
     }
@@ -54,16 +64,16 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.getUsersByCourse(courseNum);
     }
 
-    public LiveData<List<User>> getLastQuery(){
-        return fRepository.getLastQuery();
-    }
-
-    public LiveData<List<User>> getLastUsersQuery(){
-        return mQueryUsers;
-    }
-    public void setLastUsersQuery(List<User> users){
-        mQueryUsers.postValue(users);
-    }
+//    public LiveData<List<User>> getLastQuery(){
+//        return fRepository.getLastQuery();
+//    }
+//
+//    public LiveData<List<User>> getLastUsersQuery(){
+//        return mQueryUsers;
+//    }
+//    public void setLastUsersQuery(List<User> users){
+//        mQueryUsers.postValue(users);
+//    }
 
     public void updateUser(String uid, String key, String value){
         fRepository.updateUser(uid, key, value);

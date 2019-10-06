@@ -70,8 +70,10 @@ public class HomeFragment extends Fragment {
     private void loadPartners(){
         // todo CHANGE TO LOAD ACTUAL PARTNERS
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        viewModel.getUsersByCourse("67521")
-//        viewModel.getPartners(MainActivity.getCurrentUserID())
+//        viewModel.getUsersByCourse("67521")
+//        viewModel.getPartners(MainActivity.getCurrentUserID());
+//        adapter.setPartners(partners);
+        viewModel.getPartners(MainActivity.getCurrentUserID())
                 .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                     @Override
                     public void onChanged(List<User> users) {

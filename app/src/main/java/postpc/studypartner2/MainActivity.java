@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (!checkPermissions(PERMISSIONS)){
-           requestRemainingPermissions(PERMISSIONS);
-        }
+//        if (!checkPermissions(PERMISSIONS)){
+//           requestRemainingPermissions(PERMISSIONS);
+//        }
         initApp();
 
     }
@@ -95,10 +95,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "onCreate: got user "+currentUser.getUid());
             current_user_uid = currentUser.getUid();
-
+//            viewModel.setLoggedInUID(currentUser.getUid());
         }
         // Navigation set up
         setUpNavigation();
+        if (!checkPermissions(PERMISSIONS)){
+            requestRemainingPermissions(PERMISSIONS);
+        }
     }
 
     @Override
@@ -259,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
                         .setAuthMethodPickerLayout(loginLayout)
+                        .setIsSmartLockEnabled(false)
                         .build(),
                 RC_SIGN_IN);
     }
@@ -275,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     // Successfully signed in
                     Log.d(TAG, "onActivityResult: Sign in succeeded");
+                    current_user_uid = response.getIdpToken();
                     if (response == null) {
                         // the user canceled the sign-in flow using the back button
                         Log.d(TAG, "onActivityResult: User canceled sign in");

@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -92,9 +93,11 @@ class FirestoreRepository {
         return usersQuery;
     }
 
+//    public LiveData<List<User>> getPartners(String uid){
     public LiveData<List<User>> getPartners(String uid){
 //        CollectionReference partnersRef = firestoreDB.collection("partners");
 //        partnersRef.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        final List<User> listUsers = new ArrayList<>();
         DocumentReference docRef = firestoreDB.collection("partners").document(uid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
             @Override
@@ -102,12 +105,24 @@ class FirestoreRepository {
                 if (task.isSuccessful()){
                     android.util.Log.d(TAG, "onComplete: successfully got partners");
                     DocumentSnapshot document = task.getResult();
-                    PartnerList partnerList = document.toObject(PartnerList.class);
-                    // todo:
-//                    List<User> approvedPartners = PartnerList.mapToList(partnerList.getApproved());
-                    List<DocumentReference> approvedPartners = partnerList.getApproved();
-                    List<User> userList = docrefToUser(approvedPartners);
-                    partners.postValue(userList);
+                    List<DocumentReference> list = (List<DocumentReference>) document.get("approved");
+                    List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+                    for (DocumentReference documentReference : list) {
+                        Task<DocumentSnapshot> documentSnapshotTask = documentReference.get();
+                        tasks.add(documentSnapshotTask);
+                    }
+//                    docrefToUserHelper(listUsers, tasks);
+                    Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        @Override
+                        public void onSuccess(List<Object> objectList) {
+                            //Do what you need to do with your list
+                            for (Object object : objectList) {
+                                object = ((DocumentSnapshot) object).toObject(User.class);
+                                listUsers.add((User) object);
+                            }
+                            partners.postValue(listUsers);
+                        }
+                    });
                 } else {
                         android.util.Log.d(TAG, "onComplete: failed getting partners");;
                     }
@@ -117,27 +132,17 @@ class FirestoreRepository {
     }
 
 
-    private List<User> docrefToUser(List<DocumentReference> docref){
-        MutableLiveData<List<User>> liveUserList = new MutableLiveData<>();
-        final ArrayList<User> userList = new ArrayList<>();
-        for (DocumentReference doc:docref) {
-            doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                            userList.add(document.toObject(User.class));
-                        }
-                    } else {
-                        Log.e(TAG, "get failed with ", task.getException());
-                    }
+    private void docrefToUserHelper(final List<User> userList, List<Task<DocumentSnapshot>> tasks){
+        Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+            @Override
+            public void onSuccess(List<Object> objectList) {
+                //Do what you need to do with your list
+                for (Object object : objectList) {
+                    object = ((DocumentSnapshot) object).toObject(User.class);
+                    userList.add((User) object);
                 }
-            });
-        }
-        liveUserList.postValue(userList);
-        return userList;
+            }
+        });
     }
 
     public LiveData<List<User>> getLastQuery(){
