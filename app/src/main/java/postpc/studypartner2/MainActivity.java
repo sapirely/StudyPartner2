@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        if (!checkPermissions(PERMISSIONS)){
-//           requestRemainingPermissions(PERMISSIONS);
-//        }
+        if (!checkPermissions(PERMISSIONS)){
+           requestRemainingPermissions(PERMISSIONS);
+        }
         initApp();
 
     }
@@ -99,9 +99,6 @@ public class MainActivity extends AppCompatActivity {
         }
         // Navigation set up
         setUpNavigation();
-        if (!checkPermissions(PERMISSIONS)){
-            requestRemainingPermissions(PERMISSIONS);
-        }
     }
 
     @Override

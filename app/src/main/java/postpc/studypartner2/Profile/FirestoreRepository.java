@@ -93,10 +93,8 @@ class FirestoreRepository {
         return usersQuery;
     }
 
-//    public LiveData<List<User>> getPartners(String uid){
+
     public LiveData<List<User>> getPartners(String uid){
-//        CollectionReference partnersRef = firestoreDB.collection("partners");
-//        partnersRef.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
         final List<User> listUsers = new ArrayList<>();
         DocumentReference docRef = firestoreDB.collection("partners").document(uid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
@@ -167,32 +165,6 @@ class FirestoreRepository {
                 });
     }
 
-//
 
-//    public LiveData<Boolean> isUserRegistered(String uid){
-//        firestoreDB.collection("users")
-//                .whereEqualTo("uid", uid)
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                if (document.getData().isEmpty()){
-//                                    isRegistered.postValue(false);
-//                                } else {
-//                                    isRegistered.postValue(true);
-//                                }
-//                                Log.d(TAG, document.getId() + " => " + document.getData());
-//                            }
-//                        } else {
-//                            isRegistered.postValue(false);
-//                            Log.d(TAG, "Error getting documents: "+ task.getException());
-//                        }
-//                    }
-//                });
-//        return isRegistered;
-//
-//    }
 
 }

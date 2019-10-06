@@ -13,6 +13,7 @@
         android:layout_above="@+id/linearLayout"
         android:layout_alignBottom="@+id/linearLayout"
         android:layout_alignParentTop="true"
+        tools:listitem="@layout/item_message"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <LinearLayout
