@@ -1,7 +1,5 @@
 package postpc.studypartner2.Chat;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,8 +17,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import postpc.studypartner2.Chat.Message;
-import postpc.studypartner2.Chat.MessageRecyclerUtils;
 import postpc.studypartner2.R;
 
 
