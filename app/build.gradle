@@ -84,7 +84,7 @@ android {
         }
         annotationProcessor 'androidx.annotation:annotation:1.1.0'
         annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-        implementation ("com.github.bumptech.glide:glide:4.9.0@aar") {
+        implementation("com.github.bumptech.glide:glide:4.9.0@aar") {
             transitive = true
         }
 
@@ -93,3 +93,7 @@ android {
 
 
 apply plugin: 'com.google.gms.google-services'
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:+'
+}

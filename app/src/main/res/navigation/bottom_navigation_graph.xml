@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
     </fragment>
 
     <fragment
@@ -41,5 +44,10 @@
         android:name="postpc.studypartner2.Profile.ProfileFragment"
         tools:layout="@layout/fragment_profile">
     </fragment>
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="postpc.studypartner2.Calendar.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" />
 
 </navigation>
