@@ -31,14 +31,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import postpc.studypartner2.Profile.User;
-import postpc.studypartner2.Profile.UserViewModel;
-import postpc.studypartner2.Utils.HelperFunctions;
+import postpc.studypartner2.profile.User;
+import postpc.studypartner2.profile.UserViewModel;
+import postpc.studypartner2.utils.HelperFunctions;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -111,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
             // update the user id
             current_user_uid = authCurrentUser.getUid();
 
+            // subscribe to notifications
+            FirebaseMessaging.getInstance().subscribeToTopic(current_user_uid);
+            Log.d(TAG, "onStart: subscribed to notifications: "+current_user_uid);
+
             loadUser(authCurrentUser);
             saveLocation();
 
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChanged(User loadedUser) {
-                postpc.studypartner2.Utils.Log.d(TAG, "onChanged: observed user change");
+                postpc.studypartner2.utils.Log.d(TAG, "onChanged: observed user change");
                 try {
                     if (loadedUser.getUid() == "-1"){
                         Log.d(TAG, "onChanged: user doesn't exist in db");
@@ -139,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } catch (Exception e){
                     // todo handle exception
-                    postpc.studypartner2.Utils.Log.e(TAG, "onChanged: Error observing user. ", e);
+                    postpc.studypartner2.utils.Log.e(TAG, "onChanged: Error observing user. ", e);
                 }
             }
         });

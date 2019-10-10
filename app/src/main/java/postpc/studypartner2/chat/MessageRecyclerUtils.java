@@ -1,4 +1,4 @@
-package postpc.studypartner2.Chat;
+package postpc.studypartner2.chat;
 
 import android.content.Context;
 import android.view.LayoutInflater;

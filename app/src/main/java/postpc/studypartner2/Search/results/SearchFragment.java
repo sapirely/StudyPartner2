@@ -1,4 +1,4 @@
-package postpc.studypartner2.Search.Results;
+package postpc.studypartner2.Search.results;
 
 import android.os.Bundle;
 
@@ -20,8 +20,8 @@ import android.widget.ProgressBar;
 
 import java.util.List;
 
-import postpc.studypartner2.Profile.User;
-import postpc.studypartner2.Profile.UserViewModel;
+import postpc.studypartner2.profile.User;
+import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
 
 

@@ -1,4 +1,4 @@
-package postpc.studypartner2.Profile;
+package postpc.studypartner2.profile;
 
 
 import android.os.Parcel;
@@ -12,11 +12,9 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 // To make the class meaningful to a Room database, you need to annotate it.
 // Annotations identify how each part of this class relates to an entry in the database.
 // Room uses this information to generate code.

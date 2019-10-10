@@ -1,4 +1,4 @@
-package postpc.studypartner2.Profile;
+package postpc.studypartner2.profile;
 
 public class Course {
 

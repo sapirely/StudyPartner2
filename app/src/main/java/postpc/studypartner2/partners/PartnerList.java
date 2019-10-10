@@ -1,14 +1,8 @@
-package postpc.studypartner2.Partners;
-
-import android.util.Log;
+package postpc.studypartner2.partners;
 
 import com.google.firebase.firestore.DocumentReference;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import postpc.studypartner2.Profile.User;
 
 /**
  * Represent a document in the collection "partners" in the DB.

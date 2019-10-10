@@ -1,4 +1,4 @@
-package postpc.studypartner2.Calendar;
+package postpc.studypartner2.calendar;
 
 
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import postpc.studypartner2.Profile.UserViewModel;
+import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
 
 /**

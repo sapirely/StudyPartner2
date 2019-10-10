@@ -1,4 +1,4 @@
-package postpc.studypartner2.Calendar;
+package postpc.studypartner2.calendar;
 
 import android.app.Dialog;
 import android.content.Context;

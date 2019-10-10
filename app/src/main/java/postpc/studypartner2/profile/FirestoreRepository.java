@@ -1,4 +1,4 @@
-package postpc.studypartner2.Profile;
+package postpc.studypartner2.profile;
 
 
 import androidx.annotation.NonNull;
@@ -21,8 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import postpc.studypartner2.Partners.PartnerList;
-import postpc.studypartner2.Utils.Log;
+import postpc.studypartner2.utils.Log;
 
 class FirestoreRepository {
 

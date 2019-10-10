@@ -1,4 +1,4 @@
-package postpc.studypartner2.Utils;
+package postpc.studypartner2.utils;
 
 import android.location.Location;
 

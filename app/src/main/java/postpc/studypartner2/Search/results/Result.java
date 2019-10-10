@@ -1,6 +1,6 @@
-package postpc.studypartner2.Search.Results;
+package postpc.studypartner2.Search.results;
 
-import postpc.studypartner2.Profile.User;
+import postpc.studypartner2.profile.User;
 
 public class Result extends User {
 

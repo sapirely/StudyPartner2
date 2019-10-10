@@ -1,4 +1,4 @@
-package postpc.studypartner2.Calendar;
+package postpc.studypartner2.calendar;
 
 import postpc.studypartner2.BuildConfig;
 

@@ -1,4 +1,4 @@
-package postpc.studypartner2.Partners;
+package postpc.studypartner2.partners;
 
 import android.os.Bundle;
 
@@ -19,8 +19,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import postpc.studypartner2.MainActivity;
-import postpc.studypartner2.Profile.User;
-import postpc.studypartner2.Profile.UserViewModel;
+import postpc.studypartner2.profile.User;
+import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
 
 

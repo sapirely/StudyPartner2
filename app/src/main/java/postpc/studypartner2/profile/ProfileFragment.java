@@ -1,4 +1,4 @@
-package postpc.studypartner2.Profile;
+package postpc.studypartner2.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,7 +23,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
-import postpc.studypartner2.Utils.Log;
+import postpc.studypartner2.utils.Log;
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 

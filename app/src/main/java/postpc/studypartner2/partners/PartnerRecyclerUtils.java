@@ -1,4 +1,4 @@
-package postpc.studypartner2.Search.Results;
+package postpc.studypartner2.partners;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +17,12 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import postpc.studypartner2.Profile.User;
+import postpc.studypartner2.profile.User;
 import postpc.studypartner2.R;
 
-public class ResultRecyclerUtils {
+public class PartnerRecyclerUtils {
 
-    static class ResultCallBack
+    static class PartnerCallBack
             extends DiffUtil.ItemCallback<User> {
 
         @Override
@@ -36,44 +36,44 @@ public class ResultRecyclerUtils {
         }
     }
 
-    public interface ResultClickCallBack{
-        void onResultLongClick(User user);
+    public interface PartnerClickCallBack{
+        void onPartnerLongClick(User user);
     }
 
-//    static class ResultsAdapter extends FirestoreRecyclerAdapter<User,ResultHolder> {
-    static class ResultsAdapter extends ListAdapter<User, ResultRecyclerUtils.ResultHolder> {
-        private List<User> results = new ArrayList<>();
+    //    static class PartnersAdapter extends FirestoreRecyclerAdapter<User,PartnerHolder> {
+    static class PartnersAdapter extends ListAdapter<User, PartnerRecyclerUtils.PartnerHolder> {
+        private List<User> partners = new ArrayList<>();
 
-        protected ResultsAdapter() {
-            super(new ResultCallBack());
+        protected PartnersAdapter() {
+            super(new PartnerCallBack());
         }
 
         @NonNull
         @Override
-        public ResultHolder onCreateViewHolder(@NonNull ViewGroup parent, int itemType) {
+        public PartnerHolder onCreateViewHolder(@NonNull ViewGroup parent, int itemType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            return new ResultHolder(inflater.inflate(R.layout.item_partner, parent, false));
+            return new PartnerHolder(inflater.inflate(R.layout.item_partner, parent, false));
 
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ResultHolder holder, int position) {
-            User currentResult = results.get(position);
-                holder.setData(currentResult);
+        public void onBindViewHolder(@NonNull PartnerHolder holder, int position) {
+            User currentPartner = partners.get(position);
+            holder.setData(currentPartner);
         }
 
         @Override
         public int getItemCount() {
-            return results.size();
+            return partners.size();
         }
 
-        public void setResults(List<User> results) {
-            this.results = results;
+        public void setPartners(List<User> results) {
+            this.partners = results;
             notifyDataSetChanged();
         }
     }
 
-    static class ResultHolder
+    static class PartnerHolder
             extends RecyclerView.ViewHolder {
 
         private View view;
@@ -81,7 +81,7 @@ public class ResultRecyclerUtils {
         public final TextView distanceTextView;
         public final ImageView profileImageView;
 
-        public ResultHolder(@NonNull View itemView) {
+        public PartnerHolder(@NonNull View itemView) {
             super(itemView);
 
             this.view = itemView;
@@ -92,7 +92,7 @@ public class ResultRecyclerUtils {
 
         public void setData(User result) {
             nameTextView.setText(result.getName());
-            distanceTextView.setText("0");
+            distanceTextView.setText("0"); // todo change
             Glide.with(view)
                     .load(result.getImage_url())
                     .placeholder(R.drawable.girl)//todo change
@@ -100,5 +100,4 @@ public class ResultRecyclerUtils {
                     .into(profileImageView);
         }
     }
-
 }
