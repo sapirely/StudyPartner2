@@ -25,4 +25,5 @@ OTHERS:
     - splash?
 - presentation
 - google play page
+- calendar - custom dialog
 
