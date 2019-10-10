@@ -26,3 +26,6 @@ OTHERS:
 - presentation
 - google play page
 
+ERRORS:
+onResponse: {"multicast_id":294994366581764359,"success":0,"failure":1,"canonical_ids":0,"results":[{"error":"InvalidRegistration"}]}
+
