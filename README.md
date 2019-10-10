@@ -25,6 +25,7 @@ OTHERS:
     - splash?
 - presentation
 - google play page
+- calendar - custom dialog
 
 ERRORS:
 onResponse: {"multicast_id":294994366581764359,"success":0,"failure":1,"canonical_ids":0,"results":[{"error":"InvalidRegistration"}]}
