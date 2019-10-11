@@ -19,6 +19,15 @@
         <action
             android:id="@+id/action_homeFragment_to_calendarFragment"
             app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/action_homeFragment_self"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_homeFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
 
     <fragment
@@ -26,12 +35,7 @@
         android:name="postpc.studypartner2.Search.results.SearchFragment"
         tools:layout="@layout/fragment_search"/>
 
-    <fragment
-        android:id="@+id/conversationsFragment"
-        android:name="postpc.studypartner2.chat.ChatFragment"
-        tools:layout="@layout/fragment_chat">
-    </fragment>
-<!--        todo: change to conversations -->
+    <!--        todo: change to conversations -->
 
 
 <!--    <fragment-->
@@ -49,5 +53,24 @@
         android:name="postpc.studypartner2.calendar.CalendarFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="postpc.studypartner2.MainActivity"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="postpc.studypartner2.chat.ChatFragment"
+        android:label="ChatFragment" >
+        <action
+            android:id="@+id/action_chatFragment_to_conversationsFragment2"
+            app:destination="@id/conversationsFragment2" />
+    </fragment>
+    <include app:graph="@navigation/conversations_navigation_graph" />
+    <fragment
+        android:id="@+id/conversationsFragment2"
+        android:name="postpc.studypartner2.ConversationsFragment"
+        android:label="fragment_conversations"
+        tools:layout="@layout/fragment_conversations" />
 
 </navigation>

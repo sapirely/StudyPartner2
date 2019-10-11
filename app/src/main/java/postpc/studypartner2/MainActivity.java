@@ -13,10 +13,12 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
@@ -29,14 +31,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import postpc.studypartner2.notifications.Token;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.utils.HelperFunctions;
@@ -102,6 +108,22 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigation();
     }
 
+    public void updateTokenHelper(String token){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token mToken = new Token(token);
+        ref.child(getCurrentUserID()).setValue(mToken);
+    }
+
+    public void updateToken(){
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String newToken = instanceIdResult.getToken();
+                updateTokenHelper(newToken);
+            }
+        });
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -113,8 +135,12 @@ public class MainActivity extends AppCompatActivity {
             current_user_uid = authCurrentUser.getUid();
 
             // subscribe to notifications
-            FirebaseMessaging.getInstance().subscribeToTopic(current_user_uid);
-            Log.d(TAG, "onStart: subscribed to notifications: "+current_user_uid);
+//            FirebaseMessaging.getInstance().subscribeToTopic("weather");
+////            FirebaseMessaging.getInstance().subscribeToTopic("+current_user_uid);
+//            Log.d(TAG, "onStart: subscribed to notifications: "+current_user_uid);
+
+            updateToken();
+            saveUIDToSP(authCurrentUser.getUid());
 
             loadUser(authCurrentUser);
             saveLocation();
@@ -122,6 +148,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "onStart: no user is logged in");
         }
+    }
+
+    private void saveUIDToSP(String uid){
+        SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("Current_USERID", uid);
+
     }
 
     private void loadUser(final FirebaseUser authCurrentUser){
@@ -241,7 +274,8 @@ public class MainActivity extends AppCompatActivity {
         bundle.putParcelable("user", current_logged_in_user);
 
         // navigate to edit profile
-        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_profileFragment, bundle);
+//        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_profileFragment, bundle);
+        Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_homeFragment_to_profileFragment);
         Toast.makeText(this, "please edit your profile", Toast.LENGTH_LONG).show();
     }
 
@@ -317,6 +351,15 @@ public class MainActivity extends AppCompatActivity {
     private void setUpNavigation(){
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nvaigation_view);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        // handle backstack
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                return NavigationUI.onNavDestinationSelected(menuItem, Navigation.findNavController(getParent(), R.id.nav_host_fragment));
+            }
+        });
+
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }
 

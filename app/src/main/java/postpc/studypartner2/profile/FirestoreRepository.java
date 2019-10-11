@@ -21,6 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.utils.Log;
 
 class FirestoreRepository {
@@ -74,6 +75,8 @@ class FirestoreRepository {
 
     public LiveData<List<User>> getUsersByCourse(String courseNum){
         CollectionReference colRef = firestoreDB.collection("users");
+        // todo: remove current user: two queries with <uid and >uid
+        // https://stackoverflow.com/questions/47251919/firestore-how-to-perform-a-query-with-inequality-not-equals
         colRef.whereArrayContains("courses", courseNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -102,9 +105,21 @@ class FirestoreRepository {
                 if (task.isSuccessful()){
                     android.util.Log.d(TAG, "onComplete: successfully got partners");
                     DocumentSnapshot document = task.getResult();
+                    if (document == null){
+                        android.util.Log.d(TAG, "onComplete: empty partner list");
+                        return;
+                    }
                     List<DocumentReference> list = (List<DocumentReference>) document.get("approved");
+                    if (list.isEmpty()){
+                        android.util.Log.d(TAG, "onComplete: empty approved partner list ");
+                        return;
+                    }
                     List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
                     for (DocumentReference documentReference : list) {
+                        if (documentReference == null){
+                            android.util.Log.d(TAG, "onComplete: empty partner list - docref");
+                            return;
+                        }
                         Task<DocumentSnapshot> documentSnapshotTask = documentReference.get();
                         tasks.add(documentSnapshotTask);
                     }

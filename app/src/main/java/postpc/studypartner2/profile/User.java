@@ -37,7 +37,7 @@ public class User implements Parcelable {
     private String description;
     private String image_url;
     private boolean loaded;
-    private List<String> coursesList;
+    private List<String> courses;
 
     public User(){}
 
@@ -49,17 +49,17 @@ public class User implements Parcelable {
         this.description = description;
         this.image_url = image_url;
         this.loaded = false;
-        this.coursesList = coursesListFromStringConverter(coursesList_string);
+        this.courses = coursesListFromStringConverter(coursesList_string);
     }
 
-    public User(@NonNull String uid, String name, String description, String image_url, List<String> coursesList)
+    public User(@NonNull String uid, String name, String description, String image_url, List<String> courses)
     {
         this.uid = uid;
         this.name = name;
         this.description = description;
         this.image_url = image_url;
         this.loaded = false;
-        this.coursesList = coursesList;
+        this.courses = courses;
     }
 
 
@@ -69,7 +69,7 @@ public class User implements Parcelable {
         description = in.readString();
         image_url = in.readString();
         loaded = in.readByte() != 0;
-        // maybe need to add coursesList todo
+        // maybe need to add courses todo
     }
 
     private List<String> coursesListFromStringConverter(String coursesList_string){
@@ -153,21 +153,21 @@ public class User implements Parcelable {
         this.loaded = loaded;
     }
 
-    public void setCoursesList(List<String> coursesList){
-        this.coursesList = coursesList;
+    public void setCourses(List<String> courses){
+        this.courses = courses;
     }
 
     public void addCourseToList(String courseNum){
-        this.coursesList.add(courseNum);
+        this.courses.add(courseNum);
     }
 
-    public List<String> getCoursesList(){
-        return this.coursesList; 
+    public List<String> getCourses(){
+        return this.courses;
     }
 
     public List<Course> getCoursesList_courseType(){
         List<Course> listOfCourses = new ArrayList<>();
-        for (String course: coursesList){
+        for (String course: courses){
             listOfCourses.add(new Course(course, ""));
         }
         return listOfCourses;

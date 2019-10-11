@@ -48,15 +48,18 @@ android {
         // FirebaseUI for Firebase Realtime Database
         implementation 'com.firebaseui:firebase-ui-database:6.0.2'
 
-
         // Cloud Messaging
         implementation 'com.google.firebase:firebase-messaging:20.0.0'
+        // HTTP for notifications
+        implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+        // JSON converter
+        implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
 
         // Location Services
         implementation 'com.google.android.gms:play-services-location:17.0.0'
 
         // ViewModel and LiveData
-        def lifecycle_version = "2.2.0-alpha03"
+        def lifecycle_version = "2.2.0-beta01"
         implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version"
         implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
         annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
@@ -64,7 +67,7 @@ android {
         implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-alpha03"
 
         // Room components
-        def room_version = "2.2.0-rc01"
+        def room_version = "2.2.0"
         implementation "androidx.room:room-runtime:$room_version"
         annotationProcessor "androidx.room:room-compiler:$room_version"
         androidTestImplementation "androidx.room:room-testing:$room_version"
@@ -88,7 +91,7 @@ android {
             transitive = true
         }
 
-        implementation 'com.android.volley:volley:1.1.1'
+//        implementation 'com.android.volley:volley:1.1.1'
 
 
     }
@@ -99,4 +102,5 @@ apply plugin: 'com.google.gms.google-services'
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:+'
+//    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }
