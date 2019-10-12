@@ -17,14 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-<!--        <service-->
-<!--            android:name=".utils.MyFirebaseMessagingService"-->
-<!--            android:permission="com.google.android.c2dm.permission.SEND">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-<!--                <action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
         <service
             android:name=".notifications.FirebaseMessaging"
             android:permission="false"

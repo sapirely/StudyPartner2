@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 import postpc.studypartner2.notifications.APIService;
 import postpc.studypartner2.notifications.Client;
@@ -41,12 +43,13 @@ import postpc.studypartner2.notifications.Data;
 import postpc.studypartner2.notifications.Response;
 import postpc.studypartner2.notifications.Sender;
 import postpc.studypartner2.notifications.Token;
+import postpc.studypartner2.profile.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
+import static postpc.studypartner2.utils.HelperFunctions.SP_UID;
+import static postpc.studypartner2.utils.HelperFunctions.SP_USER;
 
 public class ChatFragment extends Fragment implements MessageRecyclerUtils.MessageClickCallBack {
 
@@ -61,17 +64,6 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
     private RecyclerView mRecyclerView;
     private ImageView addFriendBtn;
     private ImageView backArrow;
-
-    /* Notification Related */
-//    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
-//    final private String serverKey = "key=" + "AAAA8nKFCCY:APA91bEgDiZ_VPZJB_QdzhChKXurHwnuoQl_64wmtlpzuSZS1etE1L6WrWy4-oTcxBRF-VAn-V_hUIHmLfVqIDeM1iuSeZ5NXjRcbjSVPu7Osh-VLXBlRfOPFbCfDeLZd8N8Eoy6zq7K";
-//    final private String contentType = "application/json";
-//    final String NTAG = "NOTIFICATION TAG";
-//
-//    private String NOTIFICATION_TITLE;
-//    private String NOTIFICATION_MESSAGE;
-//    private String TOPIC;
-    //////////////////////////
 
     // notifications
     final private String FCM_API = "https://fcm.googleapis.com/";
@@ -127,6 +119,8 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         return view;
     }
 
+
+
     private void setUpSendBtn(){
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,25 +161,6 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             public void onClick(View view) {
                 switch (view.getId()){
                     case R.id.chat_add_friend:
-
-//                        String receiverID = "weather";//todo - change to getting the receiver uid
-//                        TOPIC = receiverID; //topic must match with what the receiver subscribed to
-//                        NOTIFICATION_TITLE = "Friend";
-//                        NOTIFICATION_MESSAGE = "friend request from brooke";
-//
-//                        JSONObject notification = new JSONObject();
-//                        JSONObject notifcationBody = new JSONObject();
-//                        try {
-//                            notifcationBody.put("title", NOTIFICATION_TITLE);
-//                            notifcationBody.put("message", NOTIFICATION_MESSAGE);
-//
-//                            notification.put("to", TOPIC);
-//                            notification.put("data", notifcationBody);
-//                        } catch (JSONException e) {
-//                            Log.e(TAG, "onCreate: " + e.getMessage() );
-//                        }
-//                        Log.d(TAG, "onClick: created notification");
-//                        sendNotification(view, notification);
                         Toast.makeText
                                 (view.getContext(), "Sent prtner request", Toast.LENGTH_LONG).show();
                         break;
@@ -194,34 +169,6 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         });
 
     }
-
-//    private void sendNotification(final View view, JSONObject notification) {
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.i(TAG, "onResponse: " + response.toString());
-////                        edtTitle.setText("");
-////                        edtMessage.setText("");
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(view.getContext(), "Request error", Toast.LENGTH_LONG).show();
-//                        Log.i(TAG, "onErrorResponse: Didn't work");
-//                    }
-//                }){
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("Authorization", serverKey);
-//                params.put("Content-Type", contentType);
-//                return params;
-//            }
-//        };
-//        MySingleton.getInstance(this.getContext()).addToRequestQueue(jsonObjectRequest);
-//    }
 
     private Message sendMessage(final String msgContent) {
         // add the message to the list of messages
@@ -232,13 +179,19 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         adapter.submitList(messages);
         editText.setText("");
 
+        SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sp.getString("Current_USER", "");
+        final User user = gson.fromJson(json, User.class);
+
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference("Users").child(getCurrentUserUID());
         db.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (notify){
                     String otherUserUID = "bZwbqJqrtuW3va5Mfw9bPwJI1XH2";
-                    sendNotification(otherUserUID, "Sapir", msgContent);
+
+                    sendNotification(otherUserUID, user.getName(), msgContent);
                 }
             }
 
@@ -259,7 +212,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     Token token = ds.getValue(Token.class);
-                    Data data = new Data(otherUserUID, nameOfUser+":"+msgContent, "New Message", otherUserUID, R.drawable.ic_chat);
+                    Data data = new Data(otherUserUID, nameOfUser+": "+msgContent, "New Message", otherUserUID, R.drawable.ic_chat);
                     Sender sender = new Sender(data, token.getToken());
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<Response>() {
@@ -288,7 +241,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         // todo remove thus from here. viewmodel can handle it
         // get current user from shared preferences
         Log.d(TAG, "getCurrentUserUID: getting uid from SP");
-        SharedPreferences sp = getContext().getSharedPreferences("SP_USER", MODE_PRIVATE);
+        SharedPreferences sp = getContext().getSharedPreferences(SP_UID, MODE_PRIVATE);
         return sp.getString("Current_USERID", "None");
     }
 

@@ -61,7 +61,9 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         String sent = remoteMessage.getData().get("sent");
         String user = remoteMessage.getData().get("user");
+
         FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+
         if ((fuser != null) && (sent.equals(fuser.getUid()))){
             if (!savedCurrentUser.equals(user)){
                 if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){

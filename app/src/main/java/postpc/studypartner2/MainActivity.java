@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,9 @@ import postpc.studypartner2.notifications.Token;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.utils.HelperFunctions;
+
+import static postpc.studypartner2.utils.HelperFunctions.SP_UID;
+import static postpc.studypartner2.utils.HelperFunctions.SP_USER;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -151,10 +155,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveUIDToSP(String uid){
-        SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences(SP_UID, MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("Current_USERID", uid);
+        editor.commit();
+    }
 
+    private void saveCurrentUserToSP(User user){
+        SharedPreferences sp = getSharedPreferences(SP_USER, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        editor.putString("Current_USER", json);
+        editor.apply();
+    }
+
+    public User loadUserFromSP(){
+        SharedPreferences sp = getSharedPreferences(SP_USER, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sp.getString("Current_USER", "");
+        User user = gson.fromJson(json, User.class);
+        return user;
     }
 
     private void loadUser(final FirebaseUser authCurrentUser){
@@ -174,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                         // send user data to home
                         Bundle bundle = new Bundle();
                         bundle.putParcelable("user", loadedUser);
+                        saveCurrentUserToSP(loadedUser);
                     }
                 } catch (Exception e){
                     // todo handle exception
@@ -267,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
         current_logged_in_user.setName(authCurrentUser.getDisplayName());
         current_logged_in_user.setImage_url("");
         viewModel.addUser(current_logged_in_user);
+        saveCurrentUserToSP(current_logged_in_user);
 
         // bundle user info
         Bundle bundle = new Bundle();
