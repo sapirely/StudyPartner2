@@ -57,7 +57,6 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
 
     private final String EMPTY_MSG_TOAST = "Empty Message";
 
-
     private TextView textView;
     private EditText editText;
     private ImageButton sendBtn;
@@ -167,7 +166,6 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                 }
             }
         });
-
     }
 
     private Message sendMessage(final String msgContent) {
@@ -189,7 +187,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (notify){
-                    String otherUserUID = "bZwbqJqrtuW3va5Mfw9bPwJI1XH2";
+                    String otherUserUID = "bZwbqJqrtuW3va5Mfw9bPwJI1XH2"; // todo change to actual id
 
                     sendNotification(otherUserUID, user.getName(), msgContent);
                 }

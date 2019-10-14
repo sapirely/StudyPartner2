@@ -1,12 +1,30 @@
 package postpc.studypartner2.profile;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
+import com.google.gson.Gson;
+import com.google.type.Date;
+
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+
+import postpc.studypartner2.MainActivity;
+import postpc.studypartner2.chat.Conversation;
+import postpc.studypartner2.chat.Message;
+
+import static android.content.Context.MODE_PRIVATE;
+import static postpc.studypartner2.utils.HelperFunctions.SP_USER;
 
 
 public class UserViewModel extends AndroidViewModel {
@@ -88,6 +106,32 @@ public class UserViewModel extends AndroidViewModel {
     public LiveData<List<User>> getPartners(String uid){
 //        return fRepository.getPartners(uid);
         return fRepository.getPartners(uid);
+    }
+
+    public LiveData<List<Conversation>> getConversations(String uid){
+        //todo
+
+        MutableLiveData<List<Conversation>> liveConvos = new MutableLiveData<>();
+
+        // temp demo convo creation
+        ArrayList<Message> messages = new ArrayList<>();
+
+        String senderUID= MainActivity.getCurrentUserID();
+        String receiverUID = "123";
+        String senderName = "Sapir";
+        String messageText = "demo message";
+        messages.add(new Message(senderUID, receiverUID, senderName, messageText));
+
+        String uid1 = senderUID;
+        String uid2 = receiverUID;
+        final User partner = new User(receiverUID, "demo user", "this is me", "", "67521");
+
+        Conversation convo = new Conversation(uid1,uid2, partner, messages);
+        List<Conversation> conversationList = new ArrayList<>();
+        conversationList.add(convo);
+        liveConvos.postValue(conversationList);
+        return liveConvos;
+        /////////////////
     }
 
 

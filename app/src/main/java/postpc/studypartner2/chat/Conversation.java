@@ -1,12 +1,23 @@
 package postpc.studypartner2.chat;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import postpc.studypartner2.profile.User;
 
 public class Conversation {
 
     private String uid1;
     private String uid2;
-    private List<Message> messages;
+    private User partner;
+    private ArrayList<Message> messages;
+
+    public Conversation(String uid1, String uid2, User partner, ArrayList<Message> messages) {
+        this.uid1 = uid1;
+        this.uid2 = uid2;
+        this.partner = partner;
+        this.messages = messages;
+    }
 
     public String getUid1() {
         return uid1;
@@ -16,11 +27,15 @@ public class Conversation {
         this.uid1 = uid1;
     }
 
-    public List<Message> getMessages() {
+    public ArrayList<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public Message getLastMessage(){
+        return messages.get(messages.size()-1);
+    }
+
+    public void setMessages(ArrayList<Message> messages) {
         this.messages = messages;
     }
 
@@ -30,5 +45,13 @@ public class Conversation {
 
     public void setUid2(String uid2) {
         this.uid2 = uid2;
+    }
+
+    public User getPartner() {
+        return partner;
+    }
+
+    public void setPartner(User partner) {
+        this.partner = partner;
     }
 }
