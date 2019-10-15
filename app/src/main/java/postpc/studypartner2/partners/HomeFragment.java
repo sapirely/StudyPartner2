@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import postpc.studypartner2.MainActivity;
+import postpc.studypartner2.Search.results.ResultRecyclerUtils;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
@@ -31,8 +32,8 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private FloatingActionButton floatingActionButton;
     private RecyclerView mRecyclerView;
-    private PartnerRecyclerUtils.PartnersAdapter adapter = new PartnerRecyclerUtils.PartnersAdapter();
-
+//    private PartnerRecyclerUtils.PartnersAdapter adapter = new PartnerRecyclerUtils.PartnersAdapter();
+    private ResultRecyclerUtils.ResultsAdapter adapter;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -44,6 +45,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Set up UI
+        adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
         setUpRecyclerView(view);
         setUpFAB(view);
 
@@ -76,15 +78,13 @@ public class HomeFragment extends Fragment {
 
     private void loadPartners(){
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-//        viewModel.getUsersByCourse("67521")
-//        viewModel.getPartners(MainActivity.getCurrentUserID());
-//        adapter.setPartners(partners);
         viewModel.getPartners(MainActivity.getCurrentUserID())
                 .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                     @Override
                     public void onChanged(List<User> users) {
                         Log.d(TAG, "onChanged: updated query ");
-                        adapter.setPartners(users);
+//                        adapter.setPartners(users);
+                        adapter.setResults(users);
                     }
                 });
     }

@@ -138,11 +138,6 @@ public class MainActivity extends AppCompatActivity {
             // update the user id
             current_user_uid = authCurrentUser.getUid();
 
-            // subscribe to notifications
-//            FirebaseMessaging.getInstance().subscribeToTopic("weather");
-////            FirebaseMessaging.getInstance().subscribeToTopic("+current_user_uid);
-//            Log.d(TAG, "onStart: subscribed to notifications: "+current_user_uid);
-
             updateToken();
             saveUIDToSP(authCurrentUser.getUid());
 
@@ -391,5 +386,10 @@ public class MainActivity extends AppCompatActivity {
         // todo : is this ok? MainActivity is supposed to be always up so maybe?
         return current_user_uid;
     }
+
+//    public void navigateToChat(){
+//        Navigation.findNavController(this, R.id.nav_host_fragment)
+//                .navigate(R.id.action_homeFragment_to_chatFragment);
+//    }
 
 }

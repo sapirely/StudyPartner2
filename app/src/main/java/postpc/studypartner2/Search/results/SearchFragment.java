@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import java.util.List;
 
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
@@ -35,7 +36,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     private ProgressBar progressBar;
 
     private UserViewModel viewModel;
-    private ResultRecyclerUtils.ResultsAdapter adapter = new ResultRecyclerUtils.ResultsAdapter();
+    private ResultRecyclerUtils.ResultsAdapter adapter;
 
 
     public SearchFragment() {
@@ -47,6 +48,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_search, container, false);
+        adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
         courseNum = view.findViewById(R.id.edit_text_search_course);
         searchBtn = view.findViewById(R.id.button_search);
         searchFiltersLayout = view.findViewById(R.id.search_filters_layout);
@@ -79,14 +81,27 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     }
 
     private void loadResults(){
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
         viewModel.getUsersByCourse(courseNum.getText().toString())
                 .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                     @Override
                     public void onChanged(List<User> users) {
                         Log.d(TAG, "onChanged: updated query ");
                         adapter.setResults(users);
+                        setCurrentUserForLocation();
                     }
                 });
+
+    }
+
+    private void setCurrentUserForLocation() {
+
+        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                adapter.setCurrentUser(user);
+            }
+        });
     }
 
     private void updateUI(){
@@ -98,9 +113,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
 
     private void setUpRecyclerView(View view) {
 
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mRecyclerView.setAdapter(adapter);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(
                 view.getContext(),
                 LinearLayoutManager.VERTICAL,

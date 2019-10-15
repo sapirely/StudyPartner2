@@ -41,6 +41,7 @@ public class UserViewModel extends AndroidViewModel {
     public UserViewModel(Application application) {
         super(application);
 //        mRepository = new UserRepository(application); // todo uncomment - room
+//        SharedPreferences sp = application.getApplicationContext().getSharedPreferences() // todo sp
         fRepository = new FirestoreRepository();
         mQueryUsers = new MutableLiveData<>();
         mUid = new MutableLiveData<>();

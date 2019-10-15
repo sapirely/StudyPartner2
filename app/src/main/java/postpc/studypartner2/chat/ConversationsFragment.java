@@ -19,8 +19,8 @@ import java.util.List;
 
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
-import postpc.studypartner2.partners.PartnerRecyclerUtils;
-import postpc.studypartner2.profile.User;
+//import postpc.studypartner2.partners.PartnerRecyclerUtils;
+//import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 
 
@@ -55,9 +55,6 @@ public class ConversationsFragment extends Fragment {
 
     private void loadConversations(){
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-//        viewModel.getUsersByCourse("67521")
-//        viewModel.getPartners(MainActivity.getCurrentUserID());
-//        adapter.setPartners(partners);
         viewModel.getConversations(MainActivity.getCurrentUserID())
                 .observe(getViewLifecycleOwner(), new Observer<List<Conversation>>() {
                     @Override

@@ -28,12 +28,19 @@
         <action
             android:id="@+id/action_homeFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_conversationsFragment2"
+            app:destination="@id/conversationsFragment2" />
     </fragment>
 
     <fragment
         android:id="@+id/searchFragment"
         android:name="postpc.studypartner2.Search.results.SearchFragment"
-        tools:layout="@layout/fragment_search"/>
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
 
     <!--        todo: change to conversations -->
 

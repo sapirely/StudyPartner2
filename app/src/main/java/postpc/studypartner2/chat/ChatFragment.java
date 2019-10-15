@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Database;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -63,6 +66,10 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
     private RecyclerView mRecyclerView;
     private ImageView addFriendBtn;
     private ImageView backArrow;
+    private ImageView chatAvatar;
+    private TextView otherUserName;
+
+    private User otherUser;
 
     // notifications
     final private String FCM_API = "https://fcm.googleapis.com/";
@@ -90,6 +97,31 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         this.mRecyclerView = (RecyclerView)view.findViewById(R.id.messageRecyclerView);
         this.addFriendBtn = view.findViewById(R.id.chat_add_friend);
         this.backArrow = view.findViewById(R.id.chat_back_arrow);
+
+        // read from bundle
+        Bundle bundle = this.getArguments();
+        otherUser = new User();
+        if (bundle != null) {
+            String otherUserUID = bundle.getString("otherChatUserUID", "");
+            Log.d(TAG, "onCreateView: got uid "+otherUserUID+" from bundle");
+            otherUser = bundle.getParcelable("otherChatUser");
+            Log.d(TAG, "onCreateView: got parcelable user "+otherUser.getName());
+        } else {
+            Log.d(TAG, "onCreateView: Got to chat without user info");
+        }
+
+        // set up top bar
+        this.otherUserName = view.findViewById(R.id.chat_other_user_name);
+        this.chatAvatar = view.findViewById(R.id.chat_avatar);
+        if (otherUser.getUid() != null) {
+            this.otherUserName.setText(otherUser.getName());
+            Glide.with(this)
+                    .load(otherUser.getImage_url())
+                    .placeholder(R.drawable.girl)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(chatAvatar);
+        }
+
 
         mRecyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
@@ -161,7 +193,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                 switch (view.getId()){
                     case R.id.chat_add_friend:
                         Toast.makeText
-                                (view.getContext(), "Sent prtner request", Toast.LENGTH_LONG).show();
+                                (view.getContext(), "Sent partner request", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -187,7 +219,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (notify){
-                    String otherUserUID = "bZwbqJqrtuW3va5Mfw9bPwJI1XH2"; // todo change to actual id
+                    String otherUserUID = otherUser.getUid();
 
                     sendNotification(otherUserUID, user.getName(), msgContent);
                 }

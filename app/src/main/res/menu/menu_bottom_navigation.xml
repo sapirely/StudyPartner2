@@ -15,7 +15,7 @@
 
     </item>
     <item
-        android:id="@+id/chatFragment"
+        android:id="@+id/conversationsFragment2"
         android:icon="@drawable/ic_mail"
         android:title="@string/menu_chat"
         >

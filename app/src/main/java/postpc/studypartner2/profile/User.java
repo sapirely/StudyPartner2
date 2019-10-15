@@ -12,6 +12,8 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +40,7 @@ public class User implements Parcelable {
     private String image_url;
     private boolean loaded;
     private List<String> courses;
+    private GeoPoint location;
 
     public User(){}
 
@@ -171,6 +174,14 @@ public class User implements Parcelable {
             listOfCourses.add(new Course(course, ""));
         }
         return listOfCourses;
+    }
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
     public class CoursesListConverter {
