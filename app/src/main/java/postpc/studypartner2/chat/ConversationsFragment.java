@@ -4,9 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +52,19 @@ public class ConversationsFragment extends Fragment {
 
         loadConversations();
 
+        adapter.setOnItemClickListener(new ConversationRecyclerUtils.ConversationsAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Bundle bundle = new Bundle();
+                Conversation conv = adapter.getConversation(position);
+                bundle.putString("otherChatUserUID", conv.getOtherUser().getUid());
+                bundle.putParcelable("otherChatUser", conv.getOtherUser());
+                Log.d(TAG, "onItemClick position: " + position);
+                Navigation.findNavController((AppCompatActivity) getContext(), R.id.nav_host_fragment)
+                        .navigate(R.id.action_conversationsFragment2_to_chatFragment, bundle);
+            }
+        });
+
         return view;
     }
 
@@ -74,9 +89,12 @@ public class ConversationsFragment extends Fragment {
 
         mRecyclerView.setAdapter(adapter);
 
+
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(
                 view.getContext(),
                 LinearLayoutManager.VERTICAL,
                 false));
     }
+
 }

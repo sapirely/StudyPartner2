@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -42,6 +43,7 @@ public class ConversationRecyclerUtils {
 
     static class ConversationsAdapter extends ListAdapter<Conversation, ConversationHolder> {
         private List<Conversation> conversations = new ArrayList<>();
+        static ClickListener clickListener;
 
         public ConversationsAdapter() {
             super(new ConversationCallBack());
@@ -73,10 +75,22 @@ public class ConversationRecyclerUtils {
             notifyDataSetChanged();
         }
 
+        public Conversation getConversation(int position){
+            return this.conversations.get(position);
+        }
+
+        public void setOnItemClickListener(ClickListener clickListener) {
+            ConversationsAdapter.clickListener = clickListener;
+        }
+
+        public interface ClickListener {
+            void onItemClick(int position, View v);
+        }
+
     }
 
     static class ConversationHolder
-            extends RecyclerView.ViewHolder {
+            extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private View view;
         public final TextView partnerName;
@@ -84,9 +98,10 @@ public class ConversationRecyclerUtils {
         public final TextView timeOfLastMsg;
         public final ImageView partnerAvatar;
 
-        public ConversationHolder(@NonNull View itemView) {
+        public ConversationHolder(@NonNull View itemView)  {
             super(itemView);
             this.view = itemView;
+            itemView.setOnClickListener(this);
             partnerName = itemView.findViewById(R.id.conv_partner_name);
             lastMsg = itemView.findViewById(R.id.conv_last_msg);
             timeOfLastMsg = itemView.findViewById(R.id.conv_time_of_last_msg);
@@ -111,8 +126,13 @@ public class ConversationRecyclerUtils {
                     .into(partnerAvatar);
         }
 
-
+        @Override
+        public void onClick(View view) {
+            ConversationsAdapter.clickListener.onItemClick(getAdapterPosition(), view);
+        }
     }
+
+
 }
 
 
