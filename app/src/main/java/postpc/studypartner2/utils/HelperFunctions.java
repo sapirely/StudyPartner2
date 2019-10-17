@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.google.firebase.firestore.GeoPoint;
 
+import postpc.studypartner2.MainActivity;
+import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.profile.User;
 
 public class HelperFunctions {
@@ -19,6 +21,16 @@ public class HelperFunctions {
     public static GeoPoint locationToGeoPoint(Location loc)
     {
         return new GeoPoint(loc.getLatitude(), loc.getLongitude());
+    }
+
+    public static String determineOtherUserUIDFromConversation(Conversation conversation){
+        String uid;
+        if (conversation.getUid1().equals(MainActivity.getCurrentUserID())){
+            // uid1 = current user, otherUser uid should be uid2
+            return conversation.getUid2();
+        } else {
+            return conversation.getUid1();
+        }
     }
 
     public static int getDistanceBetweenTwoUsers(User u1, User u2) {

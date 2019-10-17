@@ -289,11 +289,11 @@ class FirestoreRepository {
         return messagesLiveData;
     }
 
-    public void saveMessage(String uid1, User otherUser, Message msg){
-        String uid2=otherUser.getUid();
+    public void saveMessage(final String uid1, User otherUser, Message msg){
+        final String uid2=otherUser.getUid();
         String conversationID = generateConversationID(uid1, uid2);
 
-        DatabaseReference dbRef = mDatabase.child("convos").child(conversationID);
+        final DatabaseReference dbRef = mDatabase.child("convos").child(conversationID);
 //        String key = mDatabase.child("messages").child(conversationID).push().getKey();
 
         // check if convo initiated - if one of the uids is set to this user's uid
@@ -302,7 +302,19 @@ class FirestoreRepository {
 //            addConversationToUsersLists(uid1, uid2);
             dbRef.child("uid1").setValue(uid1);
             dbRef.child("uid2").setValue(uid2);
-            dbRef.child("otherUser").setValue(otherUser);
+//            dbRef.child("otherUser").setValue(otherUser);
+//            DocumentReference user1ref = firestoreDB.collection("users").document(uid1);
+//            DocumentReference user2ref = firestoreDB.collection("users").document(uid2);
+
+            firestoreDB.collection("users").document(uid1).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    User currentUser = documentSnapshot.toObject(User.class);
+                    dbRef.child("users").child(uid1).setValue(currentUser); // current user
+                }
+            });
+
+            dbRef.child("users").child(uid2).setValue(otherUser); // other user
         }
 
         String key = dbRef.child("messages").push().getKey();

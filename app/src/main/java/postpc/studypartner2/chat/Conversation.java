@@ -9,7 +9,8 @@ public class Conversation {
 
     private String uid1;
     private String uid2;
-    private User otherUser;
+    private HashMap<String, User> users;
+//    private User otherUser;
 //    private ArrayList<Message> messages;
     private HashMap<String, Message> messages;
     private Message lastMsg;
@@ -18,10 +19,10 @@ public class Conversation {
 
     }
 
-    public Conversation(String uid1, String uid2, User partner, HashMap<String, Message> messages) {
+    public Conversation(String uid1, String uid2, HashMap<String, Message> messages) {
         this.uid1 = uid1;
         this.uid2 = uid2;
-        this.otherUser = partner;
+//        this.otherUser = partner;
         this.messages = messages;
     }
 
@@ -61,11 +62,19 @@ public class Conversation {
         this.uid2 = uid2;
     }
 
-    public User getOtherUser() {
-        return otherUser;
+    public HashMap<String, User> getUsers() {
+        return users;
     }
 
-    public void setOtherUser(User otherUser) {
-        this.otherUser = otherUser;
+    public void setUsers(HashMap<String, User> users) {
+        this.users = users;
     }
+
+//    public User getOtherUser() {
+//        return otherUser;
+//    }
+
+//    public void setOtherUser(User otherUser) {
+//        this.otherUser = otherUser;
+//    }
 }

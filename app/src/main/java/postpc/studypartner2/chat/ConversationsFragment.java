@@ -23,7 +23,10 @@ import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 //import postpc.studypartner2.partners.PartnerRecyclerUtils;
 //import postpc.studypartner2.profile.User;
+import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
+
+import static postpc.studypartner2.utils.HelperFunctions.determineOtherUserUIDFromConversation;
 
 
 public class ConversationsFragment extends Fragment {
@@ -34,7 +37,7 @@ public class ConversationsFragment extends Fragment {
     public UserViewModel viewModel;
 
     private RecyclerView mRecyclerView;
-    private ConversationRecyclerUtils.ConversationsAdapter adapter = new ConversationRecyclerUtils.ConversationsAdapter();
+    private ConversationRecyclerUtils.ConversationsAdapter adapter = new ConversationRecyclerUtils.ConversationsAdapter(getContext());
 
 
     public ConversationsFragment() {
@@ -57,8 +60,9 @@ public class ConversationsFragment extends Fragment {
             public void onItemClick(int position, View v) {
                 Bundle bundle = new Bundle();
                 Conversation conv = adapter.getConversation(position);
-                bundle.putString("otherChatUserUID", conv.getOtherUser().getUid());
-                bundle.putParcelable("otherChatUser", conv.getOtherUser());
+                User otherUser = getOtherUserFromConversation(conv);
+                bundle.putString("otherChatUserUID", otherUser.getUid());
+                bundle.putParcelable("otherChatUser", otherUser);
                 Log.d(TAG, "onItemClick position: " + position);
                 Navigation.findNavController((AppCompatActivity) getContext(), R.id.nav_host_fragment)
                         .navigate(R.id.action_conversationsFragment2_to_chatFragment, bundle);
@@ -66,6 +70,11 @@ public class ConversationsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public User getOtherUserFromConversation(Conversation conversation){
+        String uid = determineOtherUserUIDFromConversation(conversation);
+        return conversation.getUsers().get(uid);
     }
 
     private void loadConversations(){

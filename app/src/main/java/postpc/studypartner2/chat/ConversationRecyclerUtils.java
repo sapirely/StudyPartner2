@@ -9,18 +9,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 import postpc.studypartner2.profile.User;
+import postpc.studypartner2.utils.HelperFunctions;
 
 public class ConversationRecyclerUtils {
     static class ConversationCallBack
@@ -44,9 +52,11 @@ public class ConversationRecyclerUtils {
     static class ConversationsAdapter extends ListAdapter<Conversation, ConversationHolder> {
         private List<Conversation> conversations = new ArrayList<>();
         static ClickListener clickListener;
+        Context context;
 
-        public ConversationsAdapter() {
+        public ConversationsAdapter(Context context) {
             super(new ConversationCallBack());
+            this.context = context;
         }
 
         public ConversationClickCallBack callBack;
@@ -109,7 +119,10 @@ public class ConversationRecyclerUtils {
         }
 
         public void setData(Conversation conversation){
-            User partner = conversation.getOtherUser();
+//            User partner = conversation.getOtherUser();
+            String otherUserUID = HelperFunctions.determineOtherUserUIDFromConversation(conversation);
+            User partner = conversation.getUsers().get(otherUserUID);
+            User thisUser = conversation.getUsers().get(MainActivity.getCurrentUserID());
             partnerName.setText(partner.getName());
             setPartnerAvatar(partner.getImage_url());
             if (conversation.getLastMessage() != null) {
