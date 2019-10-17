@@ -32,6 +32,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 import postpc.studypartner2.utils.Log;
 
@@ -263,7 +264,7 @@ class FirestoreRepository {
         final List<Message> allMessages = new ArrayList<>();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference yourRef = mDatabase.child("messages").child(conversationID);
+        DatabaseReference yourRef = mDatabase.child("convos").child(conversationID).child("messages");
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -283,63 +284,27 @@ class FirestoreRepository {
         return messagesLiveData;
     }
 
-//    public LiveData<List<Message>> getMessages(String uid1, String uid2){
-//        final List<Message> allMessages = new ArrayList<>();
-//        String conversationID = generateConversationID(uid1, uid2);
-//
-//        ChildEventListener childEventListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-//                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-//
-//                // A new comment has been added, add it to the displayed list
-//                Message msg = dataSnapshot.getValue(Message.class);
-//                allMessages.add(msg);
-//                messagesLiveData.postValue(allMessages);
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-//                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
-//
-//                // A comment has changed, use the key to determine if we are displaying this
-//                // comment and if so displayed the changed comment.
-//                Message newMsg = dataSnapshot.getValue(Message.class);
-//                String msgKey = dataSnapshot.getKey();
-//                // todo : maybe?
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//                android.util.Log.d(TAG, "onChildRemoved: a message was removed");
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                android.util.Log.d(TAG, "onChildMoved: a message was moved");
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d(TAG, "postComments:onCancelled "+databaseError.toException());
-//            }
-//        };
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        mDatabase.addChildEventListener(childEventListener);
-//        return messagesLiveData;
-//    }
-
     public void saveMessage(String uid1, String uid2, Message msg){
         String conversationID = generateConversationID(uid1, uid2);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        String key = mDatabase.child("messages").child(conversationID).push().getKey();
+        DatabaseReference dbRef = mDatabase.child("convos").child(conversationID);
+//        String key = mDatabase.child("messages").child(conversationID).push().getKey();
+
+        if ((dbRef.child("uid1").toString() != uid1) && (dbRef.child("uid1").toString() != uid2)){
+            // Set up new convo
+            dbRef.child("uid1").setValue(uid1);
+            dbRef.child("uid2").setValue(uid2);
+        }
+
+        String key = dbRef.child("messages").push().getKey();
         msg.setmID(key);
-        mDatabase.child("messages").child(conversationID).child(key).setValue(msg, new DatabaseReference.CompletionListener() {
+        dbRef.child("messages").child(key).setValue(msg, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                 android.util.Log.d(TAG, "onComplete: completed saving message to db: "+databaseError);
             }
         });
+        dbRef.child("lastMsg").setValue(msg);
     }
 
     private String generateConversationID(String uid1, String uid2){
@@ -351,4 +316,7 @@ class FirestoreRepository {
         }
     }
 
+//    public LiveData<List<Conversation>> getConversations(String uid) {
+//
+//    }
 }

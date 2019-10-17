@@ -110,7 +110,7 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Conversation>> getConversations(String uid){
-        //todo
+//        return fRepository.getConversations(uid);
 
         MutableLiveData<List<Conversation>> liveConvos = new MutableLiveData<>();
 

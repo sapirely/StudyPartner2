@@ -11,6 +11,11 @@ public class Conversation {
     private String uid2;
     private User partner;
     private ArrayList<Message> messages;
+    private String lastMsg;
+
+    public Conversation(){
+
+    }
 
     public Conversation(String uid1, String uid2, User partner, ArrayList<Message> messages) {
         this.uid1 = uid1;
@@ -37,6 +42,14 @@ public class Conversation {
 
     public void setMessages(ArrayList<Message> messages) {
         this.messages = messages;
+    }
+
+    public String getLastMsg() {
+        return lastMsg;
+    }
+
+    public void setLastMsg(String lastMsg) {
+        this.lastMsg = lastMsg;
     }
 
     public String getUid2() {
