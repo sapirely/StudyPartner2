@@ -10,9 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Database;
 
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,15 +31,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 import postpc.studypartner2.notifications.APIService;
 import postpc.studypartner2.notifications.Client;
@@ -74,6 +66,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
     private TextView otherUserName;
 
     private User otherUser;
+    private User user;
 
     // notifications
     final private String FCM_API = "https://fcm.googleapis.com/";
@@ -104,7 +97,14 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         this.addFriendBtn = view.findViewById(R.id.chat_add_friend);
         this.backArrow = view.findViewById(R.id.chat_back_arrow);
 
-        // read from bundle
+        // get current user
+        SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sp.getString("Current_USER", "");
+//        final User user = gson.fromJson(json, User.class);
+        user = gson.fromJson(json, User.class);
+
+        // read other user from bundle
         Bundle bundle = this.getArguments();
         otherUser = new User();
         if (bundle != null) {
@@ -128,13 +128,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                     .into(chatAvatar);
         }
 
-        mRecyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                        view.getContext(),
-                LinearLayoutManager.VERTICAL,
-                false);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        adapter.callBack = this;
+        setUpRecyclerView(view);
 
         // create API service - notifications
         apiService = Client.getRetrofit(FCM_API).create(APIService.class);
@@ -142,14 +136,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         setUpSendBtn();
 
         // load messages
-        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        viewModel.getMessages(getCurrentUserUID(), otherUser.getUid()).observe(getViewLifecycleOwner(), new Observer<List<Message>>() {
-            @Override
-            public void onChanged(List<Message> messages) {
-                currentMessages = messages;
-                adapter.submitList(currentMessages);
-            }
-        });
+        loadMessages();
 
         adapter.submitList(currentMessages);
         this.editText.setText("");
@@ -164,6 +151,26 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         return view;
     }
 
+    private void setUpRecyclerView(View view) {
+        mRecyclerView.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                view.getContext(),
+                LinearLayoutManager.VERTICAL,
+                false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        adapter.callBack = this;
+    }
+
+    private void loadMessages() {
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.getMessages(getCurrentUserUID(), otherUser.getUid()).observe(getViewLifecycleOwner(), new Observer<List<Message>>() {
+            @Override
+            public void onChanged(List<Message> messages) {
+                currentMessages = messages;
+                adapter.submitList(currentMessages);
+            }
+        });
+    }
 
 
     private void setUpSendBtn(){
@@ -206,6 +213,8 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             public void onClick(View view) {
                 switch (view.getId()){
                     case R.id.chat_add_friend:
+                        viewModel.sendPartnerRequest(user.getUid(), otherUser.getUid());
+                        sendMessageNotification(otherUser.getUid(), user.getName(), "", true);
                         Toast.makeText
                                 (view.getContext(), "Sent partner request", Toast.LENGTH_SHORT).show();
                         break;
@@ -231,10 +240,10 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         adapter.submitList(currentMessages);
         editText.setText("");
 
-        SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sp.getString("Current_USER", "");
-        final User user = gson.fromJson(json, User.class);
+//        SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
+//        Gson gson = new Gson();
+//        String json = sp.getString("Current_USER", "");
+//        final User user = gson.fromJson(json, User.class);
 
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference("Users").child(getCurrentUserUID());
         db.addValueEventListener(new ValueEventListener() {
@@ -243,7 +252,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                 if (notify){
                     String otherUserUID = otherUser.getUid();
 
-                    sendNotification(otherUserUID, user.getName(), msgContent);
+                    sendMessageNotification(otherUserUID, user.getName(), msgContent, false);
                 }
             }
 
@@ -256,7 +265,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         return new_message;
     }
 
-    private void sendNotification(final String otherUserUID, final String nameOfUser, final String msgContent) {
+    private void sendMessageNotification(final String otherUserUID, final String nameOfUser, final String msgContent, final boolean isRequest) {
         DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = allTokens.orderByKey().equalTo(otherUserUID);
         query.addValueEventListener(new ValueEventListener() {
@@ -264,7 +273,8 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     Token token = ds.getValue(Token.class);
-                    Data data = new Data(otherUserUID, nameOfUser+": "+msgContent, "New Message", otherUserUID, R.drawable.ic_chat);
+                    String notificationBody = generateNotificationBody(nameOfUser, msgContent, isRequest);
+                    Data data = new Data(otherUserUID, notificationBody, null, otherUserUID, R.drawable.ic_chat);
                     Sender sender = new Sender(data, token.getToken());
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<Response>() {
@@ -279,6 +289,14 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
 
                                 }
                             });
+                }
+            }
+
+            private String generateNotificationBody(String nameOfUser, String msgContent, boolean isRequest) {
+                if (isRequest){
+                    return nameOfUser + " sent you a partner request.";
+                } else {
+                    return nameOfUser+": "+msgContent;
                 }
             }
 

@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -111,6 +112,68 @@ class FirestoreRepository {
         return usersQuery;
     }
 
+    public void addPartner(String userUID, String partnerUID){
+        // called when approving a request
+
+        // add partners to both users
+        addPartnerToDB(userUID, partnerUID);
+        android.util.Log.d(TAG, "addPartner: added "+partnerUID+" as partner.");
+        addPartnerToDB(partnerUID, userUID);
+        android.util.Log.d(TAG, "addPartner: added "+userUID+" as partner.");
+
+        removePartnerRequest(userUID, partnerUID);
+    }
+
+    private void removePartnerRequest(String userUID, String partnerUID) {
+        DocumentReference userPartnersRef = firestoreDB.collection("partners").document(userUID);
+        DocumentReference requesterRef = firestoreDB.collection("users").document(partnerUID);
+
+        userPartnersRef.update("requests", FieldValue.arrayRemove(requesterRef)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                android.util.Log.d(TAG, "onSuccess: removed partner request successfully");
+            }
+        });
+    }
+
+    private void addPartnerToDB(String userUID, String partnerUID){
+        DocumentReference userPartnersRef = firestoreDB.collection("partners").document(userUID);
+        DocumentReference partnerRef = firestoreDB.collection("users").document(partnerUID);
+
+        userPartnersRef.update("approved", FieldValue.arrayUnion(partnerRef))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        android.util.Log.d(TAG, "onSuccess: added partner successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error updating document", e);
+                    }
+                });
+    }
+
+    public void sendPartnerRequest(String userUID, String partnerUID){
+        DocumentReference partnerRequestsRef = firestoreDB.collection("partners").document(partnerUID);
+        DocumentReference requesterRef = firestoreDB.collection("users").document(userUID);
+
+        partnerRequestsRef.update("requests", FieldValue.arrayUnion(requesterRef))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        android.util.Log.d(TAG, "onSuccess: added request successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error updating document", e);
+                    }
+                });
+
+    }
 
     public LiveData<List<User>> getPartners(String uid){
         final List<User> listUsers = new ArrayList<>();

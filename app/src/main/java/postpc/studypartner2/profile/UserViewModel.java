@@ -143,6 +143,10 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.getMessages(uid1, uid2);
     }
 
+    public void sendPartnerRequest(String userUID, String partnerUID) {
+        fRepository.sendPartnerRequest(userUID, partnerUID);
+    }
+
 
 //    private void insertUserToRoom(User user) { mRepository.insert(user); }
 
