@@ -55,14 +55,18 @@ public class ConversationsFragment extends Fragment {
 
     private void loadConversations(){
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        viewModel.getConversations(MainActivity.getCurrentUserID())
-                .observe(getViewLifecycleOwner(), new Observer<List<Conversation>>() {
-                    @Override
-                    public void onChanged(List<Conversation> c) {
-                        Log.d(TAG, "onChanged: updated query ");
-                        adapter.setConversations(c);
-                    }
-                });
+        try {
+            viewModel.getConversations(MainActivity.getCurrentUserID())
+                    .observe(getViewLifecycleOwner(), new Observer<List<Conversation>>() {
+                        @Override
+                        public void onChanged(List<Conversation> c) {
+                            Log.d(TAG, "onChanged: updated query ");
+                            adapter.setConversations(c);
+                        }
+                    });
+        } catch (Exception e){
+            Log.d(TAG, "loadConversations: no conversations yet");
+        }
     }
 
     private void setUpRecyclerView(View view) {

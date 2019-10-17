@@ -25,7 +25,8 @@ public class HelperFunctions {
 
         if (u1==null){
             u1 = new User();
-            u1.setLocation(new GeoPoint(37.4219983,-122.084)); // todo remove
+//            u1.setMyLocation(new GeoPoint(37.4219983,-122.084)); // todo remove
+            u1.setLocation(37.4219983,-122.084); // todo remove
         }
 //        else if (u1==null || u2==null){
         if (u2==null){

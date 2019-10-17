@@ -12,11 +12,11 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 
-import com.google.firebase.firestore.GeoPoint;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import postpc.studypartner2.chat.MyLocation;
 // To make the class meaningful to a Room database, you need to annotate it.
 // Annotations identify how each part of this class relates to an entry in the database.
 // Room uses this information to generate code.
@@ -40,7 +40,9 @@ public class User implements Parcelable {
     private String image_url;
     private boolean loaded;
     private List<String> courses;
-    private GeoPoint location;
+    private MyLocation location;
+//    private GeoPoint myLocation;
+//    private HashMap<String, Double> myLocation;
 
     public User(){}
 
@@ -176,12 +178,24 @@ public class User implements Parcelable {
         return listOfCourses;
     }
 
-    public GeoPoint getLocation() {
+//    public GeoPoint getMyLocation() {
+//        return myLocation;
+//    }
+
+    public MyLocation getLocation(){
         return location;
     }
 
-    public void setLocation(GeoPoint location) {
+//    public void setMyLocation(GeoPoint myLocation) {
+//        this.myLocation = myLocation;
+//    }
+
+    public void setMyLocation(MyLocation location) {
         this.location = location;
+    }
+
+    public void setLocation(double lat, double lon) {
+        this.location = new MyLocation(lat, lon);
     }
 
     public class CoursesListConverter {

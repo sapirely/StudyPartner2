@@ -55,7 +55,7 @@ android {
         // JSON converter
         implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
 
-        // Location Services
+        // MyLocation Services
         implementation 'com.google.android.gms:play-services-location:17.0.0'
 
         // ViewModel and LiveData

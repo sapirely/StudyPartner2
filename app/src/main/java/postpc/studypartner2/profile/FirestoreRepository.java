@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,7 +31,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
@@ -45,10 +48,11 @@ class FirestoreRepository {
     private MutableLiveData<List<Message>> messagesLiveData;
     private MutableLiveData<List<User>> usersQuery;
     private MutableLiveData<List<User>> partners;
+    private MutableLiveData<List<Conversation>> conversationsLiveData;
     private MutableLiveData<Boolean> isRegistered;
 
     // messages
-    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
     // save user to firebase
@@ -60,6 +64,7 @@ class FirestoreRepository {
         usersQuery = new MutableLiveData<>();
         partners = new MutableLiveData<>();
         messagesLiveData = new MutableLiveData<>();
+        conversationsLiveData = new MutableLiveData<>();
     }
 
     public void addUser(User user) {
@@ -287,13 +292,14 @@ class FirestoreRepository {
     public void saveMessage(String uid1, User otherUser, Message msg){
         String uid2=otherUser.getUid();
         String conversationID = generateConversationID(uid1, uid2);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         DatabaseReference dbRef = mDatabase.child("convos").child(conversationID);
 //        String key = mDatabase.child("messages").child(conversationID).push().getKey();
 
         // check if convo initiated - if one of the uids is set to this user's uid
         if ((!dbRef.child("uid1").toString().equals(uid1)) && (!dbRef.child("uid1").toString().equals(uid2))){
             // Set up new convo
+//            addConversationToUsersLists(uid1, uid2);
             dbRef.child("uid1").setValue(uid1);
             dbRef.child("uid2").setValue(uid2);
             dbRef.child("otherUser").setValue(otherUser);
@@ -319,7 +325,109 @@ class FirestoreRepository {
         }
     }
 
+    public LiveData<List<Conversation>> getConversations(String uid) {
+        Query myConversations = mDatabase.child("convos").orderByChild("uid1").equalTo(uid);
+        Query myConversations2 = mDatabase.child("convos").orderByChild("uid2").equalTo(uid);
+
+        final List<Conversation> conversationList = new ArrayList<>();
+
+        myConversations.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Conversation conversation = ds.getValue(Conversation.class);
+                    Log.d("TAG", "got conversation ");
+                    conversationList.add(conversation);
+                }
+                conversationsLiveData.postValue(conversationList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                android.util.Log.d(TAG, "onCancelled: retrieving conversations cancelled");
+            }
+        });
+
+        myConversations2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Conversation conversation = ds.getValue(Conversation.class);
+                    Log.d("TAG", "got conversation ");
+                    conversationList.add(conversation);
+                }
+                conversationsLiveData.postValue(conversationList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                android.util.Log.d(TAG, "onCancelled: retrieving conversations cancelled");
+            }
+        });
+
+        return conversationsLiveData;
+
+
+    }
+
 //    public LiveData<List<Conversation>> getConversations(String uid) {
+//        final List<Conversation> conversationList = new ArrayList<>();
+//        DocumentReference docRef = firestoreDB.collection("conversations").document(uid);
 //
+//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()){
+//                    android.util.Log.d(TAG, "onComplete: successfully got conversations");
+//                    DocumentSnapshot document = task.getResult();
+//
+//                    List<DocumentReference> list = (List<DocumentReference>) document.get("convosList");
+//                    if (list == null){
+//                        android.util.Log.d(TAG, "onComplete: empty approved partner list ");
+//                        return;
+//                    }
+//
+//                    List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+//                    for (DocumentReference documentReference : list) {
+//                        if (documentReference == null){
+//                            android.util.Log.d(TAG, "onComplete: empty partner list - docref");
+//                            return;
+//                        }
+//                        Task<DocumentSnapshot> documentSnapshotTask = documentReference.get();
+//                        tasks.add(documentSnapshotTask);
+//                    }
+//                    Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+//                        @Override
+//                        public void onSuccess(List<Object> objectList) {
+//                            //Do what you need to do with your list
+//                            for (Object object : objectList) {
+//                                object = ((DocumentSnapshot) object).toObject(Conversation.class);
+//                                conversationList.add((Conversation) object);
+//                            }
+//                            conversations.postValue(conversationList);
+//                        }
+//                    });
+//                } else {
+//                    android.util.Log.d(TAG, "onComplete: failed getting partners");;
+//                }
+//            }
+//        });
+//        return conversations;
+//    }
+
+//    private void addConversationToUsersLists(String uid1, String uid2) {
+//        String conversationID = generateConversationID(uid1, uid2);
+//
+//        // add to first user
+//        addConversationToUsersListsInDB(uid1, conversationID);
+//        // add to second user
+//        addConversationToUsersListsInDB(uid2, conversationID);
+//    }
+//
+//    private void addConversationToUsersListsInDB(String uid, String conversationID) {
+//        DatabaseReference userRef = mDatabase.child("conversations").child(conversationID);
+//        DatabaseReference convoRef = mDatabase.child("convos").child(conversationID);
+//
+//        userRef.child(conversationID).setValue(convoRef);
 //    }
 }

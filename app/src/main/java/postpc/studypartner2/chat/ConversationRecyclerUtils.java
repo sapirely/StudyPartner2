@@ -97,7 +97,9 @@ public class ConversationRecyclerUtils {
             User partner = conversation.getOtherUser();
             partnerName.setText(partner.getName());
             setPartnerAvatar(partner.getImage_url());
-            lastMsg.setText(conversation.getLastMessage().getMessageText());
+            if (conversation.getLastMessage() != null) {
+                lastMsg.setText(conversation.getLastMessage().getMessageText());
+            }
             timeOfLastMsg.setText(conversation.getLastMessage().getPrettySentTime());
         }
 

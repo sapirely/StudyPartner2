@@ -109,31 +109,31 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.getPartners(uid);
     }
 
-    public LiveData<List<Conversation>> getConversations(String uid){
-//        return fRepository.getConversations(uid);
-
-        MutableLiveData<List<Conversation>> liveConvos = new MutableLiveData<>();
-
-        // temp demo convo creation
-        ArrayList<Message> messages = new ArrayList<>();
-
-        String senderUID= MainActivity.getCurrentUserID();
-        String receiverUID = "123";
-        String senderName = "Sapir";
-        String messageText = "demo message";
-        messages.add(new Message(senderUID, messageText));
-
-        String uid1 = senderUID;
-        String uid2 = receiverUID;
-        final User partner = new User(receiverUID, "demo user", "this is me", "", "67521");
-
-        Conversation convo = new Conversation(uid1,uid2, partner, messages);
-        List<Conversation> conversationList = new ArrayList<>();
-        conversationList.add(convo);
-        liveConvos.postValue(conversationList);
-        return liveConvos;
-        /////////////////
-    }
+//    public LiveData<List<Conversation>> getConversations(String uid){
+////        return fRepository.getConversations(uid);
+//
+//        MutableLiveData<List<Conversation>> liveConvos = new MutableLiveData<>();
+//
+//        // temp demo convo creation
+//        ArrayList<Message> messages = new ArrayList<>();
+//
+//        String senderUID= MainActivity.getCurrentUserID();
+//        String receiverUID = "123";
+//        String senderName = "Sapir";
+//        String messageText = "demo message";
+//        messages.add(new Message(senderUID, messageText));
+//
+//        String uid1 = senderUID;
+//        String uid2 = receiverUID;
+//        final User partner = new User(receiverUID, "demo user", "this is me", "", "67521");
+//
+//        Conversation convo = new Conversation(uid1,uid2, partner, messages);
+//        List<Conversation> conversationList = new ArrayList<>();
+//        conversationList.add(convo);
+//        liveConvos.postValue(conversationList);
+//        return liveConvos;
+//        /////////////////
+//    }
 
     public void saveMessage(String uid1, User otherUser, Message msg){
         fRepository.saveMessage(uid1, otherUser, msg);
@@ -141,6 +141,10 @@ public class UserViewModel extends AndroidViewModel {
 
     public LiveData<List<Message>> getMessages(String uid1, String uid2){
         return fRepository.getMessages(uid1, uid2);
+    }
+
+    public LiveData<List<Conversation>> getConversations(String uid){
+        return fRepository.getConversations(uid);
     }
 
     public void sendPartnerRequest(String userUID, String partnerUID) {

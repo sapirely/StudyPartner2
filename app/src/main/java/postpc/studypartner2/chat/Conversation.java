@@ -1,6 +1,7 @@
 package postpc.studypartner2.chat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import postpc.studypartner2.profile.User;
 
@@ -9,14 +10,15 @@ public class Conversation {
     private String uid1;
     private String uid2;
     private User otherUser;
-    private ArrayList<Message> messages;
-    private String lastMsg;
+//    private ArrayList<Message> messages;
+    private HashMap<String, Message> messages;
+    private Message lastMsg;
 
     public Conversation(){
 
     }
 
-    public Conversation(String uid1, String uid2, User partner, ArrayList<Message> messages) {
+    public Conversation(String uid1, String uid2, User partner, HashMap<String, Message> messages) {
         this.uid1 = uid1;
         this.uid2 = uid2;
         this.otherUser = partner;
@@ -31,23 +33,23 @@ public class Conversation {
         this.uid1 = uid1;
     }
 
-    public ArrayList<Message> getMessages() {
+    public HashMap<String, Message> getMessages() {
         return messages;
     }
 
     public Message getLastMessage(){
-        return messages.get(messages.size()-1);
-    }
-
-    public void setMessages(ArrayList<Message> messages) {
-        this.messages = messages;
-    }
-
-    public String getLastMsg() {
         return lastMsg;
     }
 
-    public void setLastMsg(String lastMsg) {
+    public void setMessages(HashMap<String, Message> messages) {
+        this.messages = messages;
+    }
+
+    public Message getLastMsg() {
+        return lastMsg;
+    }
+
+    public void setLastMsg(Message lastMsg) {
         this.lastMsg = lastMsg;
     }
 

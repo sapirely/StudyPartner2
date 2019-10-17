@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import postpc.studypartner2.chat.MyLocation;
 import postpc.studypartner2.notifications.Token;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
@@ -210,7 +211,8 @@ public class MainActivity extends AppCompatActivity {
                         if (location != null) {
                             // Logic to handle location object
                             Log.d(TAG, "onSuccess: got location "+location.toString());
-                            GeoPoint geo = HelperFunctions.locationToGeoPoint(location);
+//                            GeoPoint geo = HelperFunctions.locationToGeoPoint(location);
+                            MyLocation geo = new MyLocation(location.getLatitude(), location.getLongitude());
                             viewModel.updateUser(current_user_uid, "location", geo);
                         } else {
                             Log.d(TAG, "onSuccess: location is null");
@@ -250,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
                     if(shouldShowRequestPermissionRationale(permissions[i])){
                         new AlertDialog.Builder(this)
-                                .setMessage("The app needs Internet and Location permissions to work correctly.")
+                                .setMessage("The app needs Internet and MyLocation permissions to work correctly.")
                                 .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
