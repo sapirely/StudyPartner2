@@ -121,7 +121,7 @@ public class UserViewModel extends AndroidViewModel {
         String receiverUID = "123";
         String senderName = "Sapir";
         String messageText = "demo message";
-        messages.add(new Message(senderUID, receiverUID, senderName, messageText));
+        messages.add(new Message(senderUID, messageText));
 
         String uid1 = senderUID;
         String uid2 = receiverUID;
@@ -133,6 +133,14 @@ public class UserViewModel extends AndroidViewModel {
         liveConvos.postValue(conversationList);
         return liveConvos;
         /////////////////
+    }
+
+    public void saveMessage(String uid1, String uid2, Message msg){
+        fRepository.saveMessage(uid1, uid2, msg);
+    }
+
+    public LiveData<List<Message>> getMessages(String uid1, String uid2){
+        return fRepository.getMessages(uid1, uid2);
     }
 
 

@@ -18,45 +18,43 @@ public class Message implements Parcelable {
     private Random rand = new Random();
     private String mID = rand.nextInt(1000)+"";
     private String senderUID;
-    private String receiverUID;
     private long sentTime;
-    private String senderName;
     private String messageText;
+    private String prettyTime;
 
-    public Message(String senderUID, String receiverUID, String senderName, String messageText) {
+    public Message(){
+
+    }
+
+    public Message(String senderUID, String messageText) {
         this.senderUID = senderUID;
-        this.receiverUID = receiverUID;
         this.sentTime = new Date().getTime();
-        this.senderName = senderName;
         this.messageText = messageText;
     }
 
-    public Message(String senderName, String messageText){
-        if (currentId == 0){
-            Log.d(TAG, "Message: ID not set");
-            return;
-        }
-        this.senderUID = ""+currentId++; // insert senderUID (string) and update
-        // todo: change this to firebase id
-        this.messageText = messageText;
-        this.senderName = senderName;
-        this.sentTime = new Date().getTime();
-        all.add(this);
-    }
+//    public Message(String senderName, String messageText){
+//        if (currentId == 0){
+//            Log.d(TAG, "Message: ID not set");
+//            return;
+//        }
+//        this.senderUID = ""+currentId++; // insert senderUID (string) and update
+//        // todo: change this to firebase id
+//        this.messageText = messageText;
+//        this.sentTime = new Date().getTime();
+//        all.add(this);
+//    }
 
-    public Message(String messageText){
-        this.senderUID = ""+currentId++; // insert id (string) and update
-        // todo: change this to firebase senderUID
-        this.messageText = messageText;
-        this.senderName = "me";
-        this.sentTime = new Date().getTime();
-        all.add(this);
-    }
+//    public Message(String messageText){
+//        this.senderUID = ""+currentId++; // insert id (string) and update
+//        // todo: change this to firebase senderUID
+//        this.messageText = messageText;
+//        this.sentTime = new Date().getTime();
+//        all.add(this);
+//    }
 
     public Message(Parcel in) {
         senderUID = in.readString();
         sentTime = in.readLong();
-        senderName = in.readString();
         messageText = in.readString();
     }
 
@@ -81,20 +79,11 @@ public class Message implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(senderUID);
         parcel.writeLong(sentTime);
-        parcel.writeString(senderName);
         parcel.writeString(messageText);
     }
 
 
     /*---- getters and setters ----*/
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
-    }
 
     public String getMessageText() {
         return messageText;
@@ -120,14 +109,6 @@ public class Message implements Parcelable {
         this.senderUID = senderUID;
     }
 
-    public String getReceiverUID() {
-        return receiverUID;
-    }
-
-    public void setReceiverUID(String receiverUID) {
-        this.receiverUID = receiverUID;
-    }
-
     public String getmID() {
         return mID;
     }
@@ -140,5 +121,9 @@ public class Message implements Parcelable {
 
 //        return new Date(sentTime).getTime().toString();
         return String.format("%tR", new Date(sentTime));
+    }
+
+    public void setPrettyTime(){
+        prettyTime = "12:34"; // todo change
     }
 }

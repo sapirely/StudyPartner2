@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +38,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import postpc.studypartner2.MainActivity;
@@ -47,6 +50,7 @@ import postpc.studypartner2.notifications.Response;
 import postpc.studypartner2.notifications.Sender;
 import postpc.studypartner2.notifications.Token;
 import postpc.studypartner2.profile.User;
+import postpc.studypartner2.profile.UserViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -77,7 +81,9 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
     private boolean notify = false;
 
     private MessageRecyclerUtils.MessagesAdapter adapter = new MessageRecyclerUtils.MessagesAdapter();
-    public ArrayList<Message> messages = new ArrayList<>();
+    public List<Message> currentMessages = new ArrayList<>();
+
+    private UserViewModel viewModel;
 
 
     public ChatFragment() {
@@ -122,7 +128,6 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                     .into(chatAvatar);
         }
 
-
         mRecyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                         view.getContext(),
@@ -131,13 +136,22 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         mRecyclerView.setLayoutManager(linearLayoutManager);
         adapter.callBack = this;
 
-        // create API service
+        // create API service - notifications
         apiService = Client.getRetrofit(FCM_API).create(APIService.class);
-
 
         setUpSendBtn();
 
-        adapter.submitList(messages);
+        // load messages
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.getMessages(getCurrentUserUID(), otherUser.getUid()).observe(getViewLifecycleOwner(), new Observer<List<Message>>() {
+            @Override
+            public void onChanged(List<Message> messages) {
+                currentMessages = messages;
+                adapter.submitList(currentMessages);
+            }
+        });
+
+        adapter.submitList(currentMessages);
         this.editText.setText("");
 
         setUpAddFriendBtn();
@@ -145,7 +159,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         setUpBackArrow();
 //
         // log message list size
-        Log.d(TAG, "onCreate: current_size_of_msg_list: "+messages.size());
+        Log.d(TAG, "onCreate: current_size_of_msg_list: "+currentMessages.size());
 
         return view;
     }
@@ -202,11 +216,19 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
 
     private Message sendMessage(final String msgContent) {
         // add the message to the list of messages
-        ArrayList<Message> messagesCopy = new ArrayList<>(messages);
-        messages = messagesCopy;
-        Message new_message = new Message(msgContent);
-        messages.add(new_message);
-        adapter.submitList(messages);
+        ArrayList<Message> messagesCopy = new ArrayList<>(currentMessages);
+        currentMessages = messagesCopy;
+
+        // add to list
+        Message new_message = new Message(getCurrentUserUID(), msgContent);
+        currentMessages.add(new_message);
+
+        // add to db
+
+        viewModel.saveMessage(getCurrentUserUID(), otherUser.getUid(), new_message);
+
+        // update recycler view
+        adapter.submitList(currentMessages);
         editText.setText("");
 
         SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);

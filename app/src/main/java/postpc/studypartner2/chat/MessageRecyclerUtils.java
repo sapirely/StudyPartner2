@@ -19,7 +19,7 @@ public class MessageRecyclerUtils {
 
         @Override
         public boolean areItemsTheSame(@NonNull Message m1, @NonNull Message m2) {
-            return m1.getmID().equals(m2.getmID());
+            return m1.getmID().equals(m2.getmID()) && areContentsTheSame(m1, m2);
         }
 
         @Override
