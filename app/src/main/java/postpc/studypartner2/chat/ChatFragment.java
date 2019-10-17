@@ -234,7 +234,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
 
         // add to db
 
-        viewModel.saveMessage(getCurrentUserUID(), otherUser.getUid(), new_message);
+        viewModel.saveMessage(getCurrentUserUID(), otherUser, new_message);
 
         // update recycler view
         adapter.submitList(currentMessages);

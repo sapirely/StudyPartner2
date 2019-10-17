@@ -29,7 +29,7 @@ public class ConversationsFragment extends Fragment {
 
     private static final String TAG = "ConversationsFragment";
 
-    private UserViewModel viewModel;
+    public UserViewModel viewModel;
 
     private RecyclerView mRecyclerView;
     private ConversationRecyclerUtils.ConversationsAdapter adapter = new ConversationRecyclerUtils.ConversationsAdapter();

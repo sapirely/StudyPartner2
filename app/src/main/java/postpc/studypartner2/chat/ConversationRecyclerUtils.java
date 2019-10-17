@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import postpc.studypartner2.R;
 import postpc.studypartner2.profile.User;
-import postpc.studypartner2.profile.UserViewModel;
 
 public class ConversationRecyclerUtils {
     static class ConversationCallBack
@@ -45,7 +43,9 @@ public class ConversationRecyclerUtils {
     static class ConversationsAdapter extends ListAdapter<Conversation, ConversationHolder> {
         private List<Conversation> conversations = new ArrayList<>();
 
-        public ConversationsAdapter() { super(new ConversationCallBack()); }
+        public ConversationsAdapter() {
+            super(new ConversationCallBack());
+        }
 
         public ConversationClickCallBack callBack;
 
@@ -94,7 +94,7 @@ public class ConversationRecyclerUtils {
         }
 
         public void setData(Conversation conversation){
-            User partner = conversation.getPartner();
+            User partner = conversation.getOtherUser();
             partnerName.setText(partner.getName());
             setPartnerAvatar(partner.getImage_url());
             lastMsg.setText(conversation.getLastMessage().getMessageText());

@@ -1,7 +1,6 @@
 package postpc.studypartner2.chat;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import postpc.studypartner2.profile.User;
 
@@ -9,7 +8,7 @@ public class Conversation {
 
     private String uid1;
     private String uid2;
-    private User partner;
+    private User otherUser;
     private ArrayList<Message> messages;
     private String lastMsg;
 
@@ -20,7 +19,7 @@ public class Conversation {
     public Conversation(String uid1, String uid2, User partner, ArrayList<Message> messages) {
         this.uid1 = uid1;
         this.uid2 = uid2;
-        this.partner = partner;
+        this.otherUser = partner;
         this.messages = messages;
     }
 
@@ -60,11 +59,11 @@ public class Conversation {
         this.uid2 = uid2;
     }
 
-    public User getPartner() {
-        return partner;
+    public User getOtherUser() {
+        return otherUser;
     }
 
-    public void setPartner(User partner) {
-        this.partner = partner;
+    public void setOtherUser(User otherUser) {
+        this.otherUser = otherUser;
     }
 }

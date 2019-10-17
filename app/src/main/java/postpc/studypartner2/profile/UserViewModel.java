@@ -135,8 +135,8 @@ public class UserViewModel extends AndroidViewModel {
         /////////////////
     }
 
-    public void saveMessage(String uid1, String uid2, Message msg){
-        fRepository.saveMessage(uid1, uid2, msg);
+    public void saveMessage(String uid1, User otherUser, Message msg){
+        fRepository.saveMessage(uid1, otherUser, msg);
     }
 
     public LiveData<List<Message>> getMessages(String uid1, String uid2){

@@ -284,16 +284,19 @@ class FirestoreRepository {
         return messagesLiveData;
     }
 
-    public void saveMessage(String uid1, String uid2, Message msg){
+    public void saveMessage(String uid1, User otherUser, Message msg){
+        String uid2=otherUser.getUid();
         String conversationID = generateConversationID(uid1, uid2);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         DatabaseReference dbRef = mDatabase.child("convos").child(conversationID);
 //        String key = mDatabase.child("messages").child(conversationID).push().getKey();
 
-        if ((dbRef.child("uid1").toString() != uid1) && (dbRef.child("uid1").toString() != uid2)){
+        // check if convo initiated - if one of the uids is set to this user's uid
+        if ((!dbRef.child("uid1").toString().equals(uid1)) && (!dbRef.child("uid1").toString().equals(uid2))){
             // Set up new convo
             dbRef.child("uid1").setValue(uid1);
             dbRef.child("uid2").setValue(uid2);
+            dbRef.child("otherUser").setValue(otherUser);
         }
 
         String key = dbRef.child("messages").push().getKey();
