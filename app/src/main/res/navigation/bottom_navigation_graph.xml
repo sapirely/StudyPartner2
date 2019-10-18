@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_homeFragment_to_conversationsFragment2"
             app:destination="@id/conversationsFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_inboxHolderFragment"
+            app:destination="@id/inboxHolderFragment" />
     </fragment>
 
     <fragment
@@ -73,7 +76,6 @@
             android:id="@+id/action_chatFragment_to_conversationsFragment2"
             app:destination="@id/conversationsFragment2" />
     </fragment>
-    <include app:graph="@navigation/conversations_navigation_graph" />
     <fragment
         android:id="@+id/conversationsFragment2"
         android:name="postpc.studypartner2.chat.ConversationsFragment"
@@ -81,6 +83,15 @@
         tools:layout="@layout/fragment_conversations" >
         <action
             android:id="@+id/action_conversationsFragment2_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/inboxHolderFragment"
+        android:name="postpc.studypartner2.chat.InboxHolderFragment"
+        android:label="fragment_inbox_holder"
+        tools:layout="@layout/fragment_inbox_holder" >
+        <action
+            android:id="@+id/action_inboxHolderFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
 

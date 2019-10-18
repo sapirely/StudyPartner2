@@ -65,7 +65,8 @@ public class ConversationsFragment extends Fragment {
                 bundle.putParcelable("otherChatUser", otherUser);
                 Log.d(TAG, "onItemClick position: " + position);
                 Navigation.findNavController((AppCompatActivity) getContext(), R.id.nav_host_fragment)
-                        .navigate(R.id.action_conversationsFragment2_to_chatFragment, bundle);
+//                        .navigate(R.id.action_conversationsFragment2_to_chatFragment, bundle);
+                .navigate(R.id.action_inboxHolderFragment_to_chatFragment, bundle);
             }
         });
 

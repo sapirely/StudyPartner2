@@ -15,12 +15,19 @@
 
     </item>
     <item
-        android:id="@+id/conversationsFragment2"
+        android:id="@+id/inboxHolderFragment"
         android:icon="@drawable/ic_mail"
         android:title="@string/menu_chat"
         >
 
     </item>
+<!--    <item-->
+<!--        android:id="@+id/conversationsFragment2"-->
+<!--        android:icon="@drawable/ic_mail"-->
+<!--        android:title="@string/menu_chat"-->
+<!--        >-->
+
+<!--    </item>-->
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_profile"
