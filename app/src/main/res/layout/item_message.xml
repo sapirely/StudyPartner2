@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/mtrl_card_spacing"
     android:layout_marginRight="@dimen/mtrl_card_spacing"
     app:cardCornerRadius="20dp"
-    app:cardBackgroundColor="@color/msgBackground"
+    app:cardBackgroundColor="@color/light_grey"
     android:padding="10dp">
 
     <RelativeLayout

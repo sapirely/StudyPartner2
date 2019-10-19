@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -118,7 +119,7 @@ public class ResultRecyclerUtils {
         public final TextView nameTextView;
         public final TextView distanceTextView;
         public final ImageView profileImageView;
-        public final ImageView msgIcon;
+        public final ImageButton msgIcon;
 
         public ResultHolder(@NonNull View itemView) {
             super(itemView);

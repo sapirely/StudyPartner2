@@ -18,7 +18,6 @@ import java.util.List;
 
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
-import postpc.studypartner2.Search.results.ResultRecyclerUtils;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 
@@ -30,7 +29,7 @@ public class RequestsFragment extends Fragment {
     private static final String TAG = "RequestsFragment";
 
     private RecyclerView mRecyclerView;
-    private ResultRecyclerUtils.ResultsAdapter adapter;
+    private RequestRecyclerUtils.RequestsAdapter adapter;
     private UserViewModel viewModel;
 
     public RequestsFragment() {
@@ -45,7 +44,7 @@ public class RequestsFragment extends Fragment {
         View view= inflater.inflate(R.layout.fragment_requests, container, false);
 
         // Set up UI
-        adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
+        adapter = new RequestRecyclerUtils.RequestsAdapter(getContext());
         setUpRecyclerView(view);
 
         if (MainActivity.getCurrentUserID() != null) {
@@ -65,7 +64,7 @@ public class RequestsFragment extends Fragment {
                     public void onChanged(List<User> users) {
                         Log.d(TAG, "onChanged: updated query ");
 //                        adapter.setPartners(users);
-                        adapter.setResults(users);
+                        adapter.setRequests(users);
                     }
                 });
     }

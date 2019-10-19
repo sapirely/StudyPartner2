@@ -16,7 +16,7 @@
         android:layout_margin="10dp">
 
         <ImageView
-            android:id="@+id/iv_result_img"
+            android:id="@+id/request_img"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
@@ -28,7 +28,7 @@
             tools:srcCompat="@tools:sample/avatars[2]" />
 
         <TextView
-            android:id="@+id/tv_partner_name"
+            android:id="@+id/request_partner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -37,11 +37,11 @@
             android:textColor="@color/black"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_result_img"
+            app:layout_constraintStart_toEndOf="@id/request_img"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_distance"
+            android:id="@+id/request_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -49,10 +49,10 @@
             android:text="1"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_partner_name" />
+            app:layout_constraintStart_toEndOf="@id/request_partner_name" />
 
         <TextView
-            android:id="@+id/tv_distance_text"
+            android:id="@+id/request_distance_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -60,27 +60,31 @@
             android:text="km away"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_distance" />
+            app:layout_constraintStart_toEndOf="@id/request_distance" />
 
         <ImageButton
+            android:id="@+id/request_partner_approve"
             android:background="@android:color/transparent"
-            android:id="@+id/item_partner_chat_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_chat"
+            android:src="@drawable/ic_ok"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="visible"/>
         <ImageButton
-            android:id="@+id/item_partner_add_icon"
+            android:id="@+id/request_partner_cancel"
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_friend"
+            android:src="@drawable/ic_close"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/request_partner_approve"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"/>
+            android:visibility="visible"/>
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
