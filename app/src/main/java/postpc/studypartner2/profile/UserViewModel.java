@@ -1,30 +1,17 @@
 package postpc.studypartner2.profile;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
-import com.google.gson.Gson;
-import com.google.type.Date;
-
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
-import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 
-import static android.content.Context.MODE_PRIVATE;
-import static postpc.studypartner2.utils.HelperFunctions.SP_USER;
+import postpc.studypartner2.profile.FirestoreRepository.PartnerListType;
 
 
 public class UserViewModel extends AndroidViewModel {
@@ -105,8 +92,13 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<User>> getPartners(String uid){
-//        return fRepository.getPartners(uid);
-        return fRepository.getPartners(uid);
+//        return fRepository.getPartnersList(uid);
+        return fRepository.getPartnersList(uid, PartnerListType.PARTNERS);
+    }
+
+    public LiveData<List<User>> getRequests(String uid){
+//        return fRepository.getPartnersList(uid);
+        return fRepository.getPartnersList(uid, PartnerListType.REQUESTS);
     }
 
 //    public LiveData<List<Conversation>> getConversations(String uid){

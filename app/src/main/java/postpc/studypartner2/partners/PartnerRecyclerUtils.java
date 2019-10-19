@@ -96,7 +96,7 @@
 //            distanceTextView.setText(HelperFunctions.getStringDistanceBetweenTwoUsers(currentUser, result));
 //            Glide.with(view)
 //                    .load(result.getImage_url())
-//                    .placeholder(R.drawable.girl)//todo change
+//                    .placeholder(R.drawable.default_avatar)//todo change
 //                    .apply(RequestOptions.circleCropTransform())
 //                    .into(profileImageView);
 //        }

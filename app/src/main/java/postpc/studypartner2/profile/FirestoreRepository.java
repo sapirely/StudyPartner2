@@ -1,9 +1,6 @@
 package postpc.studypartner2.profile;
 
 
-import android.telephony.mbms.MbmsErrors;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -16,7 +13,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,15 +27,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 import postpc.studypartner2.utils.Log;
 
 class FirestoreRepository {
+
+    public enum PartnerListType {PARTNERS, REQUESTS};
 
     private static final String TAG = "FirestoreRepository";
     private FirebaseFirestore firestoreDB;
@@ -181,7 +177,18 @@ class FirestoreRepository {
 
     }
 
-    public LiveData<List<User>> getPartners(String uid){
+    private static String getPathFromType(PartnerListType type){
+        if (type == PartnerListType.PARTNERS){
+            return "approved";
+        } else if (type == PartnerListType.REQUESTS){
+            return "requests";
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public LiveData<List<User>> getPartnersList(String uid, final PartnerListType type){
+
         final List<User> listUsers = new ArrayList<>();
         DocumentReference docRef = firestoreDB.collection("partners").document(uid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
@@ -194,7 +201,8 @@ class FirestoreRepository {
                         android.util.Log.d(TAG, "onComplete: empty partner list");
                         return;
                     }
-                    List<DocumentReference> list = (List<DocumentReference>) document.get("approved");
+                    final String path = getPathFromType(type);
+                    List<DocumentReference> list = (List<DocumentReference>) document.get(path);
                     if (list.isEmpty()){
                         android.util.Log.d(TAG, "onComplete: empty approved partner list ");
                         return;

@@ -9,24 +9,28 @@
         android:id="@+id/titleCourses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:alpha="0.7">
 
         <TextView
             android:id="@+id/textViewTitleCourses"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
             android:text="@string/courses_title"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textSize="18sp" />
         <ImageButton
             android:id="@+id/btn_add_course"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:paddingHorizontal="10dp"
-            tools:src="@drawable/ic_add_course" />
+            tools:src="@drawable/ic_add_course"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -34,7 +38,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:paddingHorizontal="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleCourses"

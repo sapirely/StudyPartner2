@@ -123,7 +123,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             this.otherUserName.setText(otherUser.getName());
             Glide.with(this)
                     .load(otherUser.getImage_url())
-                    .placeholder(R.drawable.girl)
+                    .placeholder(R.drawable.default_avatar)
                     .apply(RequestOptions.circleCropTransform())
                     .into(chatAvatar);
         }
@@ -202,7 +202,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             @Override
             public void onClick(View view) {
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
-                        .navigate(R.id.action_chatFragment_to_conversationsFragment2);
+                        .navigate(R.id.action_chatFragment_to_inboxHolderFragment);
             }
         });
     }

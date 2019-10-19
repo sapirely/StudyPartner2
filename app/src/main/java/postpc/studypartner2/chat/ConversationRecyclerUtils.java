@@ -6,21 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +127,7 @@ public class ConversationRecyclerUtils {
         private void setPartnerAvatar(String url){
             Glide.with(view)
                     .load(url)
-                    .placeholder(R.drawable.girl)//todo change
+                    .placeholder(R.drawable.default_avatar)//todo change
                     .apply(RequestOptions.circleCropTransform())
                     .into(partnerAvatar);
         }

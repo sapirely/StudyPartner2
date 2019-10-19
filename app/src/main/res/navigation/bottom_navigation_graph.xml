@@ -75,6 +75,9 @@
         <action
             android:id="@+id/action_chatFragment_to_conversationsFragment2"
             app:destination="@id/conversationsFragment2" />
+        <action
+            android:id="@+id/action_chatFragment_to_inboxHolderFragment"
+            app:destination="@id/inboxHolderFragment" />
     </fragment>
     <fragment
         android:id="@+id/conversationsFragment2"

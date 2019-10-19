@@ -1,7 +1,6 @@
 package postpc.studypartner2.Search.results;
 
 import android.content.Context;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -24,7 +22,6 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.R;
 import postpc.studypartner2.utils.HelperFunctions;
@@ -140,7 +137,7 @@ public class ResultRecyclerUtils {
             distanceTextView.setText(HelperFunctions.getStringDistanceBetweenTwoUsers(currentUser, result));
             Glide.with(view)
                     .load(result.getImage_url())
-                    .placeholder(R.drawable.girl)//todo change
+                    .placeholder(R.drawable.default_avatar)//todo change
                     .apply(RequestOptions.circleCropTransform())
                     .into(profileImageView);
         }

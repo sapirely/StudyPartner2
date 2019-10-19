@@ -52,20 +52,6 @@ public class InboxHolderFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    //    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//
-////        MyTabPagerAdapter tabPager = new MyTabPagerAdapter(getParentFragmentManager());
-//        MyTabPagerAdapter tabPager = new MyTabPagerAdapter(getChildFragmentManager());
-//
-//        ViewPager viewPager = getView().findViewById(R.id.tab_pager);
-//        viewPager.setAdapter(tabPager);
-//
-//        // Display a tab for each Fragment displayed in ViewPager.
-//        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-//        tabLayout.setupWithViewPager(viewPager);
-//    }
-
     public class MyTabPagerAdapter extends FragmentStatePagerAdapter{
         public MyTabPagerAdapter(@NonNull FragmentManager fm) {
             super(fm);
@@ -102,28 +88,5 @@ public class InboxHolderFragment extends Fragment {
             }
         }
     }
-
-//    static class MyTabPagerAdapter extends FragmentPagerAdapter {
-//        MyTabPagerAdapter(FragmentManager fm) {
-//            super(fm);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return 2; // One for each tab, 3 in our example.
-//        }
-//
-//        @Override
-//        public Fragment getItem(int position) {
-//            switch(position) {
-//                case 0:
-//                    return new ConversationsFragment();
-//                case 1:
-//                    return new RequestsFragment();
-//                default:
-//                    throw new IllegalArgumentException();
-//            }
-//        }
-//    }
 
 }

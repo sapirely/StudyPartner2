@@ -3,6 +3,7 @@ package postpc.studypartner2.Search.results;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,7 +32,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     private static final String TAG = "SearchFragment";
     private EditText courseNum;
     private ImageButton searchBtn;
-    private LinearLayout searchFiltersLayout;
+    private ConstraintLayout searchFiltersLayout;
     private RecyclerView mRecyclerView;
     private ProgressBar progressBar;
 

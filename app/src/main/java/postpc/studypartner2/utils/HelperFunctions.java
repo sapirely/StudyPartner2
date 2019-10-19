@@ -18,6 +18,8 @@ public class HelperFunctions {
     public final static String SP_USER = "SP_USER";
     public final static String SP_UID = "SP_UID";
 
+
+
     public static GeoPoint locationToGeoPoint(Location loc)
     {
         return new GeoPoint(loc.getLatitude(), loc.getLongitude());

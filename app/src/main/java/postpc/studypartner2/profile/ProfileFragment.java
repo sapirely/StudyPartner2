@@ -100,10 +100,16 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     }
 
 
-    private void setUpRecyclerView() {
-        final int NUM_OF_COLS = 2;
+    private void setUpRecyclerView(int coursesListLength) {
+        final double NUM_OF_COLS = 4.0; // num of courses in a line
+        int numOfLines = 1; // initial number of lines
+
+        if (coursesListLength > 0) {
+            // calc how many lines are needed
+            numOfLines = (int) Math.ceil(coursesListLength / NUM_OF_COLS);
+        }
         mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(NUM_OF_COLS,
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(numOfLines,
                 StaggeredGridLayoutManager.HORIZONTAL));
     }
 
@@ -115,7 +121,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         setUpProfileImage(view, user.getImage_url());
         profileName.setText(user.getName());
         profileDesc.setText(user.getDescription());
-        setUpRecyclerView();
+        setUpRecyclerView(user.getCourses().size());
         adapter.setCourses(user.getCoursesList_courseType());
 
         //todo more stuff
@@ -135,7 +141,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private void loadImage(String image_uri){
         Glide.with(this)
                 .load(image_uri)
-                .placeholder(R.drawable.girl)
+                .placeholder(R.drawable.default_avatar)
                 .apply(RequestOptions.circleCropTransform())
                 .into(imageView);
     }
