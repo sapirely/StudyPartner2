@@ -2,6 +2,7 @@ package postpc.studypartner2.notifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -88,6 +89,10 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         Bundle bundle = new Bundle();
         bundle.putString("theirUid", user);
         // todo: skipped the activity/intent stuff
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
@@ -95,7 +100,8 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 .setContentText(body)
                 .setContentTitle(title)
                 .setAutoCancel(true)
-                .setSound(defSoundUri);
+                .setSound(defSoundUri)
+                .setContentIntent(pIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int j = 0;
@@ -110,16 +116,23 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
+        String isRequest = remoteMessage.getData().get("isRequest");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int i = Integer.parseInt(user.replaceAll("[\\D]", ""));
         Bundle bundle = new Bundle();
         bundle.putString("theirUid", user);
+        bundle.putString("isRequest", isRequest);
         // todo: skipped the activity/intent stuff
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         OreoAndAboveNotification notification1 = new OreoAndAboveNotification(this);
-        Notification.Builder builder = notification1.getONotifications(title,body,defSoundUri,icon);
+        Notification.Builder builder = notification1.getONotifications(title,body,defSoundUri,icon, pIntent);
 
         int j = 0;
         if (i>0){

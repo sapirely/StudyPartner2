@@ -276,7 +276,8 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     Token token = ds.getValue(Token.class);
                     String notificationBody = generateNotificationBody(nameOfUser, msgContent, isRequest);
-                    Data data = new Data(otherUserUID, notificationBody, null, otherUserUID, R.drawable.ic_chat);
+
+                    Data data = new Data(otherUserUID, notificationBody, null, otherUserUID, R.drawable.ic_chat, isRequest);
                     Sender sender = new Sender(data, token.getToken());
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<Response>() {

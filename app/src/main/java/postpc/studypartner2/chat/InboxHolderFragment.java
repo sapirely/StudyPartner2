@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayout;
 
 import postpc.studypartner2.R;
+import postpc.studypartner2.profile.User;
 
 /**
  * Holds the conversations and the requests tab.
@@ -27,6 +29,7 @@ public class InboxHolderFragment extends Fragment {
 
     MyTabPagerAdapter myTabPagerAdapter;
     ViewPager viewPager;
+    private static final String TAG = "InboxHolderFragment";
 
     public InboxHolderFragment() {
         // Required empty public constructor
@@ -50,6 +53,17 @@ public class InboxHolderFragment extends Fragment {
 //         Display a tab for each Fragment displayed in ViewPager.
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+
+        // read bundle from notifications
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            String isRequest = bundle.getString("isRequest", "");
+            if (isRequest.equals("true")){
+                viewPager.setCurrentItem(1);
+            }
+        } else {
+            Log.d(TAG, "onCreateView: Got to InboxHolder without user info");
+        }
     }
 
     public class MyTabPagerAdapter extends FragmentStatePagerAdapter{

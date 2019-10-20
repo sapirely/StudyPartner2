@@ -87,8 +87,22 @@ public class MainActivity extends AppCompatActivity {
         if (!checkPermissions(PERMISSIONS)){
            requestRemainingPermissions(PERMISSIONS);
         }
+
         initApp();
 
+    }
+
+    private void actOnIntent(){
+        Intent intent = getIntent();
+        if (intent != null){
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                String isRequest = bundle.getString("isRequest");
+                Log.d(TAG, "onCreate: isRequest: " + isRequest);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
+            }
+        }
     }
 
     private void initApp(){
@@ -111,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // Navigation set up
         setUpNavigation();
+        actOnIntent();
     }
 
     public void updateTokenHelper(String token){

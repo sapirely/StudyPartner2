@@ -4,14 +4,17 @@ public class Data {
 
     private String user, body, title, sent;
     private Integer icon;
+    private boolean isRequest;
 
-    public Data(String user, String body, String title, String sent, Integer icon) {
+    public Data(String user, String body, String title, String sent, Integer icon, boolean isRequest) {
         this.user = user;
         this.body = body;
         this.title = title;
         this.sent = sent;
         this.icon = icon;
+        this.isRequest = isRequest;
     }
+
 
     public String getUser() {
         return user;
@@ -54,4 +57,11 @@ public class Data {
     }
 
 
+    public boolean isRequest() {
+        return isRequest;
+    }
+
+    public void setRequest(boolean request) {
+        isRequest = request;
+    }
 }
