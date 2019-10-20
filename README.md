@@ -17,5 +17,6 @@ OTHERS:
 
 ISSUES:
 - may be an issue with progress bars when the list is empty. (nothing is observed -> theyre never gone)
+- in conversations: change user to reference
 
 ERRORS:
