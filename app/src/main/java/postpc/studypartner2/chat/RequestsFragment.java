@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.database.connection.RequestResultCallback;
 
 import java.util.List;
 
@@ -24,7 +27,7 @@ import postpc.studypartner2.profile.UserViewModel;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RequestsFragment extends Fragment {
+public class RequestsFragment extends Fragment implements RequestRecyclerUtils.RequestClickCallBack {
 
     private static final String TAG = "RequestsFragment";
 
@@ -47,10 +50,13 @@ public class RequestsFragment extends Fragment {
         adapter = new RequestRecyclerUtils.RequestsAdapter(getContext());
         setUpRecyclerView(view);
 
+        adapter.callBack = this;
+
         if (MainActivity.getCurrentUserID() != null) {
             // logged in
             loadRequests();
         }
+
 
         return view;
     }
@@ -93,5 +99,24 @@ public class RequestsFragment extends Fragment {
                 view.getContext(),
                 LinearLayoutManager.VERTICAL,
                 false));
+    }
+
+    @Override
+    public void onRequestClick(View view, int position) {
+        User user = adapter.getItemByPosition(position);
+        switch (view.getId()){
+            case R.id.request_partner_approve_btn:
+                viewModel.addPartner(MainActivity.getCurrentUserID(), user.getUid());
+                adapter.removeAt(position);
+                Toast.makeText(this.getContext(), "Added "+user.getName(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onRequestClick: approving partner request of "+user.getUid());
+                break;
+            case R.id.request_partner_cancel_btn:
+                viewModel.removeRequest(MainActivity.getCurrentUserID(), user.getUid());
+                adapter.removeAt(position);
+                Toast.makeText(this.getContext(), "Removed "+user.getName(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onRequestClick: removing partner request of "+user.getUid());
+                break;
+        }
     }
 }

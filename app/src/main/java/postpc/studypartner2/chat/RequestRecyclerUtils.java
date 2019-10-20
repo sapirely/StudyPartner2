@@ -1,12 +1,14 @@
 package postpc.studypartner2.chat;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -43,19 +45,18 @@ public class RequestRecyclerUtils {
     }
 
     public interface RequestClickCallBack{
-        void onRequestLongClick(User user);
+        void onRequestClick(View v, int position);
     }
 
     //    static class RequestsAdapter extends FirestoreRecyclerAdapter<User,RequestHolder> {
     public static class RequestsAdapter extends ListAdapter<User, RequestRecyclerUtils.RequestHolder> {
         private List<User> requests = new ArrayList<>();
-        private Context context;
-        static ClickListener clickListener;
+
+        public RequestClickCallBack callBack;
 
         public RequestsAdapter(Context context) {
 
             super(new RequestCallBack());
-            this.context = context;
         }
 
 
@@ -64,36 +65,30 @@ public class RequestRecyclerUtils {
         public RequestHolder onCreateViewHolder(@NonNull ViewGroup parent, int itemType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             return new RequestHolder(inflater.inflate(R.layout.item_request, parent, false));
-
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RequestHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RequestHolder holder, final int position) {
             final User currentRequest = requests.get(position);
             holder.setData(currentRequest);
-//            holder.approveButton.setOnClickListener(clickListener);
-//            holder.msgIcon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("otherChatUserUID", currentRequest.getUid());
-//                    bundle.putParcelable("otherChatUser", currentRequest);
-//
-//                    // todo: unspaghetti
-//                    try {
-//                        Navigation.findNavController((AppCompatActivity) view.getContext(), R.id.nav_host_fragment)
-//                                .navigate(R.id.action_homeFragment_to_chatFragment, bundle);
-//                    } catch (Exception e){
-//                        Log.d(TAG, "onClick: failed to navigate from home to chat ");
-//                        try {
-//                            Navigation.findNavController((AppCompatActivity) view.getContext(), R.id.nav_host_fragment)
-//                                    .navigate(R.id.action_searchFragment_to_chatFragment, bundle);
-//                        } catch (Exception e2){
-//                            Log.d(TAG, "onClick: failed to navigate from search to chat");
-//                        }
-//                    }
-//                }
-//            });
+            final RequestHolder fHolder = holder;
+            final int fPosition = position;
+            fHolder.approveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (callBack != null){
+                        callBack.onRequestClick(view, fPosition);
+                    }
+                }
+            });
+            fHolder.cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (callBack != null){
+                        callBack.onRequestClick(view, fPosition);
+                    }
+                }
+            });
         }
 
         @Override
@@ -101,26 +96,25 @@ public class RequestRecyclerUtils {
             return requests.size();
         }
 
-        public void setOnItemClickListener(ClickListener clickListener) {
-            RequestsAdapter.clickListener = clickListener;
-        }
 
         public void setRequests(List<User> requests) {
             this.requests = requests;
             notifyDataSetChanged();
         }
 
-        public void setCurrentUser(User user){
-            currentUser = user;
+        public User getItemByPosition(int position) {
+            return this.requests.get(position);
         }
 
-        public interface ClickListener {
-            void onItemClick(int position, View v);
+        public void removeAt(int position) {
+            this.requests.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, getItemCount());
         }
     }
 
     static class RequestHolder
-            extends RecyclerView.ViewHolder implements View.OnClickListener{
+            extends RecyclerView.ViewHolder {
 
         private View view;
         public final TextView nameTextView;
@@ -133,6 +127,7 @@ public class RequestRecyclerUtils {
             super(itemView);
 
             this.view = itemView;
+
             nameTextView = itemView.findViewById(R.id.request_partner_name);
             distanceTextView = itemView.findViewById(R.id.request_distance);
             profileImageView = itemView.findViewById(R.id.request_img);
@@ -150,10 +145,10 @@ public class RequestRecyclerUtils {
                     .into(profileImageView);
         }
 
-        @Override
-        public void onClick(View view) {
-            RequestsAdapter.clickListener.onItemClick(getAdapterPosition(), view);
-        }
+//        @Override
+//        public void onClick(View view) {
+//            RequestsAdapter.clickListener.onItemClick(getAdapterPosition(), view);
+//        }
     }
 
 }
