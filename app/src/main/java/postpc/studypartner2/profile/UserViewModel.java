@@ -1,17 +1,27 @@
 package postpc.studypartner2.profile;
 
 import android.app.Application;
+import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.util.List;
 
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 
 import postpc.studypartner2.profile.FirestoreRepository.PartnerListType;
+import postpc.studypartner2.utils.Log;
 
 
 public class UserViewModel extends AndroidViewModel {
@@ -74,6 +84,14 @@ public class UserViewModel extends AndroidViewModel {
 //    public void setLastUsersQuery(List<User> users){
 //        mQueryUsers.postValue(users);
 //    }
+
+    public LiveData<String> uploadProfileImageToStorage(String uid, Uri localUri){
+        if (localUri == null){
+            throw new IllegalArgumentException();
+        }
+        return fRepository.uploadProfileImageToStorage(uid, localUri);
+
+    }
 
     public void updateUser(String uid, String key, String value){
         fRepository.updateUser(uid, key, value);

@@ -169,12 +169,18 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                     android.util.Log.d(TAG, "onActivityResult: filepath is " + filePath);
                     final Uri uri = data.getData();
                     Log.d(TAG, "Uri: " + uri.toString());
-                    StorageReference storageReference =
-                            FirebaseStorage.getInstance()
-                                    .getReference(MainActivity.getCurrentUserID())
-                                    .child(uri.getLastPathSegment());
+                    viewModel.uploadProfileImageToStorage(MainActivity.getCurrentUserID(), uri).observe(getViewLifecycleOwner(), new Observer<String>() {
+                        @Override
+                        public void onChanged(String storageUri) {
+                            loadImage(storageUri);
+                        }
+                    });
+//                    StorageReference storageReference =
+//                            FirebaseStorage.getInstance()
+//                                    .getReference(MainActivity.getCurrentUserID())
+//                                    .child(uri.getLastPathSegment());
 
-                    putImageInStorage(storageReference, uri);
+//                    putImageInStorage(storageReference, uri);
                 }
                 // todo: doesn't load the image
 
@@ -185,33 +191,37 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         }
     }
 
-    private void putImageInStorage(StorageReference storageReference, Uri uri) {
-        storageReference.putFile(uri).addOnCompleteListener(getActivity(),
-                new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            task.getResult().getMetadata().getReference().getDownloadUrl()
-                                    .addOnCompleteListener(getActivity(),
-                                            new OnCompleteListener<Uri>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Uri> task) {
-                                                    if (task.isSuccessful()) {
-                                                        // update the profile to use the image
-                                                        String uri = task.getResult().toString();
-                                                        // save to db
-                                                        viewModel.updateUser(MainActivity.getCurrentUserID(), "image_url", uri);
-                                                        loadImage(uri);
-                                                        // todo
-                                                    }
-                                                }
-                                            });
-                        } else {
-                            Log.d(TAG, "Image upload task failed: "+
-                                    task.getException());
-                        }
-                    }
-                });
-    }
+//    public String uploadProfileImageToStorage(String uid, String localUri){
+//
+//    }
+//
+//    private void putImageInStorage(StorageReference storageReference, Uri uri) {
+//        storageReference.putFile(uri).addOnCompleteListener(getActivity(),
+//                new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            task.getResult().getMetadata().getReference().getDownloadUrl()
+//                                    .addOnCompleteListener(getActivity(),
+//                                            new OnCompleteListener<Uri>() {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<Uri> task) {
+//                                                    if (task.isSuccessful()) {
+//                                                        // update the profile to use the image
+//                                                        String uri = task.getResult().toString();
+//                                                        // save to db
+//                                                        viewModel.updateUser(MainActivity.getCurrentUserID(), "image_url", uri);
+//                                                        loadImage(uri);
+//                                                        // todo
+//                                                    }
+//                                                }
+//                                            });
+//                        } else {
+//                            Log.d(TAG, "Image upload task failed: "+
+//                                    task.getException());
+//                        }
+//                    }
+//                });
+//    }
 
 }

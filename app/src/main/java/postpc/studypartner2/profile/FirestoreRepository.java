@@ -1,6 +1,8 @@
 package postpc.studypartner2.profile;
 
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -25,10 +27,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 import postpc.studypartner2.utils.Log;
@@ -45,7 +51,7 @@ class FirestoreRepository {
     private MutableLiveData<List<User>> usersQuery;
     private MutableLiveData<List<User>> partners;
     private MutableLiveData<List<Conversation>> conversationsLiveData;
-    private MutableLiveData<Boolean> isRegistered;
+    private MutableLiveData<String> uriLiveData;
 
     // messages
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -61,6 +67,7 @@ class FirestoreRepository {
         partners = new MutableLiveData<>();
         messagesLiveData = new MutableLiveData<>();
         conversationsLiveData = new MutableLiveData<>();
+        uriLiveData = new MutableLiveData<>();
     }
 
     public void addUser(User user) {
@@ -388,6 +395,41 @@ class FirestoreRepository {
         return conversationsLiveData;
 
 
+    }
+
+    public LiveData<String> uploadProfileImageToStorage(final String uid, final Uri localUri){
+        StorageReference storageReference =
+                FirebaseStorage.getInstance()
+                        .getReference(uid)
+                        .child(localUri.getLastPathSegment());
+
+        storageReference.putFile(localUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            task.getResult().getMetadata().getReference().getDownloadUrl()
+                                    .addOnCompleteListener(
+                                            new OnCompleteListener<Uri>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Uri> task) {
+                                                    if (task.isSuccessful()) {
+                                                        // update the profile to use the image
+                                                        String uri = task.getResult().toString();
+                                                        // save to db
+                                                        updateUser(uid, "image_url", uri);
+                                                        // return the uri to the ui
+                                                        uriLiveData.postValue(uri);
+                                                    }
+                                                }
+                                            });
+                        } else {
+                            Log.d(TAG, "Image upload task failed: "+
+                                    task.getException());
+                        }
+                    }
+                });
+
+        return uriLiveData;
     }
 
 //    public LiveData<List<Conversation>> getConversations(String uid) {
