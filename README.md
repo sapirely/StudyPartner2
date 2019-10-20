@@ -1,7 +1,7 @@
 # StudyPartner2
 
-Partners:
-- UI - is that how we want it to look? do we need a calendar?
+Chat:
+- different colored messages for user and partner 
 
 Profile:
 - Edit profile
