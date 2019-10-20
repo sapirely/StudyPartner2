@@ -1,8 +1,5 @@
 # StudyPartner2
 
-Chat:
-- different colored messages for user and partner 
-
 Profile:
 - Edit profile
 - Registration

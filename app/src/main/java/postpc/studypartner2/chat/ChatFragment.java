@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 import postpc.studypartner2.notifications.APIService;
 import postpc.studypartner2.notifications.Client;
@@ -153,6 +154,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
 
     private void setUpRecyclerView(View view) {
         mRecyclerView.setAdapter(adapter);
+        adapter.setCurrentUID(MainActivity.getCurrentUserID());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 view.getContext(),
                 LinearLayoutManager.VERTICAL,
