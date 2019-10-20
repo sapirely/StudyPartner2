@@ -1,7 +1,5 @@
 package postpc.studypartner2.chat;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.util.List;
 
@@ -26,6 +25,7 @@ import postpc.studypartner2.R;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 
+import static android.view.View.GONE;
 import static postpc.studypartner2.utils.HelperFunctions.determineOtherUserUIDFromConversation;
 
 
@@ -37,6 +37,7 @@ public class ConversationsFragment extends Fragment {
     public UserViewModel viewModel;
 
     private RecyclerView mRecyclerView;
+    private ProgressBar progressBar;
     private ConversationRecyclerUtils.ConversationsAdapter adapter = new ConversationRecyclerUtils.ConversationsAdapter(getContext());
 
 
@@ -49,7 +50,7 @@ public class ConversationsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_conversations, container, false);
-
+        progressBar = view.findViewById(R.id.progressBarConversations);
         // Set up UI
         setUpRecyclerView(view);
 
@@ -87,11 +88,16 @@ public class ConversationsFragment extends Fragment {
                         public void onChanged(List<Conversation> c) {
                             Log.d(TAG, "onChanged: updated query ");
                             adapter.setConversations(c);
+                            updateUI();
                         }
                     });
         } catch (Exception e){
             Log.d(TAG, "loadConversations: no conversations yet");
         }
+    }
+
+    private void updateUI() {
+        progressBar.setVisibility(GONE);
     }
 
     private void setUpRecyclerView(View view) {

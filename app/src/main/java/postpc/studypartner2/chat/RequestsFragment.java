@@ -13,9 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.google.firebase.database.connection.RequestResultCallback;
 
 import java.util.List;
 
@@ -23,6 +22,8 @@ import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
+
+import static android.view.View.GONE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +35,7 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
     private RecyclerView mRecyclerView;
     private RequestRecyclerUtils.RequestsAdapter adapter;
     private UserViewModel viewModel;
+    private ProgressBar progressBar;
 
     public RequestsFragment() {
         // Required empty public constructor
@@ -45,6 +47,7 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_requests, container, false);
+        progressBar = view.findViewById(R.id.progressBarRequests);
 
         // Set up UI
         adapter = new RequestRecyclerUtils.RequestsAdapter(getContext());
@@ -70,25 +73,31 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
                     public void onChanged(List<User> users) {
                         Log.d(TAG, "onChanged: updated query ");
 //                        adapter.setPartners(users);
+                        progressBar.setVisibility(View.VISIBLE);
                         adapter.setRequests(users);
+                        updateUI();
                     }
                 });
     }
 
-    private View.OnClickListener setOncl(final String requestUID){
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()){
-                    case R.id.request_partner_approve_btn:
-                        viewModel.addPartner(MainActivity.getCurrentUserID(), requestUID);
-                        break;
-                }
-            }
-        };
-        return null;
+    private void updateUI() {
+        progressBar.setVisibility(GONE);
     }
+
+//    private View.OnClickListener setOncl(final String requestUID){
+//        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+//        View.OnClickListener onClickListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                switch (view.getId()){
+//                    case R.id.request_partner_approve_btn:
+//                        viewModel.addPartner(MainActivity.getCurrentUserID(), requestUID);
+//                        break;
+//                }
+//            }
+//        };
+//        return null;
+//    }
 
     private void setUpRecyclerView(View view) {
         mRecyclerView = view.findViewById(R.id.requestsRecyclerView);

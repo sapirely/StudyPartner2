@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,6 +25,8 @@ import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
 
+import static android.view.View.GONE;
+
 
 public class HomeFragment extends Fragment {
 
@@ -32,6 +35,7 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private FloatingActionButton floatingActionButton;
     private RecyclerView mRecyclerView;
+    private ProgressBar progressBar;
 //    private PartnerRecyclerUtils.PartnersAdapter adapter = new PartnerRecyclerUtils.PartnersAdapter();
     private ResultRecyclerUtils.ResultsAdapter adapter;
     public HomeFragment() {
@@ -43,6 +47,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        progressBar = view.findViewById(R.id.progressBarPartners);
 
         // Set up UI
         adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
@@ -85,8 +90,13 @@ public class HomeFragment extends Fragment {
                         Log.d(TAG, "onChanged: updated query ");
 //                        adapter.setPartners(users);
                         adapter.setResults(users);
+                        updateUI();
                     }
                 });
+    }
+
+    private void updateUI() {
+        progressBar.setVisibility(GONE);
     }
 
     private void setUpRecyclerView(View view) {

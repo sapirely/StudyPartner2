@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     private static final String TAG = "SearchFragment";
     private EditText courseNum;
     private ImageButton searchBtn;
-    private ConstraintLayout searchFiltersLayout;
+    private LinearLayout searchFiltersLayout;
     private RecyclerView mRecyclerView;
     private ProgressBar progressBar;
 
@@ -71,9 +71,9 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
             public void onClick(View view){
                 switch(view.getId()) {
                     case R.id.button_search:
-                        progressBar.setVisibility(View.VISIBLE);
+                        searchFiltersLayout.setVisibility(View.GONE);
                         loadResults();
-                        updateUI();
+//                        updateUI();
                         break;
                 }
             }
@@ -90,6 +90,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
                         Log.d(TAG, "onChanged: updated query ");
                         adapter.setResults(users);
                         setCurrentUserForLocation();
+                        updateUI();
                     }
                 });
 
@@ -107,7 +108,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
 
     private void updateUI(){
         // Hide search filters and show results
-        searchFiltersLayout.setVisibility(View.GONE);
+
         mRecyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
