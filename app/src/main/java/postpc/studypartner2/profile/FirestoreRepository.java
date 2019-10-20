@@ -206,18 +206,21 @@ class FirestoreRepository {
                     DocumentSnapshot document = task.getResult();
                     if (document == null){
                         android.util.Log.d(TAG, "onComplete: empty partner list");
+                        partners.postValue(listUsers);
                         return;
                     }
                     final String path = getPathFromType(type);
                     List<DocumentReference> list = (List<DocumentReference>) document.get(path);
-                    if (list.isEmpty()){
+                    if (list == null || list.isEmpty()){
                         android.util.Log.d(TAG, "onComplete: empty approved partner list ");
-                        return;
+                        partners.postValue(listUsers);
+                        return ;
                     }
                     List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
                     for (DocumentReference documentReference : list) {
                         if (documentReference == null){
                             android.util.Log.d(TAG, "onComplete: empty partner list - docref");
+                            partners.postValue(listUsers);
                             return;
                         }
                         Task<DocumentSnapshot> documentSnapshotTask = documentReference.get();

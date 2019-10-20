@@ -73,7 +73,6 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
                     public void onChanged(List<User> users) {
                         Log.d(TAG, "onChanged: updated query ");
 //                        adapter.setPartners(users);
-                        progressBar.setVisibility(View.VISIBLE);
                         adapter.setRequests(users);
                         updateUI();
                     }
