@@ -69,6 +69,21 @@ public class RequestsFragment extends Fragment {
                 });
     }
 
+    private View.OnClickListener setOncl(final String requestUID){
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()){
+                    case R.id.request_partner_approve_btn:
+                        viewModel.addPartner(MainActivity.getCurrentUserID(), requestUID);
+                        break;
+                }
+            }
+        };
+        return null;
+    }
+
     private void setUpRecyclerView(View view) {
         mRecyclerView = view.findViewById(R.id.requestsRecyclerView);
 

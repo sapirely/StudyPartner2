@@ -132,13 +132,12 @@ public class ResultRecyclerUtils {
         }
 
 
-
         public void setData(User result) {
             nameTextView.setText(result.getName());
             distanceTextView.setText(HelperFunctions.getStringDistanceBetweenTwoUsers(currentUser, result));
             Glide.with(view)
                     .load(result.getImage_url())
-                    .placeholder(R.drawable.default_avatar)//todo change
+                    .placeholder(R.drawable.default_avatar)
                     .apply(RequestOptions.circleCropTransform())
                     .into(profileImageView);
         }

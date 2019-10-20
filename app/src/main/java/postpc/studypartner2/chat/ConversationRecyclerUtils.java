@@ -66,6 +66,7 @@ public class ConversationRecyclerUtils {
         public void onBindViewHolder(@NonNull final ConversationHolder holder, int position) {
             Conversation conversation = conversations.get(position);
             holder.setData(conversation);
+
         }
 
         @Override

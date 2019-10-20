@@ -66,18 +66,25 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <LinearLayout
+        android:id="@+id/rec_lin_lay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginVertical="@dimen/toolbar_margin"
+        app:layout_constraintBottom_toTopOf="@id/chat_linear_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messageRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/chat_linear_layout"
-        android:layout_alignBottom="@+id/chat_linear_layout"
-        android:layout_alignParentTop="true"
-        tools:listitem="@layout/item_message"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chat_top_bar"
+        android:layout_height="match_parent"
+                tools:listitem="@layout/item_message"
+        android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/chat_linear_layout"
@@ -97,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
+            android:background="@color/white"
             android:paddingHorizontal="12dp"
             android:paddingBottom="8dp">
 
@@ -104,5 +112,6 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

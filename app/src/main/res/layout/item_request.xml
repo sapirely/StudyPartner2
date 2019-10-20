@@ -63,7 +63,7 @@
             app:layout_constraintStart_toEndOf="@id/request_distance" />
 
         <ImageButton
-            android:id="@+id/request_partner_approve"
+            android:id="@+id/request_partner_approve_btn"
             android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,13 +74,13 @@
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="visible"/>
         <ImageButton
-            android:id="@+id/request_partner_cancel"
+            android:id="@+id/request_partner_cancel_btn"
             android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_close"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/request_partner_approve"
+            app:layout_constraintEnd_toStartOf="@id/request_partner_approve_btn"
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="visible"/>
 

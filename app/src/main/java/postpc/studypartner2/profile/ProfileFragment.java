@@ -1,8 +1,10 @@
 package postpc.studypartner2.profile;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -20,6 +22,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -157,11 +164,54 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PROFILE_IMG_REQUEST_CODE){
             if (resultCode == RESULT_OK){
-                String filePath = data.getData().getPath();
-                android.util.Log.d(TAG, "onActivityResult: filepath is "+filePath);
+                if (data != null) {
+                    String filePath = data.getData().getPath(); // only one of them is neede todo
+                    android.util.Log.d(TAG, "onActivityResult: filepath is " + filePath);
+                    final Uri uri = data.getData();
+                    Log.d(TAG, "Uri: " + uri.toString());
+                    StorageReference storageReference =
+                            FirebaseStorage.getInstance()
+                                    .getReference(MainActivity.getCurrentUserID())
+                                    .child(uri.getLastPathSegment());
+
+                    putImageInStorage(storageReference, uri);
+                }
                 // todo: doesn't load the image
-                loadImage(filePath);
+
+
+
+//                loadImage(filePath);
             }
         }
     }
+
+    private void putImageInStorage(StorageReference storageReference, Uri uri) {
+        storageReference.putFile(uri).addOnCompleteListener(getActivity(),
+                new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            task.getResult().getMetadata().getReference().getDownloadUrl()
+                                    .addOnCompleteListener(getActivity(),
+                                            new OnCompleteListener<Uri>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Uri> task) {
+                                                    if (task.isSuccessful()) {
+                                                        // update the profile to use the image
+                                                        String uri = task.getResult().toString();
+                                                        // save to db
+                                                        viewModel.updateUser(MainActivity.getCurrentUserID(), "image_url", uri);
+                                                        loadImage(uri);
+                                                        // todo
+                                                    }
+                                                }
+                                            });
+                        } else {
+                            Log.d(TAG, "Image upload task failed: "+
+                                    task.getException());
+                        }
+                    }
+                });
+    }
+
 }

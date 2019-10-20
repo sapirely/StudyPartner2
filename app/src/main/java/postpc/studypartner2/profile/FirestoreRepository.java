@@ -126,7 +126,7 @@ class FirestoreRepository {
         removePartnerRequest(userUID, partnerUID);
     }
 
-    private void removePartnerRequest(String userUID, String partnerUID) {
+    public void removePartnerRequest(String userUID, String partnerUID) {
         DocumentReference userPartnersRef = firestoreDB.collection("partners").document(userUID);
         DocumentReference requesterRef = firestoreDB.collection("users").document(partnerUID);
 

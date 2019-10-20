@@ -91,6 +91,14 @@ public class UserViewModel extends AndroidViewModel {
 //        mRepository.insert(user);
     }
 
+    public void addPartner(String currentUID, String partnerUID){
+        fRepository.addPartner(currentUID, partnerUID);
+    }
+
+    public void removeRequest(String currentUID, String partnerUID){
+        fRepository.removePartnerRequest(currentUID, partnerUID);
+    }
+
     public LiveData<List<User>> getPartners(String uid){
 //        return fRepository.getPartnersList(uid);
         return fRepository.getPartnersList(uid, PartnerListType.PARTNERS);

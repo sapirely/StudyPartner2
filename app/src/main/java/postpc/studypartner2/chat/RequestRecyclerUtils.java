@@ -1,17 +1,14 @@
 package postpc.studypartner2.chat;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,12 +50,14 @@ public class RequestRecyclerUtils {
     public static class RequestsAdapter extends ListAdapter<User, RequestRecyclerUtils.RequestHolder> {
         private List<User> requests = new ArrayList<>();
         private Context context;
+        static ClickListener clickListener;
 
         public RequestsAdapter(Context context) {
 
             super(new RequestCallBack());
             this.context = context;
         }
+
 
         @NonNull
         @Override
@@ -72,6 +71,7 @@ public class RequestRecyclerUtils {
         public void onBindViewHolder(@NonNull RequestHolder holder, int position) {
             final User currentRequest = requests.get(position);
             holder.setData(currentRequest);
+//            holder.approveButton.setOnClickListener(clickListener);
 //            holder.msgIcon.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
@@ -101,6 +101,10 @@ public class RequestRecyclerUtils {
             return requests.size();
         }
 
+        public void setOnItemClickListener(ClickListener clickListener) {
+            RequestsAdapter.clickListener = clickListener;
+        }
+
         public void setRequests(List<User> requests) {
             this.requests = requests;
             notifyDataSetChanged();
@@ -109,26 +113,32 @@ public class RequestRecyclerUtils {
         public void setCurrentUser(User user){
             currentUser = user;
         }
+
+        public interface ClickListener {
+            void onItemClick(int position, View v);
+        }
     }
 
     static class RequestHolder
-            extends RecyclerView.ViewHolder {
+            extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private View view;
         public final TextView nameTextView;
         public final TextView distanceTextView;
         public final ImageView profileImageView;
+        public final ImageButton approveButton;
+        public final ImageButton cancelButton;
 
-        public RequestHolder(@NonNull View itemView) {
+        public RequestHolder (@NonNull View itemView) {
             super(itemView);
 
             this.view = itemView;
             nameTextView = itemView.findViewById(R.id.request_partner_name);
             distanceTextView = itemView.findViewById(R.id.request_distance);
             profileImageView = itemView.findViewById(R.id.request_img);
+            approveButton = itemView.findViewById(R.id.request_partner_approve_btn);
+            cancelButton = itemView.findViewById(R.id.request_partner_cancel_btn);
         }
-
-
 
         public void setData(User request) {
             nameTextView.setText(request.getName());
@@ -138,6 +148,11 @@ public class RequestRecyclerUtils {
                     .placeholder(R.drawable.default_avatar)//todo change
                     .apply(RequestOptions.circleCropTransform())
                     .into(profileImageView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            RequestsAdapter.clickListener.onItemClick(getAdapterPosition(), view);
         }
     }
 

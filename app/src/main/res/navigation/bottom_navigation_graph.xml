@@ -45,14 +45,6 @@
             app:destination="@id/chatFragment" />
     </fragment>
 
-    <!--        todo: change to conversations -->
-
-
-<!--    <fragment-->
-<!--        android:id="@+id/conversationsFragment"-->
-<!--        android:name="postpc.studypartner2.chat.ConversationsFragment"-->
-<!--        tools:layout="@layout/fragment_conversations"/>-->
-
     <fragment
         android:id="@+id/profileFragment"
         android:name="postpc.studypartner2.profile.ProfileFragment"
