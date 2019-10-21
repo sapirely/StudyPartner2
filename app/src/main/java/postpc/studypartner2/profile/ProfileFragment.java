@@ -53,7 +53,6 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private EditText editProfileName;
     private EditText editProfileDesc;
     private ImageButton addCourseBtn;
-    private ImageView imageView;
     private TextView[] studyTimes = new TextView[3];
     private TextView[] environments = new TextView[2];
 
@@ -78,7 +77,6 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileName = view.findViewById(R.id.edit_profile_name);
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
-        imageView = (ImageView) view.findViewById(R.id.profile_image);
         studyTimes[0] = view.findViewById(R.id.profile_time_0);
         studyTimes[1] = view.findViewById(R.id.profile_time_1);
         studyTimes[2] = view.findViewById(R.id.profile_time_2);
@@ -87,6 +85,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         environments[1] = view.findViewById(R.id.profile_env_1);
 
         loadUser(view);
+        setAddCourseBtn();
 
         return view;
     }
@@ -107,6 +106,33 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
     }
 
+    private void setAddCourseBtn(){
+        addCourseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddCourseDialog();
+            }
+        });
+    }
+
+    private void AddCourseDialog() {
+        final EditText taskEditText = new EditText(this.getContext());
+        AlertDialog dialog = new AlertDialog.Builder(this.getContext())
+                .setMessage("Enter course name")
+                .setView(taskEditText)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String courseName = String.valueOf(taskEditText.getText());
+                        android.util.Log.d(TAG, "onClick: adding course "+courseName);
+                        addCourse(MainActivity.getCurrentUserID(), new Course(courseName));
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+    }
+
     private void createDeleteCourseDialog(final Course course) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Are you sure you want to remove this course?")
@@ -115,7 +141,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                         // remove course
                         android.util.Log.d(TAG, "onClick: user clicked on remove course");
                         removeCourse(MainActivity.getCurrentUserID(), course);
-                        adapter.removeCourse(course);
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -129,8 +155,15 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     }
 
     private void removeCourse(final String uid, final Course course){
+        adapter.removeCourse(course);
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         viewModel.removeCourse(uid, course);
+    }
+
+    private void addCourse(final String uid, final Course course){
+        adapter.addCourse(course);
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.addCourse(uid, course);
     }
 
     private void loadUser(final View view) {
@@ -166,12 +199,12 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 StaggeredGridLayoutManager.HORIZONTAL));
     }
 
-    private void updateUI(View view, User user) throws Exception {
+    private void updateUI(View view, User user) {
         if (user == null) {
-            throw new Exception("Error getting user, can't update UI.");
+            throw new IllegalArgumentException("Error getting user, can't update UI.");
         }
         Log.d(TAG, "updateUI: updating for user " + user.getUid());
-        setUpProfileImage(view, user.getImage_url());
+        setUpProfileImage(user.getImage_url());
         profileName.setText(user.getName());
         profileDesc.setText(user.getDescription());
         setUpRecyclerView(user.getCourses().size());
@@ -180,10 +213,10 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         //todo more stuff
     }
 
-    private void setUpProfileImage(View currentView, String image_uri) {
+    private void setUpProfileImage(String image_uri) {
 
         loadImage(image_uri);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pickProfileImage();
@@ -196,7 +229,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 .load(image_uri)
                 .placeholder(R.drawable.default_avatar)
                 .apply(RequestOptions.circleCropTransform())
-                .into(imageView);
+                .into(profilePic);
     }
 
     private void pickProfileImage() {

@@ -80,6 +80,11 @@ public class CourseRecyclerUtils {
             courses.remove(course);
             notifyDataSetChanged();
         }
+
+        public void addCourse(Course course){
+            courses.add(course);
+            notifyDataSetChanged();
+        }
     }
 
 
