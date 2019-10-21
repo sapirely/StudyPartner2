@@ -1,6 +1,5 @@
 package postpc.studypartner2.profile;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,7 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import postpc.studypartner2.utils.Log;
 import postpc.studypartner2.MainActivity;
@@ -54,10 +54,13 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private EditText editProfileDesc;
     private ImageButton addCourseBtn;
     private TextView[] studyTimes = new TextView[3];
-    private TextView[] environments = new TextView[2];
+    private TextView[] environmentsTextViews = new TextView[2];
 
     private CourseRecyclerUtils.CoursesAdapter adapter = new CourseRecyclerUtils.CoursesAdapter();
     public ArrayList<Course> courses = new ArrayList<>();
+
+    private List<String> user_environments = new ArrayList<>();
+    private List<String> user_study_times = new ArrayList<>();
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -81,11 +84,12 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         studyTimes[1] = view.findViewById(R.id.profile_time_1);
         studyTimes[2] = view.findViewById(R.id.profile_time_2);
 
-        environments[0] = view.findViewById(R.id.profile_env_0);
-        environments[1] = view.findViewById(R.id.profile_env_1);
+        environmentsTextViews[0] = view.findViewById(R.id.profile_env_0);
+        environmentsTextViews[1] = view.findViewById(R.id.profile_env_1);
 
         loadUser(view);
         setAddCourseBtn();
+        setUpEnvironments();
 
         return view;
     }
@@ -104,6 +108,80 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 //        android.util.Log.d(TAG, "onRequestClick: removing partner request of "+user.getUid());
 //        break;
 
+    }
+
+    private void unselectEnvironment(TextView env, String env_text){
+        // UI
+        updateEnvUI(env, false);
+        // update db
+        user_environments.remove(env_text);
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.updateUser(MainActivity.getCurrentUserID(), "environment", user_environments);
+    }
+
+    private void selectEnvironment(TextView env, String env_text){
+        // UI
+        updateEnvUI(env, true);
+        // update db
+        user_environments.add(env_text);
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.updateUser(MainActivity.getCurrentUserID(), "environment", user_environments);
+    }
+
+    private void updateEnvUI(TextView env, boolean selected){
+        if (selected){
+            env.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.accent_filled_rounded_rectangle));
+            env.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        } else {
+            env.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.accent_stroke_rounded_rectangle));
+            env.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        }
+    }
+
+    private boolean isEnvSelectedAlready(final List<String> user_environments, TextView env){
+        return user_environments.contains(env.getText().toString().toLowerCase());
+    }
+
+    private void setUpEnvironments() {
+        for (TextView e : environmentsTextViews) {
+            e.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    android.util.Log.d(TAG, "onClick: clicked "+((TextView)view).getText());
+                    final TextView env = (TextView) view;
+                    final String env_text = env.getText().toString().toLowerCase();
+
+                    // selected again -> unselect
+                    if (isEnvSelectedAlready(user_environments, env)){
+                        if (user_environments.size() > 1) {
+                            unselectEnvironment(env, env_text);
+                        } else {
+                            Toast.makeText(getContext(), "At least one is required", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        // newly selected
+                        selectEnvironment(env, env_text);
+                    }
+
+                }
+            });
+//                @Override public void onClick(View v) {
+//                    setBackgroundColor(timeSlot.isSelected());
+//                    if (!timeSlot.isSelected()){
+//                        // selected now
+//                        timeSlot.setSelected(true);
+//                        // todo: add to list
+//                    } else {
+//                        // unselected
+//                        timeSlot.setSelected(false);
+//                        // todo: remove from list
+//                    }
+//
+//                    listener.onTimeSlotClick(timeSlot);
+//                }
+//            });
+//        }
+        }
     }
 
     private void setAddCourseBtn(){
@@ -175,6 +253,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 Log.d(TAG, "onChanged: observed user change");
                 try {
                     Log.d(TAG, "onChanged: setting up ui ");
+                    setUpSelectableLists(user);
                     updateUI(view, user);
                 } catch (Exception e) {
                     // todo handle exception
@@ -182,6 +261,12 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 }
             }
         });
+    }
+
+    private void setUpSelectableLists(User user){
+        user_environments=user.getEnvironment();
+        user_study_times=user.getStudy_time();
+
     }
 
 
@@ -209,6 +294,11 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         profileDesc.setText(user.getDescription());
         setUpRecyclerView(user.getCourses().size());
         adapter.setCourses(user.getCoursesList_courseType());
+
+        // init selected/unselected ui state of the environments
+        for (TextView env:environmentsTextViews){
+            updateEnvUI(env, isEnvSelectedAlready(user_environments, env)); //
+        }
 
         //todo more stuff
     }
