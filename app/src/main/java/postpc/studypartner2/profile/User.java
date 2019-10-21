@@ -41,8 +41,8 @@ public class User implements Parcelable {
     private boolean loaded;
     private List<String> courses;
     private MyLocation location;
-//    private GeoPoint myLocation;
-//    private HashMap<String, Double> myLocation;
+    private List<String> environment;
+    private List<String> study_time;
 
     public User(){}
 
@@ -57,12 +57,13 @@ public class User implements Parcelable {
         this.courses = coursesListFromStringConverter(coursesList_string);
     }
 
-    public User(@NonNull String uid, String name, String description, String image_url, List<String> courses)
+    public User(@NonNull String uid, String name, String description, String image_url, List<String> courses, List<String> environment)
     {
         this.uid = uid;
         this.name = name;
         this.description = description;
         this.image_url = image_url;
+        this.environment = environment;
         this.loaded = false;
         this.courses = courses;
     }
@@ -178,17 +179,10 @@ public class User implements Parcelable {
         return listOfCourses;
     }
 
-//    public GeoPoint getMyLocation() {
-//        return myLocation;
-//    }
 
     public MyLocation getLocation(){
         return location;
     }
-
-//    public void setMyLocation(GeoPoint myLocation) {
-//        this.myLocation = myLocation;
-//    }
 
     public void setMyLocation(MyLocation location) {
         this.location = location;
@@ -196,6 +190,22 @@ public class User implements Parcelable {
 
     public void setLocation(double lat, double lon) {
         this.location = new MyLocation(lat, lon);
+    }
+
+    public List<String> getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(List<String> environment) {
+        this.environment = environment;
+    }
+
+    public List<String> getStudy_time() {
+        return study_time;
+    }
+
+    public void setStudy_time(List<String> study_time) {
+        this.study_time = study_time;
     }
 
     public class CoursesListConverter {

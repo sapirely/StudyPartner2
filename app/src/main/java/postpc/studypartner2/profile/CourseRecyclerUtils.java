@@ -52,15 +52,17 @@ public class CourseRecyclerUtils {
 
         @Override
         public void onBindViewHolder(@NonNull final CourseRecyclerUtils.CourseHolder holder, int position) {
-            Course course = courses.get(position);
+            final Course course = courses.get(position);
             holder.courseId.setText(course.getId());
-//            Date currentTime = Calendar.getInstance().getTime(); //todo delete
-//            holder.distanceTextView.setText(currentTime.toString()); // todo change
             holder.courseId.setOnLongClickListener(new View.OnLongClickListener() {
+
                 @Override
-                public boolean onLongClick(View v) {
-                    // create delete Course dialog
-                    return true;
+                public boolean onLongClick(View view) {
+                    if (callBack != null){
+                        callBack.onCourseLongClick(course);
+                        return true;
+                    }
+                    return false;
                 }
             });
         }

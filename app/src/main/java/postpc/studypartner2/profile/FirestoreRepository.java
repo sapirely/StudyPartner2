@@ -282,6 +282,42 @@ class FirestoreRepository {
                 });
     }
 
+    public void addToUserArrayField(final String uid, final String key, final String value){
+        DocumentReference docRef = firestoreDB.collection("users").document(uid);
+        docRef
+                .update(key, FieldValue.arrayUnion(value))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated:"+key+" : "+value);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error updating document", e);
+                    }
+                });
+    }
+
+    public void removeFromUserArrayField(final String uid, final String key, final String value){
+        DocumentReference docRef = firestoreDB.collection("users").document(uid);
+        docRef
+                .update(key, FieldValue.arrayRemove(value))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated:"+key+" : "+value);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error updating document", e);
+                    }
+                });
+    }
+
     public LiveData<List<Message>> getMessages(String uid1, String uid2){
         String conversationID = generateConversationID(uid1, uid2);
         final List<Message> allMessages = new ArrayList<>();

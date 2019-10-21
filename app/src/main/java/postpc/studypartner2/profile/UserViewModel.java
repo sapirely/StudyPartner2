@@ -93,9 +93,35 @@ public class UserViewModel extends AndroidViewModel {
 
     }
 
+    public void addCourse(String uid, String value){
+        fRepository.addToUserArrayField(uid, "courses", value);
+    }
+
+    public void removeCourse(String uid, String value) {
+        fRepository.removeFromUserArrayField(uid, "courses", value);
+    }
+
+    public void addStudyTime(String uid, String value){
+        fRepository.addToUserArrayField(uid, "study_time", value);
+    }
+
+    public void removeStudyTime(String uid, String value){
+        fRepository.removeFromUserArrayField(uid, "study_time", value);
+    }
+
     public void updateUser(String uid, String key, String value){
         fRepository.updateUser(uid, key, value);
     }
+
+    public void addEnvironment(String uid, String value){
+        fRepository.addToUserArrayField(uid, "environment", value);
+    }
+
+    public void removeEnvironment(String uid, String value) {
+        fRepository.removeFromUserArrayField(uid, "environment", value);
+    }
+
+
 
     public void updateUser(String uid, String key, Object value){
         fRepository.updateUser(uid, key, value);

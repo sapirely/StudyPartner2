@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -19,14 +18,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -46,6 +41,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
     private UserViewModel viewModel;
     private RecyclerView mRecyclerView;
+    private User currentUser;
 
     private TextView profileName;
     private TextView profileDesc;
@@ -54,6 +50,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private EditText editProfileDesc;
     private ImageButton addCourseBtn;
     private ImageView imageView;
+    private TextView[] studyTimes = new TextView[3];
+    private TextView[] environments = new TextView[2];
 
     private CourseRecyclerUtils.CoursesAdapter adapter = new CourseRecyclerUtils.CoursesAdapter();
     public ArrayList<Course> courses = new ArrayList<>();
@@ -77,6 +75,12 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
         imageView = (ImageView) view.findViewById(R.id.profile_image);
+        studyTimes[0] = view.findViewById(R.id.profile_time_0);
+        studyTimes[1] = view.findViewById(R.id.profile_time_1);
+        studyTimes[2] = view.findViewById(R.id.profile_time_2);
+
+        environments[0] = view.findViewById(R.id.profile_env_0);
+        environments[1] = view.findViewById(R.id.profile_env_1);
 
         loadUser(view);
 
@@ -85,6 +89,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
     @Override
     public void onCourseLongClick(Course course) {
+        Toast.makeText(this.getContext(), "hi", Toast.LENGTH_LONG).show();
 
     }
 
@@ -115,6 +120,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
             // calc how many lines are needed
             numOfLines = (int) Math.ceil(coursesListLength / NUM_OF_COLS);
         }
+        adapter.callBack = this;
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(numOfLines,
                 StaggeredGridLayoutManager.HORIZONTAL));
@@ -162,6 +168,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // Loads selected image from gallery
         if (requestCode == PROFILE_IMG_REQUEST_CODE){
             if (resultCode == RESULT_OK){
                 if (data != null) {
@@ -175,53 +183,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                             loadImage(storageUri);
                         }
                     });
-//                    StorageReference storageReference =
-//                            FirebaseStorage.getInstance()
-//                                    .getReference(MainActivity.getCurrentUserID())
-//                                    .child(uri.getLastPathSegment());
-
-//                    putImageInStorage(storageReference, uri);
                 }
-                // todo: doesn't load the image
-
-
-
-//                loadImage(filePath);
             }
         }
     }
-
-//    public String uploadProfileImageToStorage(String uid, String localUri){
-//
-//    }
-//
-//    private void putImageInStorage(StorageReference storageReference, Uri uri) {
-//        storageReference.putFile(uri).addOnCompleteListener(getActivity(),
-//                new OnCompleteListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            task.getResult().getMetadata().getReference().getDownloadUrl()
-//                                    .addOnCompleteListener(getActivity(),
-//                                            new OnCompleteListener<Uri>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<Uri> task) {
-//                                                    if (task.isSuccessful()) {
-//                                                        // update the profile to use the image
-//                                                        String uri = task.getResult().toString();
-//                                                        // save to db
-//                                                        viewModel.updateUser(MainActivity.getCurrentUserID(), "image_url", uri);
-//                                                        loadImage(uri);
-//                                                        // todo
-//                                                    }
-//                                                }
-//                                            });
-//                        } else {
-//                            Log.d(TAG, "Image upload task failed: "+
-//                                    task.getException());
-//                        }
-//                    }
-//                });
-//    }
-
 }
