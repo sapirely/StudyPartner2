@@ -93,12 +93,12 @@ public class UserViewModel extends AndroidViewModel {
 
     }
 
-    public void addCourse(String uid, String value){
-        fRepository.addToUserArrayField(uid, "courses", value);
+    public void addCourse(String uid, Course course){
+        fRepository.addToUserArrayField(uid, "courses", course.getName());
     }
 
-    public void removeCourse(String uid, String value) {
-        fRepository.removeFromUserArrayField(uid, "courses", value);
+    public void removeCourse(String uid, Course course) {
+        fRepository.removeFromUserArrayField(uid, "courses", course.getName());
     }
 
     public void addStudyTime(String uid, String value){

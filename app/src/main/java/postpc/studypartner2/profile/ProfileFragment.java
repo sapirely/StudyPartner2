@@ -1,10 +1,14 @@
 package postpc.studypartner2.profile;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -67,7 +71,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         final View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Set up views
-        this.mRecyclerView = (RecyclerView)view.findViewById(R.id.courses_recycler_view);
+        this.mRecyclerView = (RecyclerView) view.findViewById(R.id.courses_recycler_view);
         profileName = view.findViewById(R.id.profile_name);
         profileDesc = view.findViewById(R.id.profile_desc);
         profilePic = view.findViewById(R.id.profile_image);
@@ -89,13 +93,49 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
     @Override
     public void onCourseLongClick(Course course) {
-        Toast.makeText(this.getContext(), "hi", Toast.LENGTH_LONG).show();
+        if (adapter.getItemCount() > 1){
+            createDeleteCourseDialog(course);
+        } else {
+            Toast.makeText(this.getContext(), "At least one course is required", Toast.LENGTH_LONG).show();
+        }
+
+//        viewModel.removeRequest(MainActivity.getCurrentUserID(), user.getUid());
+//        adapter.removeAt(position);
+//        Toast.makeText(this.getContext(), "Removed "+user.getName(), Toast.LENGTH_LONG).show();
+//        android.util.Log.d(TAG, "onRequestClick: removing partner request of "+user.getUid());
+//        break;
 
     }
 
-    private void loadUser(final View view){
+    private void createDeleteCourseDialog(final Course course) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Are you sure you want to remove this course?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // remove course
+                        android.util.Log.d(TAG, "onClick: user clicked on remove course");
+                        removeCourse(MainActivity.getCurrentUserID(), course);
+                        adapter.removeCourse(course);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        android.util.Log.d(TAG, "onClick: remove course dialog was cancelled");
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void removeCourse(final String uid, final Course course){
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(getViewLifecycleOwner(), new Observer<User>(){
+        viewModel.removeCourse(uid, course);
+    }
+
+    private void loadUser(final View view) {
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(getViewLifecycleOwner(), new Observer<User>() {
 
             @Override
             public void onChanged(User user) {
@@ -103,7 +143,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 try {
                     Log.d(TAG, "onChanged: setting up ui ");
                     updateUI(view, user);
-                } catch (Exception e){
+                } catch (Exception e) {
                     // todo handle exception
                     Log.e(TAG, "onChanged: Error observing user. ", e);
                 }
@@ -127,10 +167,10 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     }
 
     private void updateUI(View view, User user) throws Exception {
-        if (user == null){
+        if (user == null) {
             throw new Exception("Error getting user, can't update UI.");
         }
-        Log.d(TAG, "updateUI: updating for user "+user.getUid());
+        Log.d(TAG, "updateUI: updating for user " + user.getUid());
         setUpProfileImage(view, user.getImage_url());
         profileName.setText(user.getName());
         profileDesc.setText(user.getDescription());
@@ -140,7 +180,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         //todo more stuff
     }
 
-    private void setUpProfileImage(View currentView, String image_uri){
+    private void setUpProfileImage(View currentView, String image_uri) {
 
         loadImage(image_uri);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +191,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         });
     }
 
-    private void loadImage(String image_uri){
+    private void loadImage(String image_uri) {
         Glide.with(this)
                 .load(image_uri)
                 .placeholder(R.drawable.default_avatar)
@@ -159,7 +199,7 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 .into(imageView);
     }
 
-    private void pickProfileImage(){
+    private void pickProfileImage() {
         Intent myIntent = new Intent(Intent.ACTION_GET_CONTENT, null);
         myIntent.setType("image/*");
         startActivityForResult(myIntent, PROFILE_IMG_REQUEST_CODE);
@@ -170,8 +210,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         super.onActivityResult(requestCode, resultCode, data);
 
         // Loads selected image from gallery
-        if (requestCode == PROFILE_IMG_REQUEST_CODE){
-            if (resultCode == RESULT_OK){
+        if (requestCode == PROFILE_IMG_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 if (data != null) {
                     String filePath = data.getData().getPath(); // only one of them is neede todo
                     android.util.Log.d(TAG, "onActivityResult: filepath is " + filePath);
@@ -187,4 +227,28 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
             }
         }
     }
+
+
+//    // utils - maybe remove
+//    public class CourseDeletingDialog extends DialogFragment {
+//        @Override
+//        public Dialog onCreateDialog(Bundle savedInstanceState) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//            builder.setMessage("Are you sure you want to remove this course?")
+//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            // remove course
+//                            android.util.Log.d(TAG, "onClick: user clicked on remove course");
+//                        }
+//                    })
+//                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            // User cancelled the dialog
+//                            android.util.Log.d(TAG, "onClick: remove course dialog was cancelled");
+//                        }
+//                    });
+//            // Create the AlertDialog object and return it
+//            return builder.create();
+//        }
+//    }
 }

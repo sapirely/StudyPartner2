@@ -53,7 +53,7 @@ public class CourseRecyclerUtils {
         @Override
         public void onBindViewHolder(@NonNull final CourseRecyclerUtils.CourseHolder holder, int position) {
             final Course course = courses.get(position);
-            holder.courseId.setText(course.getId());
+            holder.courseId.setText(course.getName());
             holder.courseId.setOnLongClickListener(new View.OnLongClickListener() {
 
                 @Override
@@ -76,6 +76,10 @@ public class CourseRecyclerUtils {
             this.courses = courses;
         }
 
+        public void removeCourse(Course course){
+            courses.remove(course);
+            notifyDataSetChanged();
+        }
     }
 
 
