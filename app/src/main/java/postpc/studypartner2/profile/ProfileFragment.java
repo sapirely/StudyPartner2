@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,11 +35,13 @@ import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
 
 // todo: edit profile
 
 public class ProfileFragment extends Fragment implements CourseRecyclerUtils.CourseClickCallBack {
 
+    private enum SelectableType {ENV, TIME};
     private static final String TAG = "ProfileFragment";
 
     private final int PROFILE_IMG_REQUEST_CODE = 9239;
@@ -47,13 +50,15 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private RecyclerView mRecyclerView;
     private User currentUser;
 
+    private ProgressBar progressBar;
+
     private TextView profileName;
     private TextView profileDesc;
     private ImageView profilePic;
     private EditText editProfileName;
     private EditText editProfileDesc;
     private ImageButton addCourseBtn;
-    private TextView[] studyTimes = new TextView[3];
+    private TextView[] studyTimesTextViews = new TextView[3];
     private TextView[] environmentsTextViews = new TextView[2];
 
     private CourseRecyclerUtils.CoursesAdapter adapter = new CourseRecyclerUtils.CoursesAdapter();
@@ -80,16 +85,18 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileName = view.findViewById(R.id.edit_profile_name);
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
-        studyTimes[0] = view.findViewById(R.id.profile_time_0);
-        studyTimes[1] = view.findViewById(R.id.profile_time_1);
-        studyTimes[2] = view.findViewById(R.id.profile_time_2);
+        progressBar = view.findViewById(R.id.progressBarProfile);
+
+        studyTimesTextViews[0] = view.findViewById(R.id.profile_time_0);
+        studyTimesTextViews[1] = view.findViewById(R.id.profile_time_1);
+        studyTimesTextViews[2] = view.findViewById(R.id.profile_time_2);
 
         environmentsTextViews[0] = view.findViewById(R.id.profile_env_0);
         environmentsTextViews[1] = view.findViewById(R.id.profile_env_1);
 
         loadUser(view);
         setAddCourseBtn();
-        setUpEnvironments();
+//        setUpEnvironments();
 
         return view;
     }
@@ -102,87 +109,118 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
             Toast.makeText(this.getContext(), "At least one course is required", Toast.LENGTH_LONG).show();
         }
 
-//        viewModel.removeRequest(MainActivity.getCurrentUserID(), user.getUid());
-//        adapter.removeAt(position);
-//        Toast.makeText(this.getContext(), "Removed "+user.getName(), Toast.LENGTH_LONG).show();
-//        android.util.Log.d(TAG, "onRequestClick: removing partner request of "+user.getUid());
-//        break;
-
     }
 
-    private void unselectEnvironment(TextView env, String env_text){
+    private void unselectObject(SelectableType type, TextView view, String view_text){
         // UI
-        updateEnvUI(env, false);
-        // update db
-        user_environments.remove(env_text);
-        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        viewModel.updateUser(MainActivity.getCurrentUserID(), "environment", user_environments);
-    }
+        updateSelectableTextView(view, false);
 
-    private void selectEnvironment(TextView env, String env_text){
-        // UI
-        updateEnvUI(env, true);
-        // update db
-        user_environments.add(env_text);
-        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        viewModel.updateUser(MainActivity.getCurrentUserID(), "environment", user_environments);
-    }
-
-    private void updateEnvUI(TextView env, boolean selected){
-        if (selected){
-            env.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.accent_filled_rounded_rectangle));
-            env.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        List<String> list;
+        String key;
+        if (type == SelectableType.ENV){
+            list = user_environments;
+            key = "environment";
+        } else if (type == SelectableType.TIME) {
+            list = user_study_times;
+            key = "study_time";
         } else {
-            env.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.accent_stroke_rounded_rectangle));
-            env.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            throw new IllegalArgumentException("Illegal type of selectable list");
+        }
+        list.remove(view_text);
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.updateUser(MainActivity.getCurrentUserID(), key, list);
+    }
+
+    private void selectObject(SelectableType type, TextView view, String view_text){
+        // UI
+        updateSelectableTextView(view, true);
+
+        List<String> list;
+        String key;
+        if (type == SelectableType.ENV){
+            list = user_environments;
+            key = "environment";
+        } else if (type == SelectableType.TIME) {
+            list = user_study_times;
+            key = "study_time";
+        } else {
+            throw new IllegalArgumentException("Illegal type of selectable list");
+        }
+        list.add(view_text);
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        viewModel.updateUser(MainActivity.getCurrentUserID(), key, list);
+    }
+
+    private void updateSelectableTextView(TextView textView, boolean selected){
+        if (selected){
+            textView.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.accent_filled_rounded_rectangle));
+            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        } else {
+            textView.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.accent_stroke_rounded_rectangle));
+            textView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
         }
     }
 
-    private boolean isEnvSelectedAlready(final List<String> user_environments, TextView env){
-        return user_environments.contains(env.getText().toString().toLowerCase());
+    private boolean isTextViewSelectedAlready(final List<String> list, TextView tv){
+        android.util.Log.d(TAG, "isTextViewSelectedAlready: "+list.contains(tv.getText().toString().toLowerCase()));
+        return list.contains(tv.getText().toString().toLowerCase());
     }
 
-    private void setUpEnvironments() {
-        for (TextView e : environmentsTextViews) {
+    private void setUpSelectables(final SelectableType type, final TextView[] textsViews, final List<String> user_list){
+        for (TextView e : textsViews) {
             e.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     android.util.Log.d(TAG, "onClick: clicked "+((TextView)view).getText());
-                    final TextView env = (TextView) view;
-                    final String env_text = env.getText().toString().toLowerCase();
+                    final TextView tv = (TextView) view;
+                    final String tv_text = tv.getText().toString().toLowerCase();
 
                     // selected again -> unselect
-                    if (isEnvSelectedAlready(user_environments, env)){
-                        if (user_environments.size() > 1) {
-                            unselectEnvironment(env, env_text);
+                    if (isTextViewSelectedAlready(user_list, tv)){
+                        if (user_list.size() > 1) {
+//                            unselectEnvironment(tv, env_text);
+                            unselectObject(type, tv, tv_text);
                         } else {
                             Toast.makeText(getContext(), "At least one is required", Toast.LENGTH_LONG).show();
                         }
                     } else {
                         // newly selected
-                        selectEnvironment(env, env_text);
+                        selectObject(type, tv, tv_text);
                     }
 
                 }
             });
-//                @Override public void onClick(View v) {
-//                    setBackgroundColor(timeSlot.isSelected());
-//                    if (!timeSlot.isSelected()){
-//                        // selected now
-//                        timeSlot.setSelected(true);
-//                        // todo: add to list
+        }
+
+    }
+
+//    private void setUpEnvironments() {
+//        for (TextView e : environmentsTextViews) {
+//            e.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    android.util.Log.d(TAG, "onClick: clicked "+((TextView)view).getText());
+//                    final TextView env = (TextView) view;
+//                    final String env_text = env.getText().toString().toLowerCase();
+//
+//                    // selected again -> unselect
+//                    if (isTextViewSelectedAlready(user_environments, env)){
+//                        if (user_environments.size() > 1) {
+////                            unselectEnvironment(env, env_text);
+//                            unselectObject(SelectableType.ENV, env, env_text);
+//                        } else {
+//                            Toast.makeText(getContext(), "At least one is required", Toast.LENGTH_LONG).show();
+//                        }
 //                    } else {
-//                        // unselected
-//                        timeSlot.setSelected(false);
-//                        // todo: remove from list
+//                        // newly selected
+////                        selectEnvironment(env, env_text);
+//                        selectObject(SelectableType.ENV, env, env_text);
 //                    }
 //
-//                    listener.onTimeSlotClick(timeSlot);
 //                }
 //            });
 //        }
-        }
-    }
+//    }
 
     private void setAddCourseBtn(){
         addCourseBtn.setOnClickListener(new View.OnClickListener() {
@@ -234,12 +272,14 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
     private void removeCourse(final String uid, final Course course){
         adapter.removeCourse(course);
+        setUpRecyclerView(adapter.getItemCount()); // update lines
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         viewModel.removeCourse(uid, course);
     }
 
     private void addCourse(final String uid, final Course course){
         adapter.addCourse(course);
+        setUpRecyclerView(adapter.getItemCount());// update lines
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         viewModel.addCourse(uid, course);
     }
@@ -254,6 +294,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 try {
                     Log.d(TAG, "onChanged: setting up ui ");
                     setUpSelectableLists(user);
+
+
                     updateUI(view, user);
                 } catch (Exception e) {
                     // todo handle exception
@@ -297,10 +339,16 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
         // init selected/unselected ui state of the environments
         for (TextView env:environmentsTextViews){
-            updateEnvUI(env, isEnvSelectedAlready(user_environments, env)); //
+            updateSelectableTextView(env, isTextViewSelectedAlready(user_environments, env));
         }
+        setUpSelectables(SelectableType.ENV, environmentsTextViews, user_environments);
 
-        //todo more stuff
+        for (TextView tv: studyTimesTextViews){
+            updateSelectableTextView(tv, isTextViewSelectedAlready(user_study_times, tv));
+        }
+        setUpSelectables(SelectableType.TIME, studyTimesTextViews, user_study_times);
+
+        progressBar.setVisibility(GONE);
     }
 
     private void setUpProfileImage(String image_uri) {
