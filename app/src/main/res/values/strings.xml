@@ -6,7 +6,8 @@
     <string name="message_desc">Type here</string>
     <string name="profile_name">Profile</string>
     <string name="profile_preferences">Preferences</string>
-    <string name="profile_preferences_study">Preferred Study Time</string>
+    <string name="profile_preferences_study">Study Time</string>
+    <string name="profile_preferences_environment">Environment</string>
     <string name="courses_title">Courses</string>
     <string name="list_of_courses">67521</string>
 
