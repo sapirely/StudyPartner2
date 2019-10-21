@@ -43,6 +43,8 @@ import postpc.studypartner2.utils.Log;
 class FirestoreRepository {
 
     public enum PartnerListType {PARTNERS, REQUESTS};
+    private final int MAX_STUDY_TIMES = 3;
+    private final int MAX_ENVS = 2;
 
     private static final String TAG = "FirestoreRepository";
     private FirebaseFirestore firestoreDB;
@@ -100,8 +102,43 @@ class FirestoreRepository {
         return curUser;
     }
 
-    public LiveData<List<User>> getUsers(String courseName){
-        android.util.Log.d(TAG, "getUsers: fbuser:"+fbUser.getUid());
+
+//    public LiveData<List<User>> getUsersByCourseComplex(String courseName, List<String> studyTimes, List<String> environments){
+//        android.util.Log.d(TAG, "getUsersByCourse: fbuser:"+fbUser.getUid());
+//        String currentUid = fbUser.getUid();
+//
+//        // None or all filters are selected -> simple query
+//        if ((studyTimes.size() == MAX_STUDY_TIMES || studyTimes.size() == 0)
+//            &&(environments.size() == MAX_ENVS || environments.size() == 0)){
+//            return getUsersByCourse(courseName);
+//        }
+//
+//        // todo
+//
+//        CollectionReference colRef = firestoreDB.collection("users");
+////        com.google.firebase.firestore.Query lessQuery = colRef.whereArrayContains("courses", courseName).where.whereLessThan("uid", currentUid);
+//        com.google.firebase.firestore.Query greaterQuery = colRef.whereArrayContains("courses", courseName).whereGreaterThan("uid", currentUid);
+//        Task firstQuery = lessQuery.get();
+//        Task secondQuery = greaterQuery.get();
+//
+//        Task combinedTask = Tasks.whenAllSuccess(firstQuery , secondQuery)
+//                .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+//                    @Override
+//                    public void onSuccess(List<Object> objects) {
+//                        List<QuerySnapshot> queryDocumentSnapshots = (List<QuerySnapshot>)(Object) objects;
+//                        List<User> userList = new ArrayList<>();
+//                        for (QuerySnapshot q:queryDocumentSnapshots){
+//                            userList.addAll(q.toObjects(User.class));
+//                        }
+//                        usersQuery.postValue(userList);
+//                    }
+//                });
+//        return usersQuery;
+//    }
+
+
+    public LiveData<List<User>> getUsersByCourse(String courseName){
+        android.util.Log.d(TAG, "getUsersByCourse: fbuser:"+fbUser.getUid());
         String currentUid = fbUser.getUid();
         CollectionReference colRef = firestoreDB.collection("users");
         com.google.firebase.firestore.Query lessQuery = colRef.whereArrayContains("courses", courseName).whereLessThan("uid", currentUid);
@@ -124,28 +161,28 @@ class FirestoreRepository {
         return usersQuery;
     }
 
-
-    public LiveData<List<User>> getUsersByCourse(String courseNum){
-        CollectionReference colRef = firestoreDB.collection("users");
-        // todo: remove current user: two queries with <uid and >uid
-        // https://stackoverflow.com/questions/47251919/firestore-how-to-perform-a-query-with-inequality-not-equals
-        colRef.whereArrayContains("courses", courseNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-                    android.util.Log.d(TAG, "onComplete: successful query");
-                    QuerySnapshot queryDocumentSnapshots = task.getResult();
-                    if (queryDocumentSnapshots.isEmpty()){
-                        android.util.Log.d(TAG, "onComplete: empty query ");
-                    } else {
-                        android.util.Log.d(TAG, "onComplete: posting value");
-                        usersQuery.postValue(queryDocumentSnapshots.toObjects(User.class));
-                    }
-                }
-            }
-        });
-        return usersQuery;
-    }
+//
+//    public LiveData<List<User>> getUsersByCourse(String courseNum){
+//        CollectionReference colRef = firestoreDB.collection("users");
+//        // todo: remove current user: two queries with <uid and >uid
+//        // https://stackoverflow.com/questions/47251919/firestore-how-to-perform-a-query-with-inequality-not-equals
+//        colRef.whereArrayContains("courses", courseNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()){
+//                    android.util.Log.d(TAG, "onComplete: successful query");
+//                    QuerySnapshot queryDocumentSnapshots = task.getResult();
+//                    if (queryDocumentSnapshots.isEmpty()){
+//                        android.util.Log.d(TAG, "onComplete: empty query ");
+//                    } else {
+//                        android.util.Log.d(TAG, "onComplete: posting value");
+//                        usersQuery.postValue(queryDocumentSnapshots.toObjects(User.class));
+//                    }
+//                }
+//            }
+//        });
+//        return usersQuery;
+//    }
 
     public void addPartner(String userUID, String partnerUID){
         // called when approving a request

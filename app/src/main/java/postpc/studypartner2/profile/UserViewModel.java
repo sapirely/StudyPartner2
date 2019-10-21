@@ -3,25 +3,18 @@ package postpc.studypartner2.profile;
 import android.app.Application;
 import android.net.Uri;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 
 import postpc.studypartner2.profile.FirestoreRepository.PartnerListType;
-import postpc.studypartner2.utils.Log;
 
 
 public class UserViewModel extends AndroidViewModel {
@@ -72,7 +65,7 @@ public class UserViewModel extends AndroidViewModel {
 
     public LiveData<List<User>> getUsersByCourse(String courseNum) {
 //        return fRepository.getUsersByCourse(courseNum);
-        return fRepository.getUsers(courseNum);
+        return fRepository.getUsersByCourse(courseNum);
     }
 
 //    public LiveData<List<User>> getLastQuery(){
@@ -122,10 +115,77 @@ public class UserViewModel extends AndroidViewModel {
         fRepository.removeFromUserArrayField(uid, "environment", value);
     }
 
+    private void updateEnvironments(String uid, Object value){
+        ArrayList<String> allEnvValues = (new ArrayList<String>(
+                Arrays.asList("quiet",
+                        "lively")));
+
+        List<String> values = (List<String>)value;
+
+        for (String env:allEnvValues){
+            if (env == "quiet"){
+                if (values.contains(env)){
+                    fRepository.updateUser(uid, "env_quiet", true);
+                } else {
+                    fRepository.updateUser(uid, "env_quiet", false);
+
+                }
+            }
+            if (env == "lively"){
+                if (values.contains(env)){
+                    fRepository.updateUser(uid, "env_lively", true);
+                } else {
+                    fRepository.updateUser(uid, "env_lively", false);
+
+                }
+            }
+        }
+    }
+
+    private void updateStudyTimes(String uid, Object value){
+        ArrayList<String> allTimeValues = (new ArrayList<String>(
+                Arrays.asList("morning","afternoon",
+                        "evening")));
+
+        List<String> values = (List<String>)value;
+
+        for (String time:allTimeValues){
+            if (time == "morning"){
+                if (values.contains(time)){
+                    fRepository.updateUser(uid, "study_time_morning", true);
+                } else {
+                    fRepository.updateUser(uid, "study_time_morning", false);
+
+                }
+            }
+            if (time == "afternoon"){
+                if (values.contains(time)){
+                    fRepository.updateUser(uid, "study_time_afternoon", true);
+                } else {
+                    fRepository.updateUser(uid, "study_time_afternoon", false);
+
+                }
+            }
+            if (time == "evening"){
+                if (values.contains(time)){
+                    fRepository.updateUser(uid, "study_time_evening", true);
+                } else {
+                    fRepository.updateUser(uid, "study_time_evening", false);
+
+                }
+            }
+        }
+    }
 
 
     public void updateUser(String uid, String key, Object value){
-        fRepository.updateUser(uid, key, value);
+        if (key == "environment"){
+            updateEnvironments(uid, value);
+        } else if (key == "study_time"){
+            updateStudyTimes(uid, value);
+        } else {
+            fRepository.updateUser(uid, key, value);
+        }
     }
 
     public void addUser(User user){
