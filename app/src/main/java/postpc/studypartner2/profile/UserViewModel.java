@@ -71,7 +71,8 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<User>> getUsersByCourse(String courseNum) {
-        return fRepository.getUsersByCourse(courseNum);
+//        return fRepository.getUsersByCourse(courseNum);
+        return fRepository.getUsers(courseNum);
     }
 
 //    public LiveData<List<User>> getLastQuery(){

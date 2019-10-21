@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -98,6 +99,31 @@ class FirestoreRepository {
         });
         return curUser;
     }
+
+    public LiveData<List<User>> getUsers(String courseName){
+        android.util.Log.d(TAG, "getUsers: fbuser:"+fbUser.getUid());
+        String currentUid = fbUser.getUid();
+        CollectionReference colRef = firestoreDB.collection("users");
+        com.google.firebase.firestore.Query lessQuery = colRef.whereArrayContains("courses", courseName).whereLessThan("uid", currentUid);
+        com.google.firebase.firestore.Query greaterQuery = colRef.whereArrayContains("courses", courseName).whereGreaterThan("uid", currentUid);
+        Task firstQuery = lessQuery.get();
+        Task secondQuery = greaterQuery.get();
+
+        Task combinedTask = Tasks.whenAllSuccess(firstQuery , secondQuery)
+                .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                    @Override
+                    public void onSuccess(List<Object> objects) {
+                        List<QuerySnapshot> queryDocumentSnapshots = (List<QuerySnapshot>)(Object) objects;
+                        List<User> userList = new ArrayList<>();
+                        for (QuerySnapshot q:queryDocumentSnapshots){
+                            userList.addAll(q.toObjects(User.class));
+                        }
+                        usersQuery.postValue(userList);
+                    }
+                });
+        return usersQuery;
+    }
+
 
     public LiveData<List<User>> getUsersByCourse(String courseNum){
         CollectionReference colRef = firestoreDB.collection("users");
