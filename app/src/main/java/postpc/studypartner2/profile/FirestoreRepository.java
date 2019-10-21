@@ -33,12 +33,17 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 import postpc.studypartner2.utils.Log;
+
+import static postpc.studypartner2.profile.UserViewModel.ALL_ENV_VALUES;
+import static postpc.studypartner2.profile.UserViewModel.ALL_TIME_VALUES;
 
 class FirestoreRepository {
 
@@ -102,23 +107,81 @@ class FirestoreRepository {
         return curUser;
     }
 
+    private void putPrefKey(HashMap<String, Boolean> preferences, List<String> list, String element, String DBKey){
+        if (list.contains(element)){
+            preferences.put(DBKey, true);
+        }
+//        else {
+//            preferences.put(DBKey, false);
+//
+//        }
+    }
 
-//    public LiveData<List<User>> getUsersByCourse(String courseName, List<String> studyTimes, List<String> environments){
-    public LiveData<List<User>> getUsersByCourse(String courseName){
-        android.util.Log.d(TAG, "getUsersByCourse: fbuser:"+fbUser.getUid());
+    private HashMap<String, Boolean> getPreferencesMap(List<String> studyTime, List<String> environment){
+        HashMap<String, Boolean> preferences = new HashMap<>();
+        if (environment != null) {
+            for (String env : ALL_ENV_VALUES) {
+                if (env == "quiet") {
+                    putPrefKey(preferences, environment, env, "env_quiet");
+                } else if (env == "lively") {
+                    putPrefKey(preferences, environment, env, "env_lively");
+                }
+            }
+        }
+
+        if (studyTime != null) {
+            for (String time : ALL_TIME_VALUES) {
+                if (time == "morning") {
+                    putPrefKey(preferences, studyTime, time, "study_time_morning");
+                } else if (time == "afternoon") {
+                    putPrefKey(preferences, studyTime, time, "study_time_afternoon");
+                } else if (time == "evening") {
+                    putPrefKey(preferences, studyTime, time, "study_time_evening");
+                }
+            }
+        }
+
+
+        return preferences;
+    }
+
+
+    public LiveData<List<User>> getUsersByCourseComplex(String courseName, List<String> studyTimes, List<String> environments){
+//    public LiveData<List<User>> getUsersByCourseOnly(String courseName){
+        android.util.Log.d(TAG, "getUsersByCourseOnly: fbuser:"+fbUser.getUid());
         String currentUid = fbUser.getUid();
 
         // None or all filters are selected -> simple query
-//        if ((studyTimes.size() == MAX_STUDY_TIMES || studyTimes.size() == 0)
-//            &&(environments.size() == MAX_ENVS || environments.size() == 0)){
-//            return getUsersByCourse(courseName);
-//        }
+        if ((studyTimes == null && environments == null) ||
+                ((studyTimes.size() == MAX_STUDY_TIMES || studyTimes.size() == 0)
+                        &&(environments.size() == MAX_ENVS || environments.size() == 0))){
+            return complexQueryHelper(courseName, null, currentUid);
+        }
 
-        // todo
+        // complex query
+        HashMap<String, Boolean> preferences = getPreferencesMap(studyTimes, environments);
+        return complexQueryHelper(courseName, preferences, currentUid);
 
+    }
+
+    private LiveData<List<User>> complexQueryHelper(String courseName, HashMap<String, Boolean> preferences, String currentUid){
         CollectionReference colRef = firestoreDB.collection("users");
-        com.google.firebase.firestore.Query lessQuery = colRef.whereArrayContains("courses", courseName).whereEqualTo("env_quiet", true).whereLessThan("uid", currentUid);
-        com.google.firebase.firestore.Query greaterQuery = colRef.whereArrayContains("courses", courseName).whereEqualTo("env_quiet", true).whereGreaterThan("uid", currentUid);
+
+        // base query
+        com.google.firebase.firestore.Query lessQuery = colRef.whereArrayContains("courses", courseName);
+
+        // add all preferences
+        if (preferences != null) {
+            for (HashMap.Entry<String, Boolean> entry : preferences.entrySet()) {
+                lessQuery = lessQuery.whereEqualTo(entry.getKey(), entry.getValue());
+            }
+        }
+
+        // remove current user from results
+        com.google.firebase.firestore.Query greaterQuery = lessQuery.whereGreaterThan("uid", currentUid);
+        lessQuery = lessQuery.whereLessThan("uid", currentUid);
+
+        // combine tasks and query db
         Task firstQuery = lessQuery.get();
         Task secondQuery = greaterQuery.get();
 
@@ -139,7 +202,7 @@ class FirestoreRepository {
 
 
     public LiveData<List<User>> getUsersByCourseTemp(String courseName){
-        android.util.Log.d(TAG, "getUsersByCourse: fbuser:"+fbUser.getUid());
+        android.util.Log.d(TAG, "getUsersByCourseOnly: fbuser:"+fbUser.getUid());
         String currentUid = fbUser.getUid();
         CollectionReference colRef = firestoreDB.collection("users");
         com.google.firebase.firestore.Query lessQuery = colRef.whereArrayContains("courses", courseName).whereLessThan("uid", currentUid);
@@ -163,7 +226,7 @@ class FirestoreRepository {
     }
 
 //
-//    public LiveData<List<User>> getUsersByCourse(String courseNum){
+//    public LiveData<List<User>> getUsersByCourseOnly(String courseNum){
 //        CollectionReference colRef = firestoreDB.collection("users");
 //        // todo: remove current user: two queries with <uid and >uid
 //        // https://stackoverflow.com/questions/47251919/firestore-how-to-perform-a-query-with-inequality-not-equals

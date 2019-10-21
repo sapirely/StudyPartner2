@@ -20,6 +20,13 @@ import postpc.studypartner2.profile.FirestoreRepository.PartnerListType;
 public class UserViewModel extends AndroidViewModel {
 
     private static final String TAG = "UserViewModel";
+    public static final ArrayList<String> ALL_ENV_VALUES = (new ArrayList<String>(
+            Arrays.asList("quiet",
+                    "lively")));
+
+    public static final ArrayList<String> ALL_TIME_VALUES = (new ArrayList<String>(
+            Arrays.asList("morning","afternoon",
+                    "evening")));
 
 //    private UserRepository mRepository; // todo uncomment - room
     private FirestoreRepository fRepository;
@@ -63,10 +70,16 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.loadUser(uid);
     }
 
-    public LiveData<List<User>> getUsersByCourse(String courseNum) {
-//        return fRepository.getUsersByCourse(courseNum);
-        return fRepository.getUsersByCourse(courseNum);
+    public LiveData<List<User>> getUsersByCourseOnly(String courseNum) {
+//        return fRepository.getUsersByCourseOnly(courseNum);
+        return fRepository.getUsersByCourseComplex(courseNum, null, null);
     }
+
+    public LiveData<List<User>> getUsersQuery(String courseNum, List<String> studyTimes, List<String> environments) {
+//        return fRepository.getUsersByCourseOnly(courseNum);
+        return fRepository.getUsersByCourseComplex(courseNum, studyTimes, environments);
+    }
+
 
 //    public LiveData<List<User>> getLastQuery(){
 //        return fRepository.getLastQuery();
@@ -116,13 +129,9 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     private void updateEnvironments(String uid, Object value){
-        ArrayList<String> allEnvValues = (new ArrayList<String>(
-                Arrays.asList("quiet",
-                        "lively")));
-
         List<String> values = (List<String>)value;
 
-        for (String env:allEnvValues){
+        for (String env: ALL_ENV_VALUES){
             if (env == "quiet"){
                 if (values.contains(env)){
                     fRepository.updateUser(uid, "env_quiet", true);
@@ -143,13 +152,10 @@ public class UserViewModel extends AndroidViewModel {
     }
 
     private void updateStudyTimes(String uid, Object value){
-        ArrayList<String> allTimeValues = (new ArrayList<String>(
-                Arrays.asList("morning","afternoon",
-                        "evening")));
 
         List<String> values = (List<String>)value;
 
-        for (String time:allTimeValues){
+        for (String time: ALL_TIME_VALUES){
             if (time == "morning"){
                 if (values.contains(time)){
                     fRepository.updateUser(uid, "study_time_morning", true);

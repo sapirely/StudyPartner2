@@ -41,7 +41,7 @@ import static android.view.View.GONE;
 
 public class ProfileFragment extends Fragment implements CourseRecyclerUtils.CourseClickCallBack {
 
-    private enum SelectableType {ENV, TIME};
+    public enum SelectableType {ENV, TIME};
     private static final String TAG = "ProfileFragment";
 
     private final int PROFILE_IMG_REQUEST_CODE = 9239;
@@ -193,34 +193,6 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         }
 
     }
-
-//    private void setUpEnvironments() {
-//        for (TextView e : environmentsTextViews) {
-//            e.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    android.util.Log.d(TAG, "onClick: clicked "+((TextView)view).getText());
-//                    final TextView env = (TextView) view;
-//                    final String env_text = env.getText().toString().toLowerCase();
-//
-//                    // selected again -> unselect
-//                    if (isTextViewSelectedAlready(user_environments, env)){
-//                        if (user_environments.size() > 1) {
-////                            unselectEnvironment(env, env_text);
-//                            unselectObject(SelectableType.ENV, env, env_text);
-//                        } else {
-//                            Toast.makeText(getContext(), "At least one is required", Toast.LENGTH_LONG).show();
-//                        }
-//                    } else {
-//                        // newly selected
-////                        selectEnvironment(env, env_text);
-//                        selectObject(SelectableType.ENV, env, env_text);
-//                    }
-//
-//                }
-//            });
-//        }
-//    }
 
     private void setAddCourseBtn(){
         addCourseBtn.setOnClickListener(new View.OnClickListener() {
