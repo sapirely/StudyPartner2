@@ -93,8 +93,13 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
             public void onClick(View view){
                 switch(view.getId()) {
                     case R.id.button_search:
-                        searchFiltersLayout.setVisibility(View.GONE);
-                        loadResults();
+                        String t = courseNum.getText().toString();
+                        if (t.isEmpty()){
+                            Toast.makeText(getContext(), "Please enter course name", Toast.LENGTH_LONG).show();
+                        } else {
+                            searchFiltersLayout.setVisibility(View.GONE);
+                            loadResults(t, user_study_times, user_environments);
+                        }
 //                        updateUI();
                         break;
                 }
@@ -103,12 +108,12 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
 
     }
 
-    private void loadResults(){
+    private void loadResults(String courseName, List<String> studyTimes, List<String> environments){
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 //        a.add("morning");
 //        b.add("quiet");
 //        viewModel.getUsersByCourseOnly(courseNum.getText().toString())
-        viewModel.getUsersQuery(courseNum.getText().toString(), user_study_times, user_environments)
+        viewModel.getUsersQuery(courseName, studyTimes, environments)
                 .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                     @Override
                     public void onChanged(List<User> users) {
