@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:alpha="0.7">
@@ -22,7 +21,8 @@
             android:fontFamily="sans-serif-light"
             android:text="@string/courses_title"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:layout_marginVertical="10dp"/>
         <ImageButton
             android:id="@+id/btn_add_course"
             android:layout_width="wrap_content"
