@@ -1,0 +1,134 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Study Time -->
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gray_border_rectangle"
+        android:alpha="0.7"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="15dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <TextView
+            android:id="@+id/profileTextViewStudyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/profile_preferences_study"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:paddingBottom="10dp"
+            android:layout_gravity="center"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/profile_time_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/accent_stroke_rounded_rectangle"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="sans-serif-medium"
+                android:text="Morning"
+                android:textSize="14dp"
+                android:paddingVertical="11dp"
+                android:paddingHorizontal="15dp"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:id="@+id/profile_time_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/accent_stroke_rounded_rectangle"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="sans-serif-medium"
+                android:text="Afternoon"
+                android:textSize="14dp"
+                android:paddingVertical="11dp"
+                android:paddingHorizontal="15dp"/>
+
+            <TextView
+                android:id="@+id/profile_time_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/accent_stroke_rounded_rectangle"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="sans-serif-medium"
+                android:text="Evening"
+                android:textSize="14dp"
+                android:paddingVertical="11dp"
+                android:paddingHorizontal="15dp"
+                android:layout_marginStart="10dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Environment -->
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gray_border_rectangle"
+        android:alpha="0.7"
+        android:orientation="vertical"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="15dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <TextView
+            android:id="@+id/profileTextViewEnvironmentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/profile_preferences_environment"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:paddingBottom="10dp"
+            android:layout_gravity="center"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/profile_env_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/accent_stroke_rounded_rectangle"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="sans-serif-medium"
+                android:text="Quiet"
+                android:textSize="14dp"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/profile_env_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/accent_stroke_rounded_rectangle"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="sans-serif-medium"
+                android:text="Lively"
+                android:textSize="14dp"
+                android:layout_marginStart="5dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
