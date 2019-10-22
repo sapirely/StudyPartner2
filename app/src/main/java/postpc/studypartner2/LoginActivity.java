@@ -26,6 +26,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import static postpc.studypartner2.utils.HelperFunctions.SRC_GOOGLE;
+import static postpc.studypartner2.utils.HelperFunctions.SRC_KEY;
+import static postpc.studypartner2.utils.HelperFunctions.SRC_LOGIN_EXISTING;
+import static postpc.studypartner2.utils.HelperFunctions.SRC_LOGIN_NEW;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
@@ -65,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
-            goToMainActivity();
+            goToMainActivity(SRC_LOGIN_EXISTING);
         }
 
         // set up UI
@@ -74,11 +79,11 @@ public class LoginActivity extends AppCompatActivity {
         setUpRegisterButton();
     }
 
-    private void goToMainActivity(){
+    private void goToMainActivity(String source){
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("authUID", currentUser.getUid());
+            intent.putExtra(SRC_KEY, source);
             Log.d(TAG, "goToMainActivity: authenticated, moving to MainActivity");
             startActivity(intent);
         } else {
@@ -152,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            goToMainActivity();
+                            goToMainActivity(SRC_LOGIN_NEW);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -174,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            goToMainActivity();
+                            goToMainActivity(SRC_LOGIN_EXISTING);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -214,12 +219,14 @@ public class LoginActivity extends AppCompatActivity {
                 // Sign in succeeded, proceed with account
                 GoogleSignInAccount acct = task.getResult();
                 Log.d(TAG, "onActivityResult: signed in with google");
-                firebaseAuthWithGoogle(acct);
+                if (acct != null) {
+                    firebaseAuthWithGoogle(acct);
+                } else {
+                    Log.d(TAG, "onActivityResult: acct is null, sign in with google failed");
+                }
             } else {
                 Log.d(TAG, "onActivityResult: sign in with google failed");
                 Toast.makeText(getApplicationContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
-                // Sign in failed, handle failure and update UI
-                // ...
             }
         }
     }
@@ -234,7 +241,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            goToMainActivity();
+                            goToMainActivity(SRC_GOOGLE);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

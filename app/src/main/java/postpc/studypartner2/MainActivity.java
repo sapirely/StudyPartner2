@@ -46,6 +46,10 @@ import postpc.studypartner2.profile.UserViewModel;
 
 import static postpc.studypartner2.utils.HelperFunctions.SP_UID;
 import static postpc.studypartner2.utils.HelperFunctions.SP_USER;
+import static postpc.studypartner2.utils.HelperFunctions.SRC_GOOGLE;
+import static postpc.studypartner2.utils.HelperFunctions.SRC_KEY;
+import static postpc.studypartner2.utils.HelperFunctions.SRC_LOGIN_EXISTING;
+import static postpc.studypartner2.utils.HelperFunctions.SRC_LOGIN_NEW;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,38 +85,45 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser u = mAuth.getCurrentUser();
-        if (u != null) {
-            Toast.makeText(getApplicationContext(), u.getUid(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "nope", Toast.LENGTH_LONG).show();
+        current_user_uid = mAuth.getUid();
 
-        }
-        // get user from intent
-//        actOnIntent(); // opened app from notifications
-
-        // get user from firebase
+        // determine source and do stuff
+        actOnIntent();
 
         // set up navigation
-//        setUpNavigation();
+        setUpNavigation();
     }
 
 
     private void actOnIntent(){
         Intent intent = getIntent();
         if (intent != null){
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                // from notification
-                String isRequest = bundle.getString("isRequest");
-                Log.d(TAG, "onCreate: isRequest: " + isRequest);
-                Navigation.findNavController(this, R.id.nav_host_fragment)
-                        .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
-            } else {
-                // from login
-                current_user_uid = intent.getStringExtra("authUID");
-                // todo if this doesn't work, add intentSource as string extra
+            String source = intent.getStringExtra(SRC_KEY);
+
+            // from notifications
+            if (source.isEmpty()) {
+                Bundle bundle = intent.getExtras();
+                if (bundle != null) {
+                    // from notification
+                    String isRequest = bundle.getString("isRequest");
+                    Log.d(TAG, "onCreate: isRequest: " + isRequest);
+                    Navigation.findNavController(this, R.id.nav_host_fragment)
+                            .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
+                }
+            } else { // login/register/google sign-in
+                actAccordingToSource(source);
             }
+        }
+    }
+
+    private void actAccordingToSource(final String source){
+        switch (source){
+            case SRC_LOGIN_NEW:
+                break;
+            case SRC_LOGIN_EXISTING:
+                break;
+            case SRC_GOOGLE:
+                break;
         }
     }
 

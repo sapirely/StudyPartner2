@@ -18,6 +18,13 @@ public class HelperFunctions {
     public final static String SP_USER = "SP_USER";
     public final static String SP_UID = "SP_UID";
 
+    // intent extras
+    // sources
+    public final static String SRC_KEY = "source";
+    public final static String SRC_LOGIN_NEW = "login_new";
+    public final static String SRC_LOGIN_EXISTING = "login_existing";
+    public final static String SRC_GOOGLE = "login_google";
+
 
 
     public static GeoPoint locationToGeoPoint(Location loc)
