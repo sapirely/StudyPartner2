@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import postpc.studypartner2.MainActivity;
@@ -39,12 +41,13 @@ public class ConversationRecyclerUtils {
     }
 
     public interface ConversationClickCallBack{
-        void onConversationLongClick(Conversation conversation);
+        void onConversationClick(Conversation conversation, View view);
     }
 
     static class ConversationsAdapter extends ListAdapter<Conversation, ConversationHolder> {
         private List<Conversation> conversations = new ArrayList<>();
         static ClickListener clickListener;
+//        private HashMap<String, User[]> convoToUsersDict = new HashMap<>();
         Context context;
 
         public ConversationsAdapter(Context context) {
@@ -63,9 +66,17 @@ public class ConversationRecyclerUtils {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ConversationHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final ConversationHolder holder, final int position) {
             Conversation conversation = conversations.get(position);
             holder.setData(conversation);
+            holder.partnerAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (callBack != null){
+                        callBack.onConversationClick(getConversation(position), view);
+                    }
+                }
+            });
 
         }
 
@@ -86,6 +97,14 @@ public class ConversationRecyclerUtils {
         public void setOnItemClickListener(ClickListener clickListener) {
             ConversationsAdapter.clickListener = clickListener;
         }
+
+//        public HashMap<String, HashMap<String, User>> getConvoToUsersDict() {
+//            return convoToUsersDict;
+//        }
+//
+//        public void setConvoToUsersDict(HashMap<String, User[]> convoToUsersDict) {
+//            this.convoToUsersDict = convoToUsersDict;
+//        }
 
         public interface ClickListener {
             void onItemClick(int position, View v);
@@ -128,7 +147,7 @@ public class ConversationRecyclerUtils {
         private void setPartnerAvatar(String url){
             Glide.with(view)
                     .load(url)
-                    .placeholder(R.drawable.default_avatar)//todo change
+                    .placeholder(R.drawable.default_avatar)
                     .apply(RequestOptions.circleCropTransform())
                     .into(partnerAvatar);
         }

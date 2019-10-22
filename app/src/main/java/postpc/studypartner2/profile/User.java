@@ -38,13 +38,11 @@ public class User implements Parcelable {
     private String name;
     private String description;
     private String image_url;
-    private boolean loaded;
+//    private boolean loaded;
     private List<String> courses;
     private MyLocation location;
     private boolean env_quiet, env_lively;
     private boolean study_time_morning, study_time_afternoon, study_time_evening;
-//    private List<String> environment;
-//    private List<String> study_time;
 
     public User(){}
 
@@ -55,7 +53,7 @@ public class User implements Parcelable {
         this.name = name;
         this.description = description;
         this.image_url = image_url;
-        this.loaded = false;
+//        this.loaded = false;
         this.courses = coursesListFromStringConverter(coursesList_string);
     }
 
@@ -65,7 +63,7 @@ public class User implements Parcelable {
         this.name = name;
         this.description = description;
         this.image_url = image_url;
-        this.loaded = false;
+//        this.loaded = false;
         this.courses = courses;
     }
 
@@ -75,8 +73,7 @@ public class User implements Parcelable {
         name = in.readString();
         description = in.readString();
         image_url = in.readString();
-        loaded = in.readByte() != 0;
-        // maybe need to add courses todo
+//        loaded = in.readByte() != 0;
     }
 
     private List<String> coursesListFromStringConverter(String coursesList_string){
@@ -103,7 +100,7 @@ public class User implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(description);
         parcel.writeString(image_url);
-        parcel.writeByte((byte) (loaded ? 1 : 0));
+//        parcel.writeByte((byte) (loaded ? 1 : 0));
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -152,13 +149,13 @@ public class User implements Parcelable {
         this.image_url = image_url;
     }
 
-    public boolean isLoaded() {
-        return loaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        this.loaded = loaded;
-    }
+//    public boolean isLoaded() {
+//        return loaded;
+//    }
+//
+//    public void setLoaded(boolean loaded) {
+//        this.loaded = loaded;
+//    }
 
     public void setCourses(List<String> courses){
         this.courses = courses;
