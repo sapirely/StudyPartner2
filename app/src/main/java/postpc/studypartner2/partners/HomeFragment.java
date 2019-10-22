@@ -62,12 +62,6 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        super.onSaveInstanceState(savedInstanceState);
-//          todo: save partners maybe?
-//    }
-
     private void setUpFAB(View view){
         floatingActionButton = view.findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {

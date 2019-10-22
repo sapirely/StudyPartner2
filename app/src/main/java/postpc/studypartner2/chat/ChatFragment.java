@@ -1,5 +1,6 @@
 package postpc.studypartner2.chat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,6 +64,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
     private ImageButton sendBtn;
     private RecyclerView mRecyclerView;
     private ImageView addFriendBtn;
+    private ImageView addMeetingBtn;
     private ImageView backArrow;
     private ImageView chatAvatar;
     private TextView otherUserName;
@@ -96,37 +99,41 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         this.editText = view.findViewById(R.id.messageEditText);
         this.mRecyclerView = (RecyclerView)view.findViewById(R.id.messageRecyclerView);
         this.addFriendBtn = view.findViewById(R.id.chat_add_friend);
+        this.addMeetingBtn = view.findViewById(R.id.chat_meeting);
         this.backArrow = view.findViewById(R.id.chat_back_arrow);
 
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
 
         // get current user
-        SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sp.getString("Current_USER", "");
-//        final User user = gson.fromJson(json, User.class);
-        user = gson.fromJson(json, User.class);
+//        SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
+//        Gson gson = new Gson();
+//        String json = sp.getString("Current_USER", "");
+////        final User user = gson.fromJson(json, User.class);
+//        user = gson.fromJson(json, User.class);
+        user = getCurrentUser();
 
         // read other user from bundle
-        Bundle bundle = this.getArguments();
-        otherUser = new User();
-        if (bundle != null) {
-            String otherUserUID = bundle.getString("otherChatUserUID", "");
-            Log.d(TAG, "onCreateView: got uid "+otherUserUID+" from bundle");
-            otherUser = bundle.getParcelable("otherChatUser");
-            Log.d(TAG, "onCreateView: got parcelable user "+otherUser.getName());
-        } else {
-            Log.d(TAG, "onCreateView: Got to chat without user info");
-        }
+//        Bundle bundle = this.getArguments();
+//        otherUser = new User();
+//        if (bundle != null) {
+//            String otherUserUID = bundle.getString("otherChatUserUID", "");
+//            Log.d(TAG, "onCreateView: got uid "+otherUserUID+" from bundle");
+//            otherUser = bundle.getParcelable("otherChatUser");
+//            Log.d(TAG, "onCreateView: got parcelable user "+otherUser.getName());
+//        } else {
+//            Log.d(TAG, "onCreateView: Got to chat without user info");
+//        }
+        otherUser = getOtherUser();
 
         // check if otherUser is a partner
-        viewModel.getPartnersUIDS(user.getUid()).observe(getViewLifecycleOwner(), new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> uids) {
-                // otherUser is partner of user
-                setUpAddFriend(uids.contains(otherUser.getUid()));
-            }
-        });
+//        viewModel.getPartnersUIDS(user.getUid()).observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+//            @Override
+//            public void onChanged(List<String> uids) {
+//                // otherUser is partner of user
+//                setUpAddFriend(uids.contains(otherUser.getUid()));
+//            }
+//        });
+        setUpPartnerFeatures(user.getUid(), otherUser.getUid());
 
         // set up top bar
         this.otherUserName = view.findViewById(R.id.chat_other_user_name);
@@ -153,14 +160,76 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         adapter.submitList(currentMessages);
         this.editText.setText("");
 
-        setUpAddFriendOnClick();
-
+        setUpAddFriendBtn();
         setUpBackArrow();
+        setAddMeetingBtn();
 //
         // log message list size
         Log.d(TAG, "onCreate: current_size_of_msg_list: "+currentMessages.size());
 
         return view;
+    }
+
+    private void setUpPartnerFeatures(final String userUID, final String otherUserUID) {
+        viewModel.getPartnersUIDS(userUID).observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> uids) {
+                // otherUser is partner of user
+                Boolean isPartner = uids.contains(otherUserUID);
+                setUpAddFriend(isPartner);
+                setUpMeeting(isPartner);
+            }
+        });
+    }
+
+    private void setUpMeeting(boolean isPartner) {
+        if (isPartner){
+            addMeetingBtn.setVisibility(View.VISIBLE);
+        } else {
+            addMeetingBtn.setVisibility(View.GONE);
+        }
+    }
+
+    private void setAddMeetingBtn(){
+        addMeetingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setUpEvent(otherUser.getName());
+            }
+        });
+    }
+
+    private void setUpEvent(String partnerName){
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra(CalendarContract.Events.TITLE, "StudyWith "+partnerName);
+//        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+//                startDateMillis);
+//        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
+//                endDateMillis);
+//        intent.putExtra(CalendarContract.Events.DESCRIPTION,strDescription));
+        startActivity(intent);
+    }
+
+    private User getOtherUser() {
+        Bundle bundle = this.getArguments();
+        User user = new User();
+        if (bundle != null) {
+            String otherUserUID = bundle.getString("otherChatUserUID", "");
+            Log.d(TAG, "onCreateView: got uid "+otherUserUID+" from bundle");
+            user = bundle.getParcelable("otherChatUser");
+            Log.d(TAG, "onCreateView: got parcelable user "+user.getName());
+        } else {
+            Log.d(TAG, "onCreateView: Got to chat without user info");
+        }
+        return user;
+    }
+
+    private User getCurrentUser(){
+        SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sp.getString("Current_USER", "");
+        return gson.fromJson(json, User.class);
     }
 
     private void setUpRecyclerView(View view) {
@@ -220,7 +289,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         });
     }
 
-    private void setUpAddFriendOnClick(){
+    private void setUpAddFriendBtn(){
         addFriendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
