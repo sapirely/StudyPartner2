@@ -16,7 +16,7 @@
     </TextView>
     <ImageView
         android:layout_marginTop="50dp"
-        android:id="@+id/googleLoginBtn"
+        android:id="@+id/google_login_btn"
         android:layout_width="wrap_content"
         android:layout_height="90dp"
         android:layout_marginBottom="10dp"

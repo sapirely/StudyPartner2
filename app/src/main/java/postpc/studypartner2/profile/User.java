@@ -67,6 +67,11 @@ public class User implements Parcelable {
         this.courses = courses;
     }
 
+    public User(String uid){
+        this.uid=uid;
+
+    }
+
 
     protected User(Parcel in) {
         uid = in.readString();

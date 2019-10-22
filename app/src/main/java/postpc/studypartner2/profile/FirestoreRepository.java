@@ -85,7 +85,7 @@ class FirestoreRepository {
 //        new insertUserToFirestoreAsync(firestoreDB).execute(user);
     }
 
-    public LiveData<User> loadUser(String uid){
+    public LiveData<User> loadUser(final String uid){
         DocumentReference docRef = firestoreDB.collection("users").document(uid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -97,10 +97,15 @@ class FirestoreRepository {
                         curUser.postValue(document.toObject(User.class));
                     } else {
                         Log.d(TAG, "No such document");
-                        curUser.postValue(new User("-1", null, null, null, ""));
+                        User user = new User(uid);
+                        addUser(user);
+                        curUser.postValue(user);
                     }
                 } else {
-                    Log.e(TAG, "get failed with ", task.getException());
+                    Log.d(TAG, "get failed with "+task.getException());
+                    User user = new User(uid);
+                    addUser(user);
+                    curUser.postValue(user);
                 }
             }
         });

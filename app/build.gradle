@@ -106,4 +106,6 @@ apply plugin: 'com.google.gms.google-services'
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:+'
 //    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }
