@@ -3,6 +3,9 @@ package postpc.studypartner2;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -44,6 +47,7 @@ import postpc.studypartner2.notifications.Token;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 
+import static android.view.View.GONE;
 import static postpc.studypartner2.utils.HelperFunctions.SP_UID;
 import static postpc.studypartner2.utils.HelperFunctions.SP_USER;
 import static postpc.studypartner2.utils.HelperFunctions.SRC_GOOGLE;
@@ -61,23 +65,24 @@ public class MainActivity extends AppCompatActivity {
     private final int RC_SIGN_IN = 123;
     private final int RC_REGISTER = 124;
 
+    private ConstraintLayout splashScreen;
+
     // Firebase Authentication
-    private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private Context mContext = MainActivity.this;
-    private Intent authIntent;
-    private FirebaseUser curAuthUser;
 
     private UserViewModel viewModel;
     private static String current_user_uid;
-    private User current_logged_in_user;
 
-    private FusedLocationProviderClient fusedLocationClient;
+    // Navigation
+    BottomNavigationView bottomNavigationView;
+    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        splashScreen = findViewById(R.id.splash_screen);
 
         // request permission
         if (!checkPermissions(PERMISSIONS)){
@@ -86,12 +91,19 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         current_user_uid = mAuth.getUid();
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        // determine source and do stuff
+        // for notifications
+        updateToken();
+        saveUIDToSP(current_user_uid);
+
+        // determine source of intent and do stuff accordingly
         actOnIntent();
 
         // set up navigation
-        setUpNavigation();
+//        setUpNavigation();
+
+//        Toast.makeText(this, "GOT HERE YAY", Toast.LENGTH_LONG).show();
     }
 
 
@@ -100,37 +112,99 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null){
             String source = intent.getStringExtra(SRC_KEY);
 
-            // from notifications
-            if (source.isEmpty()) {
+            // intent is from notifications
+            if (source == null || source.isEmpty()) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    // from notification
+                    saveLocation();
+
+                    // handle intent
                     String isRequest = bundle.getString("isRequest");
                     Log.d(TAG, "onCreate: isRequest: " + isRequest);
                     Navigation.findNavController(this, R.id.nav_host_fragment)
                             .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
                 }
-            } else { // login/register/google sign-in
+            } else { // intent is from login \ register \ google sign-in
                 actAccordingToSource(source);
             }
+        } else {
+            // shouldn't get here
+            Log.d(TAG, "actOnIntent: got to main activity with no intent");
         }
+    }
+
+
+    // called from register user and existing user (google calls both of them)
+    private void continueAfterDB(){
+        saveLocation();
+        splashScreen.setVisibility(GONE);
+        setUpNavigation();
     }
 
     private void actAccordingToSource(final String source){
         switch (source){
             case SRC_LOGIN_NEW:
+                registerNewUser();
                 break;
             case SRC_LOGIN_EXISTING:
+                existingUser();
                 break;
             case SRC_GOOGLE:
+                determineIfNewGoogleUser();
                 break;
+        }
+    }
+
+    private void existingUser(){
+        viewModel.loadUser(current_user_uid).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User loadedUser) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", loadedUser);
+                saveCurrentUserToSP(loadedUser);
+                continueAfterDB();
+            }
+        });
+
+    }
+
+    private void registerNewUser(){
+        FirebaseUser authUser = mAuth.getCurrentUser();
+        if (authUser != null){
+            User user = new User(authUser.getUid());
+            viewModel.addUser(user);
+            continueAfterDB();
+            Log.d(TAG, "registerNewUser: added new user to db");
+        } else {
+            Log.d(TAG, "registerNewUser: auth user is null");
+        }
+    }
+
+    private void determineIfNewGoogleUser(){
+        FirebaseUser authUser = mAuth.getCurrentUser();
+        if (authUser != null){
+            viewModel.loadUser(authUser.getUid()).observe(this, new Observer<User>() {
+                @Override
+                public void onChanged(User user) {
+                    if (user.getName().isEmpty()){
+                        // new user
+                        registerNewUser();
+                    } else {
+                        // existing user
+                        existingUser();
+                    }
+                }
+            });
+
+        } else {
+            Log.d(TAG, "registerNewUser: auth user is null");
         }
     }
 
 
     /***Location related **/
     private void saveLocation(){
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -139,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
                         if (location != null) {
                             // Logic to handle location object
                             Log.d(TAG, "onSuccess: got location "+location.toString());
-//                            GeoPoint geo = HelperFunctions.locationToGeoPoint(location);
                             MyLocation geo = new MyLocation(location.getLatitude(), location.getLongitude());
                             viewModel.updateUser(current_user_uid, "location", geo);
                         } else {
@@ -149,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    /***/
+    /**/
 
 
     /***
@@ -172,9 +245,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /****************************************/
-
-
     /**
      * SP Related
      */
@@ -183,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(SP_UID, MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("Current_USERID", uid);
-        editor.commit();
+        editor.apply();
     }
 
     private void saveCurrentUserToSP(User user){
@@ -195,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    /****************************************/
 
 
     /** Permission related ***/
@@ -212,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestRemainingPermissions(String[] permissions) {
-        List<String> remainingPermissions = new ArrayList<String>();
+        List<String> remainingPermissions = new ArrayList<>();
         for (String permission : permissions) {
             Log.d(TAG, "requestRemainingPermissions: requesting permission for "+permission);
             if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
@@ -255,30 +324,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void authenticateUser(){
-        // Choose authentication providers
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build());
-
-        // Customize layout
-        AuthMethodPickerLayout loginLayout = new AuthMethodPickerLayout
-                .Builder(R.layout.activity_login)
-                .setGoogleButtonId(R.id.google_login_btn)
-                .setEmailButtonId(R.id.emailLoginBtn)
-                .build();
-
-        // Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setAuthMethodPickerLayout(loginLayout)
-                        .setIsSmartLockEnabled(false)
-                        .build(),
-                RC_SIGN_IN);
+    private void nav1(){
+        bottomNavigationView = findViewById(R.id.bottom_nvaigation_view);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
     }
 
+    private void nav2(){
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+    }
 
     /***
      * navigation related
