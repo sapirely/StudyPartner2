@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -99,11 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         // determine source of intent and do stuff accordingly
         actOnIntent();
-
-        // set up navigation
-//        setUpNavigation();
-
-//        Toast.makeText(this, "GOT HERE YAY", Toast.LENGTH_LONG).show();
     }
 
 
@@ -171,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
     private void registerNewUser(){
         FirebaseUser authUser = mAuth.getCurrentUser();
         if (authUser != null){
+//            Intent intent = new Intent(this, RegisterActivity.class);
+//            startActivity(intent);
             User user = new User(authUser.getUid());
             viewModel.addUser(user);
             continueAfterDB();
@@ -359,5 +357,10 @@ public class MainActivity extends AppCompatActivity {
         return current_user_uid;
     }
 
+    public static void signOut(Activity currentActivity){
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(currentActivity, LoginActivity.class);
+        currentActivity.startActivity(intent);
+    }
 
 }

@@ -40,6 +40,8 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     private RecyclerView mRecyclerView;
     private ProgressBar progressBar;
 
+    private TextView emptyListTextViewMsg;
+
     private TextView[] studyTimesTextViews = new TextView[3];
     private TextView[] environmentsTextViews = new TextView[2];
 
@@ -66,6 +68,8 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
         searchFiltersLayout = view.findViewById(R.id.search_filters_layout);
         mRecyclerView = view.findViewById(R.id.searchRecyclerView);
         progressBar = view.findViewById(R.id.progressBarSearch);
+
+        emptyListTextViewMsg = view.findViewById(R.id.search_empty_results_text);
 
         studyTimesTextViews[0] = view.findViewById(R.id.profile_time_0);
         studyTimesTextViews[1] = view.findViewById(R.id.profile_time_1);
@@ -141,6 +145,9 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
 
         mRecyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        if (adapter.getItemCount() < 1){
+            emptyListTextViewMsg.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setUpRecyclerView(View view) {

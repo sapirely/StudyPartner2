@@ -1,54 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    android:background="@drawable/gradient_background"
+    tools:context=".profile.ProfileFragment">
 
-    <TextView
-        android:id="@+id/textViewRegisterTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/register_title"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_width="match_parent">-->
 
-    <EditText
-        android:id="@+id/editTextRegisterDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewRegisterTitle" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/log_out_btn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="?android:attr/actionOverflowButtonStyle"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"/>-->
 
-    <EditText
-        android:id="@+id/editTextRegisterCourseNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Course Number"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterDescription" />
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/profile_header_2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
 
-    <Button
-        android:id="@+id/buttonRegisterDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Done"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRegisterCourseNum"
-        android:background="@drawable/rounded_rectangle"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/rounded_rectangle2"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                android:layout_marginTop="50dp"-->
+<!--                android:paddingTop="50dp"-->
+<!--                android:paddingBottom="20dp"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/profile_name"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="sans-serif-light"-->
+<!--                    android:text="Name"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:textColor="#000"-->
+<!--                    android:layout_marginHorizontal="10dp"-->
+<!--                    android:textSize="22sp"-->
+<!--                    android:visibility="visible" />-->
+
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/profile_name_edit_layout"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="center"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:orientation="horizontal">-->
+<!--                    <EditText-->
+<!--                        android:id="@+id/profile_name_edit"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="sans-serif-light"-->
+<!--                        android:text="Name"-->
+<!--                        android:textAlignment="center"-->
+<!--                        android:textColor="#000"-->
+<!--                        android:layout_marginHorizontal="10dp"-->
+<!--                        android:textSize="22sp"-->
+<!--                        android:minWidth="30dp"-->
+<!--                        android:visibility="visible" />-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/profile_icon_edit_name_ok"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:src="@drawable/ic_ok" />-->
+<!--                </LinearLayout>-->
+
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/profile_location_snippet"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:paddingBottom="5dp"-->
+<!--                    android:gravity="center">-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/icon_location"-->
+<!--                        android:layout_width="14sp"-->
+<!--                        android:layout_height="14sp"-->
+<!--                        android:src="@drawable/ic_location" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/location_city_text"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="sans-serif-condensed-light"-->
+<!--                        android:paddingHorizontal="3dp"-->
+<!--                        android:textColor="@color/grey_text"-->
+<!--                        android:textSize="14sp" />-->
+<!--                </LinearLayout>-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/profile_desc"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="sans-serif-light"-->
+<!--                    android:text="Description"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/grey_text"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginHorizontal="10dp"-->
+<!--                    android:visibility="visible" />-->
+
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/profile_desc_edit_layout"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="center"-->
+<!--                    android:visibility="gone">-->
+<!--                    <EditText-->
+<!--                        android:id="@+id/profile_desc_edit"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="sans-serif-light"-->
+<!--                        android:text="Description"-->
+<!--                        android:textAlignment="center"-->
+<!--                        android:textColor="@color/grey_text"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:minWidth="30dp"-->
+<!--                        android:layout_marginHorizontal="10dp"-->
+<!--                        android:visibility="visible" />-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/profile_icon_edit_desc_ok"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:src="@drawable/ic_ok" />-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
+
+
+<!--            <ImageView-->
+<!--                android:id="@+id/profile_image"-->
+<!--                android:layout_width="90dp"-->
+<!--                android:layout_height="90dp"-->
+<!--                android:contentDescription="avatar"-->
+<!--                android:paddingTop="10dp"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.498"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                tools:srcCompat="@tools:sample/avatars[3]"/>-->
+
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/progressBarProfile"-->
+<!--                style="?android:attr/progressBarStyle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintTop_toTopOf="@id/profile_image"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/profile_image"-->
+<!--                app:layout_constraintStart_toStartOf="@id/profile_image"-->
+<!--                app:layout_constraintEnd_toEndOf="@id/profile_image"-->
+<!--                android:visibility="visible"/>-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/profile_header_2"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <include layout="@layout/snippet_profile_preferences"/>-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/gray_border_rectangle"-->
+<!--                    android:layout_marginVertical="5dp">-->
+
+<!--                    <include layout="@layout/snippet_profile_courses"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="start"-->
+<!--                        android:layout_margin="5dp" />-->
+
+<!--                </LinearLayout>-->
+
+<!--            </LinearLayout>-->
+
+<!--        </ScrollView>-->
+
+
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+</FrameLayout>

@@ -176,8 +176,10 @@ public class User implements Parcelable {
 
     public List<Course> getCoursesList_courseType(){
         List<Course> listOfCourses = new ArrayList<>();
-        for (String course: courses){
-            listOfCourses.add(new Course(course));
+        if (courses != null && !courses.isEmpty()) {
+            for (String course : courses) {
+                listOfCourses.add(new Course(course));
+            }
         }
         return listOfCourses;
     }

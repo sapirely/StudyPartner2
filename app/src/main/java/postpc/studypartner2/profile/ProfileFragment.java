@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -61,14 +62,21 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private TextView profileName;
     private TextView profileDesc;
     private ImageView profilePic;
-    private EditText editProfileName;
-    private EditText editProfileDesc;
     private ImageButton addCourseBtn;
     private TextView[] studyTimesTextViews = new TextView[3];
     private TextView[] environmentsTextViews = new TextView[2];
 
     private TextView locationCityTextView;
     private LinearLayout locationSnippet;
+
+    private ImageButton logOutBtn;
+
+    private ImageView editNameBtn;
+    private ImageView editDescBtn;
+    private EditText editProfileName;
+    private EditText editProfileDesc;
+    private LinearLayout editNameLayout;
+    private LinearLayout editDescLayout;
 
     private CourseRecyclerUtils.CoursesAdapter adapter = new CourseRecyclerUtils.CoursesAdapter();
     public ArrayList<Course> courses = new ArrayList<>();
@@ -85,16 +93,22 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        setHasOptionsMenu(true);
 
         // Set up views
         this.mRecyclerView = (RecyclerView) view.findViewById(R.id.courses_recycler_view);
         profileName = view.findViewById(R.id.profile_name);
         profileDesc = view.findViewById(R.id.profile_desc);
         profilePic = view.findViewById(R.id.profile_image);
-        editProfileName = view.findViewById(R.id.edit_profile_name);
-        editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
         progressBar = view.findViewById(R.id.progressBarProfile);
+
+        editProfileName = view.findViewById(R.id.profile_name_edit);
+        editProfileDesc = view.findViewById(R.id.profile_desc_edit);
+        editNameBtn = view.findViewById(R.id.profile_icon_edit_name_ok);
+        editDescBtn = view.findViewById(R.id.profile_icon_edit_desc_ok);
+        editNameLayout = view.findViewById(R.id.profile_name_edit_layout);
+        editDescLayout = view.findViewById(R.id.profile_desc_edit_layout);
 
         locationCityTextView = view.findViewById(R.id.location_city_text);
         locationSnippet = view.findViewById(R.id.profile_location_snippet);
@@ -106,11 +120,58 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         environmentsTextViews[0] = view.findViewById(R.id.profile_env_0);
         environmentsTextViews[1] = view.findViewById(R.id.profile_env_1);
 
+        logOutBtn = view.findViewById(R.id.log_out_btn);
+
+        editNameLayout.setVisibility(GONE);
+        editDescLayout.setVisibility(GONE);
+
         loadUser(view);
         setAddCourseBtn();
-//        setUpEnvironments();
+        setEditButtons();
+        setLogOutBtn();
 
         return view;
+    }
+
+
+    private void setEditButtons() {
+        profileName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editProfileName.setText(profileName.getText());
+                profileName.setVisibility(GONE);
+                editNameLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        profileDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editProfileDesc.setText(profileDesc.getText());
+                profileDesc.setVisibility(GONE);
+                editDescLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        editNameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String value = editProfileName.getText().toString();
+                profileName.setText(value);
+                profileName.setVisibility(View.VISIBLE);
+                editNameLayout.setVisibility(GONE);
+                viewModel.updateUser(MainActivity.getCurrentUserID(), "name", value);
+            }
+        });
+
+        editProfileDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String value = editProfileDesc.getText().toString();
+                profileDesc.setText(value);
+                profileDesc.setVisibility(View.VISIBLE);
+                editDescLayout.setVisibility(GONE);
+                viewModel.updateUser(MainActivity.getCurrentUserID(), "description", value);
+            }
+        });
     }
 
     @Override
@@ -315,10 +376,17 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         }
         Log.d(TAG, "updateUI: updating for user " + user.getUid());
         setUpProfileImage(user.getImage_url());
-        profileName.setText(user.getName());
-        profileDesc.setText(user.getDescription());
-        setUpRecyclerView(user.getCourses().size());
-        adapter.setCourses(user.getCoursesList_courseType());
+        if (user.getName() != null && !user.getName().isEmpty()) {
+            profileName.setText(user.getName());
+        }
+        if (user.getDescription() != null && !user.getDescription().isEmpty()) {
+            profileDesc.setText(user.getDescription());
+        }
+        if (user.getCourses() != null && !user.getCourses().isEmpty()) {
+            setUpRecyclerView(user.getCourses().size());
+            adapter.setCourses(user.getCoursesList_courseType());
+        }
+
 
         setUpLocation(locationCityTextView, user.getLocation());
 
@@ -401,27 +469,36 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         }
     }
 
+    public void setLogOutBtn(){
+        ViewConfiguration.get(getContext()).hasPermanentMenuKey();
 
-//    // utils - maybe remove
-//    public class CourseDeletingDialog extends DialogFragment {
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//            builder.setMessage("Are you sure you want to remove this course?")
-//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            // remove course
-//                            android.util.Log.d(TAG, "onClick: user clicked on remove course");
-//                        }
-//                    })
-//                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            // User cancelled the dialog
-//                            android.util.Log.d(TAG, "onClick: remove course dialog was cancelled");
-//                        }
-//                    });
-//            // Create the AlertDialog object and return it
-//            return builder.create();
-//        }
-//    }
+        logOutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createLogOutDialog();
+
+            }
+        });
+    }
+
+    private void createLogOutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // remove course
+                        android.util.Log.d(TAG, "onClick: user clicked on log out");
+                        MainActivity.signOut(getActivity());
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        android.util.Log.d(TAG, "onClick: log out dialog was cancelled");
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

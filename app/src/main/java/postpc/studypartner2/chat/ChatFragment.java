@@ -371,7 +371,6 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                             .enqueue(new Callback<Response>() {
                                 @Override
                                 public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                                    Toast.makeText(getContext(), ""+response.message(), Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, "onResponse: "+response.message());
                                 }
 

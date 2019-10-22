@@ -19,5 +19,6 @@
     <string name="menu_profile">Profile</string>
 
     <string name="register_title">Welcome</string>
+    <string name="log_out">log out</string>
 
 </resources>

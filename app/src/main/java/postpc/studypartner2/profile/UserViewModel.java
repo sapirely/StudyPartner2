@@ -1,16 +1,21 @@
 package postpc.studypartner2.profile;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.net.Uri;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import postpc.studypartner2.LoginActivity;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
 

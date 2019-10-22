@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -36,6 +37,8 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
     private RecyclerView mRecyclerView;
     private ProgressBar progressBar;
+
+    private TextView emptyPartnerListMessage;
 //    private PartnerRecyclerUtils.PartnersAdapter adapter = new PartnerRecyclerUtils.PartnersAdapter();
     private ResultRecyclerUtils.ResultsAdapter adapter;
     public HomeFragment() {
@@ -48,6 +51,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         progressBar = view.findViewById(R.id.progressBarPartners);
+        emptyPartnerListMessage = view.findViewById(R.id.home_empty_partners_text);
 
         // Set up UI
         adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
@@ -89,7 +93,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateUI() {
+
         progressBar.setVisibility(GONE);
+        if (adapter.getItemCount() < 1 ){
+            emptyPartnerListMessage.setVisibility(View.VISIBLE);
+        } else {
+            emptyPartnerListMessage.setVisibility(GONE);
+        }
     }
 
     private void setUpRecyclerView(View view) {

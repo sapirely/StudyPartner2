@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".Search.results.SearchFragment">
 
+    <TextView
+        android:id="@+id/search_empty_results_text"
+        android:text="No results :( \nTry fewer filters"
+        android:textSize="26sp"
+        android:gravity="center"
+        android:padding="20dp"
+        android:fontFamily="sans-serif-light"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/grey_text"
+        android:visibility="gone">
+
+    </TextView>
+
     <!-- Results -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchRecyclerView"
