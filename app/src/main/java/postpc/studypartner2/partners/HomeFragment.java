@@ -74,8 +74,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
-                        .navigate(R.id.action_homeFragment_to_calendarFragment);
-//                        .navigate(R.id.action_homeFragment_to_searchFragment);
+                        .navigate(R.id.action_homeFragment_to_searchFragment);
 
             }
         });
