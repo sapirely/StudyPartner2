@@ -374,6 +374,61 @@ class FirestoreRepository {
     }
 
 
+    public LiveData<List<String>> getPartnersUIDS(String uid, final PartnerListType type){
+
+        final List<String> listUsers = new ArrayList<>();
+        final MutableLiveData<List<String>> uids = new MutableLiveData<>();
+        DocumentReference docRef = firestoreDB.collection("partners").document(uid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    android.util.Log.d(TAG, "onComplete: successfully got partners");
+                    DocumentSnapshot document = task.getResult();
+                    if (document == null){
+                        android.util.Log.d(TAG, "onComplete: empty partner list");
+                        uids.postValue(listUsers);
+                        return;
+                    }
+                    final String path = getPathFromType(type);
+                    final List<DocumentReference> list = (List<DocumentReference>) document.get(path);
+                    if (list == null || list.isEmpty()){
+                        android.util.Log.d(TAG, "onComplete: empty approved partner list ");
+                        uids.postValue(listUsers);
+                        return ;
+                    }
+                    List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+                    for (DocumentReference documentReference : list) {
+                        if (documentReference == null){
+                            android.util.Log.d(TAG, "onComplete: empty partner list - docref");
+                            uids.postValue(listUsers);
+                            return;
+                        }
+                        Task<DocumentSnapshot> documentSnapshotTask = documentReference.get();
+                        tasks.add(documentSnapshotTask);
+                    }
+//                    docrefToUserHelper(listUsers, tasks);
+                    Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        @Override
+                        public void onSuccess(List<Object> objectList) {
+                            //Do what you need to do with your list
+                            for (Object object : objectList) {
+                                object = ((DocumentSnapshot) object).toObject(User.class);
+                                listUsers.add(((User) object).getUid());
+                            }
+                            uids.postValue(listUsers);
+                        }
+                    });
+                } else {
+                    android.util.Log.d(TAG, "onComplete: failed getting partners");;
+                }
+            }
+        });
+        return uids;
+    }
+
+
+
     private void docrefToUserHelper(final List<User> userList, List<Task<DocumentSnapshot>> tasks){
         Tasks.whenAllSuccess(tasks).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
             @Override

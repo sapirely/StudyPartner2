@@ -215,6 +215,10 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.getPartnersList(uid, PartnerListType.PARTNERS);
     }
 
+    public LiveData<List<String>> getPartnersUIDS(String uid){
+        return fRepository.getPartnersUIDS(uid, PartnerListType.PARTNERS);
+    }
+
     public LiveData<List<User>> getRequests(String uid){
 //        return fRepository.getPartnersList(uid);
         return fRepository.getPartnersList(uid, PartnerListType.REQUESTS);

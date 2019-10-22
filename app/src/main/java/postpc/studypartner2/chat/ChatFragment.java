@@ -98,6 +98,8 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         this.addFriendBtn = view.findViewById(R.id.chat_add_friend);
         this.backArrow = view.findViewById(R.id.chat_back_arrow);
 
+        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+
         // get current user
         SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
         Gson gson = new Gson();
@@ -116,6 +118,15 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         } else {
             Log.d(TAG, "onCreateView: Got to chat without user info");
         }
+
+        // check if otherUser is a partner
+        viewModel.getPartnersUIDS(user.getUid()).observe(getViewLifecycleOwner(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> uids) {
+                // otherUser is partner of user
+                setUpAddFriend(uids.contains(otherUser.getUid()));
+            }
+        });
 
         // set up top bar
         this.otherUserName = view.findViewById(R.id.chat_other_user_name);
@@ -142,7 +153,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         adapter.submitList(currentMessages);
         this.editText.setText("");
 
-        setUpAddFriendBtn();
+        setUpAddFriendOnClick();
 
         setUpBackArrow();
 //
@@ -164,7 +175,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
     }
 
     private void loadMessages() {
-        viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+
         viewModel.getMessages(getCurrentUserUID(), otherUser.getUid()).observe(getViewLifecycleOwner(), new Observer<List<Message>>() {
             @Override
             public void onChanged(List<Message> messages) {
@@ -209,7 +220,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         });
     }
 
-    private void setUpAddFriendBtn(){
+    private void setUpAddFriendOnClick(){
         addFriendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -223,6 +234,14 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                 }
             }
         });
+    }
+
+    private void setUpAddFriend(Boolean isPartner){
+        if (isPartner){
+            addFriendBtn.setVisibility(View.GONE);
+        } else {
+            addFriendBtn.setVisibility(View.VISIBLE);
+        }
     }
 
     private Message sendMessage(final String msgContent) {
