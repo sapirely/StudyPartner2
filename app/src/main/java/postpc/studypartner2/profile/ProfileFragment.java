@@ -2,6 +2,8 @@ package postpc.studypartner2.profile;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +30,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import postpc.studypartner2.chat.MyLocation;
 import postpc.studypartner2.utils.Log;
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
@@ -61,6 +67,9 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
     private TextView[] studyTimesTextViews = new TextView[3];
     private TextView[] environmentsTextViews = new TextView[2];
 
+    private TextView locationCityTextView;
+    private LinearLayout locationSnippet;
+
     private CourseRecyclerUtils.CoursesAdapter adapter = new CourseRecyclerUtils.CoursesAdapter();
     public ArrayList<Course> courses = new ArrayList<>();
 
@@ -86,6 +95,9 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         editProfileDesc = view.findViewById(R.id.edit_profile_desc);
         addCourseBtn = view.findViewById(R.id.btn_add_course);
         progressBar = view.findViewById(R.id.progressBarProfile);
+
+        locationCityTextView = view.findViewById(R.id.location_city_text);
+        locationSnippet = view.findViewById(R.id.profile_location_snippet);
 
         studyTimesTextViews[0] = view.findViewById(R.id.profile_time_0);
         studyTimesTextViews[1] = view.findViewById(R.id.profile_time_1);
@@ -270,7 +282,6 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
 
                     updateUI(view, user);
                 } catch (Exception e) {
-                    // todo handle exception
                     Log.e(TAG, "onChanged: Error observing user. ", e);
                 }
             }
@@ -309,6 +320,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         setUpRecyclerView(user.getCourses().size());
         adapter.setCourses(user.getCoursesList_courseType());
 
+        setUpLocation(locationCityTextView, user.getLocation());
+
         // init selected/unselected ui state of the environments
         for (TextView env:environmentsTextViews){
             updateSelectableTextView(env, isTextViewSelectedAlready(user_environments, env));
@@ -321,6 +334,23 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         setUpSelectables(SelectableType.TIME, studyTimesTextViews, user_study_times);
 
         progressBar.setVisibility(GONE);
+    }
+
+    private void setUpLocation(TextView locationCityTextView, MyLocation location) {
+        Geocoder geocoder = new Geocoder(this.getContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//            String cityName = addresses.get(0).getAddressLine(0);
+            String cityName = addresses.get(0).getLocality();
+            String stateName = addresses.get(0).getAdminArea();
+            String countryName = addresses.get(0).getAddressLine(2);
+            locationCityTextView.setText(cityName+", "+stateName);
+            locationSnippet.setVisibility(View.VISIBLE);
+        } catch (IOException e){
+            locationSnippet.setVisibility(GONE);
+            android.util.Log.d(TAG, "setUpLocation: couldn't get city: ");
+            e.printStackTrace();
+        }
     }
 
     private void setUpProfileImage(String image_uri) {
