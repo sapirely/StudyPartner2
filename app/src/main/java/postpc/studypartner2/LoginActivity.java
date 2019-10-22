@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -21,9 +20,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -66,7 +67,11 @@ public class LoginActivity extends AppCompatActivity {
         if (currentUser != null){
             goToMainActivity();
         }
-        signInExistingUsers();
+
+        // set up UI
+        progressBar.setVisibility(View.INVISIBLE);
+        setUpSignInButtons();
+        setUpRegisterButton();
     }
 
     private void goToMainActivity(){
@@ -85,24 +90,30 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, "Please enter "+field, Toast.LENGTH_LONG).show();
     }
 
-    private void signInExistingUsers(){
+    private boolean requireNonEmptyFields(String email, String password){
+        if (email.isEmpty()) {
+            showEmptyWarning("email");
+            return false;
+        }
+        if (password.isEmpty()) {
+            showEmptyWarning("password");
+            return false;
+        }
+        return true;
+    }
+
+    private void setUpSignInButtons(){
         // If sign in button clicked
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = loginEmailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-                if (email.isEmpty()) {
-                    showEmptyWarning("email");
-                    return;
+                if (requireNonEmptyFields(email, password)) {
+                    Log.d(TAG, "onClick: attempting to sign in with email and password...");
+                    progressBar.setVisibility(View.VISIBLE);
+                    signInWithEmail(email, password);
                 }
-                if (password.isEmpty()) {
-                    showEmptyWarning("password");
-                    return;
-                }
-                Log.d(TAG, "onClick: attempting to sign in with user and password...");
-                progressBar.setVisibility(View.VISIBLE);
-                signInWithEmail(email, password);
             }
         });
 
@@ -115,6 +126,43 @@ public class LoginActivity extends AppCompatActivity {
                 signInWithGoogle();
             }
         });
+    }
+
+    private void setUpRegisterButton(){
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String email = loginEmailEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                if (requireNonEmptyFields(email, password)) {
+                    Log.d(TAG, "onClick: attempting to register with email and password...");
+                    progressBar.setVisibility(View.VISIBLE);
+                    registerWithEmail(email, password);
+                }
+            }
+        });
+    }
+
+    private void registerWithEmail(final String email, final String password){
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            goToMainActivity();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(getApplicationContext(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
     }
 
     private void signInWithEmail(final String email, final String password){
@@ -166,11 +214,37 @@ public class LoginActivity extends AppCompatActivity {
                 // Sign in succeeded, proceed with account
                 GoogleSignInAccount acct = task.getResult();
                 Log.d(TAG, "onActivityResult: signed in with google");
-                goToMainActivity();
+                firebaseAuthWithGoogle(acct);
             } else {
+                Log.d(TAG, "onActivityResult: sign in with google failed");
+                Toast.makeText(getApplicationContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
                 // Sign in failed, handle failure and update UI
                 // ...
             }
         }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            goToMainActivity();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    public void signOut(){
+        FirebaseAuth.getInstance().signOut();
     }
 }

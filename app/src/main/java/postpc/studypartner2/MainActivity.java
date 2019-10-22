@@ -17,6 +17,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
@@ -79,6 +80,14 @@ public class MainActivity extends AppCompatActivity {
            requestRemainingPermissions(PERMISSIONS);
         }
 
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser u = mAuth.getCurrentUser();
+        if (u != null) {
+            Toast.makeText(getApplicationContext(), u.getUid(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "nope", Toast.LENGTH_LONG).show();
+
+        }
         // get user from intent
 //        actOnIntent(); // opened app from notifications
 
