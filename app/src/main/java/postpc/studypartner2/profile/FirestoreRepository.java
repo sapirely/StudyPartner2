@@ -40,6 +40,7 @@ import java.util.Map;
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.chat.Message;
+import postpc.studypartner2.partners.PartnerList;
 import postpc.studypartner2.utils.Log;
 
 import static postpc.studypartner2.profile.UserViewModel.ALL_ENV_VALUES;
@@ -326,7 +327,7 @@ class FirestoreRepository {
         }
     }
 
-    public LiveData<List<User>> getPartnersList(String uid, final PartnerListType type){
+    public LiveData<List<User>> getPartnersList(final String uid, final PartnerListType type){
 
         final List<User> listUsers = new ArrayList<>();
         DocumentReference docRef = firestoreDB.collection("partners").document(uid);
@@ -337,7 +338,8 @@ class FirestoreRepository {
                     android.util.Log.d(TAG, "onComplete: successfully got partners");
                     DocumentSnapshot document = task.getResult();
                     if (document == null){
-                        android.util.Log.d(TAG, "onComplete: empty partner list");
+                        android.util.Log.d(TAG, "onComplete: empty partner/request lists");
+                        createPartnerList(uid);
                         partners.postValue(listUsers);
                         return;
                     }
@@ -371,11 +373,23 @@ class FirestoreRepository {
                         }
                     });
                 } else {
-                        android.util.Log.d(TAG, "onComplete: failed getting partners");;
+                        android.util.Log.d(TAG, "onComplete: failed getting partners");
+                        android.util.Log.d(TAG, "onComplete: create partner list");
+                        createPartnerList(uid);
                     }
             }
         });
         return partners;
+    }
+
+    private void createPartnerList(final String uid){
+        PartnerList pl = new PartnerList(uid);
+        firestoreDB.collection("partners").document(uid).set(pl).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                android.util.Log.d(TAG, "onComplete: created new partner/requests list for "+uid);
+            }
+        });
     }
 
 

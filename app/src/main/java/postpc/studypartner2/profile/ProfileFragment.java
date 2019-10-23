@@ -1,7 +1,9 @@
 package postpc.studypartner2.profile;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -17,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -163,6 +167,17 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
         });
 
         editProfileDesc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String value = editProfileDesc.getText().toString();
+                profileDesc.setText(value);
+                profileDesc.setVisibility(View.VISIBLE);
+                editDescLayout.setVisibility(GONE);
+                viewModel.updateUser(MainActivity.getCurrentUserID(), "description", value);
+            }
+        });
+
+        editDescLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String value = editProfileDesc.getText().toString();
@@ -386,9 +401,9 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
             setUpRecyclerView(user.getCourses().size());
             adapter.setCourses(user.getCoursesList_courseType());
         }
-
-
-        setUpLocation(locationCityTextView, user.getLocation());
+        if (user.getLocation() != null) {
+            setUpLocation(locationCityTextView, user.getLocation());
+        }
 
         // init selected/unselected ui state of the environments
         for (TextView env:environmentsTextViews){

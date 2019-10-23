@@ -322,15 +322,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void nav1(){
-        bottomNavigationView = findViewById(R.id.bottom_nvaigation_view);
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-    }
-
-    private void nav2(){
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
-    }
-
     /***
      * navigation related
      *

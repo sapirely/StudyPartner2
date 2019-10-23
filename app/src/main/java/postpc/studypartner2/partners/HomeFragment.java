@@ -54,6 +54,8 @@ public class HomeFragment extends Fragment {
         emptyPartnerListMessage = view.findViewById(R.id.home_empty_partners_text);
         emptyPartnerListMessage.setVisibility(GONE);
 
+        redirectUser();
+
         // Set up UI
         adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
         setUpRecyclerView(view);
@@ -65,6 +67,18 @@ public class HomeFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private void redirectUser() {
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            boolean isNewUser = bundle.getBoolean("isNewUser", false);
+            if (isNewUser) {
+                // new user
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
+                        .navigate(R.id.action_homeFragment_to_profileFragment);
+            }
+        }
     }
 
     private void setUpFAB(View view){

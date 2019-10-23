@@ -2,6 +2,7 @@ package postpc.studypartner2.partners;
 
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,10 +16,14 @@ public class PartnerList {
     private List<DocumentReference> approved;
     private List<DocumentReference> requests;
 
-    public PartnerList(){}
+    public PartnerList(){
+    }
 
     public PartnerList(String uid) {
+
         this.uid = uid;
+        approved = new ArrayList<>();
+        requests = new ArrayList<>();
     }
 
     public PartnerList(String uid, List<DocumentReference> approved) {
