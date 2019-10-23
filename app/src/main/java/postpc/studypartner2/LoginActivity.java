@@ -46,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
+    private enum LogInState {IN_PROGRESS, FAILED}
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             Log.d(TAG, "goToMainActivity: auth is null, authentication went wrong");
+            updateUI(LogInState.FAILED);
         }
     }
 
@@ -116,7 +119,8 @@ public class LoginActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
                 if (requireNonEmptyFields(email, password)) {
                     Log.d(TAG, "onClick: attempting to sign in with email and password...");
-                    progressBar.setVisibility(View.VISIBLE);
+//                    progressBar.setVisibility(View.VISIBLE);
+                    updateUI(LogInState.IN_PROGRESS);
                     signInWithEmail(email, password);
                 }
             }
@@ -141,7 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
                 if (requireNonEmptyFields(email, password)) {
                     Log.d(TAG, "onClick: attempting to register with email and password...");
-                    progressBar.setVisibility(View.VISIBLE);
+//                    progressBar.setVisibility(View.VISIBLE);
+                    updateUI(LogInState.IN_PROGRESS);
                     registerWithEmail(email, password);
                 }
             }
@@ -163,9 +168,8 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            updateUI(LogInState.FAILED);
                         }
-
-                        // ...
                     }
                 });
     }
@@ -185,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-//                            updateUI(null);
+                            updateUI(LogInState.FAILED);
                         }
                     }
                 });
@@ -223,10 +227,12 @@ public class LoginActivity extends AppCompatActivity {
                     firebaseAuthWithGoogle(acct);
                 } else {
                     Log.d(TAG, "onActivityResult: acct is null, sign in with google failed");
+                    updateUI(LogInState.FAILED);
                 }
             } else {
                 Log.d(TAG, "onActivityResult: sign in with google failed");
                 Toast.makeText(getApplicationContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
+                updateUI(LogInState.FAILED);
             }
         }
     }
@@ -246,9 +252,21 @@ public class LoginActivity extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_LONG).show();
+                            updateUI(LogInState.FAILED);
                         }
                     }
                 });
+    }
+
+    private void updateUI(LogInState state){
+        switch (state){
+            case IN_PROGRESS:
+                progressBar.setVisibility(View.VISIBLE);
+                break;
+            case FAILED:
+                progressBar.setVisibility(View.GONE);
+                break;
+        }
     }
 
 

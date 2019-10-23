@@ -43,7 +43,6 @@ public class UserViewModel extends AndroidViewModel {
     public UserViewModel(Application application) {
         super(application);
 //        mRepository = new UserRepository(application); // todo uncomment - room
-//        SharedPreferences sp = application.getApplicationContext().getSharedPreferences() // todo sp
         fRepository = new FirestoreRepository();
         mQueryUsers = new MutableLiveData<>();
         mUid = new MutableLiveData<>();
@@ -52,16 +51,6 @@ public class UserViewModel extends AndroidViewModel {
 
     LiveData<List<User>> getAllUsers() {
         return mAllUsers; }
-
-//    public LiveData<Boolean> isUserRegistered(String uid){
-//        android.util.Log.d(TAG, "isUserRegistered: ");
-//        return fRepository.isUserRegistered(uid);
-//    }
-
-//    public LiveData<User> getUser(String uid)  {
-//        Log.d(TAG, "getUser: ");
-//        return mRepository.getUser(uid);
-//    }
 
     public LiveData<String> getLoggedInUID(){
         return mUid;
@@ -84,18 +73,6 @@ public class UserViewModel extends AndroidViewModel {
 //        return fRepository.getUsersByCourseOnly(courseNum);
         return fRepository.getUsersByCourseComplex(courseNum, studyTimes, environments);
     }
-
-
-//    public LiveData<List<User>> getLastQuery(){
-//        return fRepository.getLastQuery();
-//    }
-//
-//    public LiveData<List<User>> getLastUsersQuery(){
-//        return mQueryUsers;
-//    }
-//    public void setLastUsersQuery(List<User> users){
-//        mQueryUsers.postValue(users);
-//    }
 
     public LiveData<String> uploadProfileImageToStorage(String uid, Uri localUri){
         if (localUri == null){

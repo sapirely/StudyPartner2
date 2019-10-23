@@ -52,6 +52,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         progressBar = view.findViewById(R.id.progressBarPartners);
         emptyPartnerListMessage = view.findViewById(R.id.home_empty_partners_text);
+        emptyPartnerListMessage.setVisibility(GONE);
 
         // Set up UI
         adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
