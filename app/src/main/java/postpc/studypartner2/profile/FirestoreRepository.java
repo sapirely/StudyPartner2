@@ -600,6 +600,31 @@ class FirestoreRepository {
         String conversationID = generateConversationID(uid1, uid2);
         final DatabaseReference dbRef = mDatabase.child("convos").child(conversationID);
         dbRef.child("unread").setValue(isUnread);
+
+        // update users
+        updateUsersInConvo(dbRef, uid1, uid2);
+    }
+
+    private void updateUsersInConvo(final DatabaseReference dbRef, final String uid1, final String uid2){
+
+        //update user 1
+        firestoreDB.collection("users").document(uid1).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User currentUser = documentSnapshot.toObject(User.class);
+                dbRef.child("users").child(uid1).setValue(currentUser); // current user
+            }
+        });
+
+        // update user 2
+        firestoreDB.collection("users").document(uid2).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User currentUser = documentSnapshot.toObject(User.class);
+                dbRef.child("users").child(uid2).setValue(currentUser); // current user
+            }
+        });
+
     }
 
     public LiveData<List<Conversation>> getConversations(String uid) {

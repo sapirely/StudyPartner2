@@ -1,9 +1,14 @@
 package postpc.studypartner2.profile;
 
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -12,11 +17,15 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import postpc.studypartner2.chat.MyLocation;
+
+import static android.view.View.GONE;
 // To make the class meaningful to a Room database, you need to annotate it.
 // Annotations identify how each part of this class relates to an entry in the database.
 // Room uses this information to generate code.
@@ -187,6 +196,22 @@ public class User implements Parcelable {
 
     public MyLocation getLocation(){
         return location;
+    }
+
+    public String getPrettyLocation(Context context){
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+//            String cityName = addresses.get(0).getAddressLine(0);
+            String cityName = addresses.get(0).getLocality();
+            String stateName = addresses.get(0).getAdminArea();
+            String countryName = addresses.get(0).getAddressLine(2);
+            return cityName+", "+stateName;
+        } catch (IOException e){
+            android.util.Log.d(TAG, "setUpLocation: couldn't get city: ");
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public void setMyLocation(MyLocation location) {

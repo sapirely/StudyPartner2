@@ -178,10 +178,14 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
         TextView profileName = popupView.findViewById(R.id.profile_name);
         TextView profileDesc = popupView.findViewById(R.id.profile_desc);
         ImageView profilePic = popupView.findViewById(R.id.profile_image);
+        TextView loc = popupView.findViewById(R.id.profile_popup_location);
 
         loadImage(user.getImage_url(), profilePic);
         profileName.setText(user.getName());
         profileDesc.setText(user.getDescription());
+        if (!user.getPrettyLocation(getContext()).isEmpty()) {
+            loc.setText(user.getPrettyLocation(getContext()));
+        }
 
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
