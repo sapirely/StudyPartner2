@@ -103,16 +103,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private void actOnIntent(){
         Intent intent = getIntent();
         if (intent != null){
             String source = intent.getStringExtra(SRC_KEY);
 
             // intent is from notifications
-            if (source == null || source.isEmpty()) {
+//            if (source == null || source.isEmpty()) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    saveLocation();
+//                    saveLocation();
 
                     // handle intent
                     String isRequest = bundle.getString("isRequest");
@@ -120,9 +121,9 @@ public class MainActivity extends AppCompatActivity {
                     Navigation.findNavController(this, R.id.nav_host_fragment)
                             .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
                 }
-            } else { // intent is from login \ register \ google sign-in
+//            } else { // intent is from login \ register \ google sign-in
                 actAccordingToSource(source);
-            }
+//            }
         } else {
             // shouldn't get here
             Log.d(TAG, "actOnIntent: got to main activity with no intent");

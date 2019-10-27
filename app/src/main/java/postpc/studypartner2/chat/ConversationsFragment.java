@@ -150,6 +150,14 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
     public void onConversationClick(Conversation conversation, View view) {
         if (view.getId() == R.id.conv_avatar){
 
+            // todo: unread per user 
+            if (conversation.getUnread() != null ) {
+                if (conversation.getUnread() && !conversation.getLastMsg().getSenderUID().equals(MainActivity.getCurrentUserID())) {
+                    conversation.setUnread(false);
+                }
+            }
+            //////////
+
             User user = getOtherUserFromConversation(conversation);
             showPopup(user);
         }

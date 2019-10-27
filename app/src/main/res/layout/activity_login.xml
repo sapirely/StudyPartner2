@@ -21,14 +21,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            android:text="StudyWithMe"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:fontFamily="sans-serif-light"-->
+<!--            android:textSize="50sp"/>-->
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:text="StudyWithMe"
-            android:layout_marginBottom="30dp"
-            android:fontFamily="sans-serif-light"
-            android:textSize="50sp"/>
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="35dp"
+            app:srcCompat="@drawable/ic_studywithmelogo_withtext" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -127,6 +134,8 @@
                 android:padding="3dp"
                 />
         </LinearLayout>
+
+
 
     </LinearLayout>
 

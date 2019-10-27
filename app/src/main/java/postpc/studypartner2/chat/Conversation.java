@@ -14,6 +14,7 @@ public class Conversation {
 //    private ArrayList<Message> messages;
     private HashMap<String, Message> messages;
     private Message lastMsg;
+    private Boolean unread;
 
     public Conversation(){
 
@@ -68,6 +69,14 @@ public class Conversation {
 
     public void setUsers(HashMap<String, User> users) {
         this.users = users;
+    }
+
+    public Boolean getUnread() {
+        return unread;
+    }
+
+    public void setUnread(Boolean unread) {
+        this.unread = unread;
     }
 
 //    public User getOtherUser() {

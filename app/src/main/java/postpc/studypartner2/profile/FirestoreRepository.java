@@ -340,7 +340,8 @@ class FirestoreRepository {
                     if (document == null){
                         android.util.Log.d(TAG, "onComplete: empty partner/request lists");
                         createPartnerList(uid);
-                        partners.postValue(listUsers);
+//                        createPartnerList(uid);
+//                        partners.postValue(listUsers);
                         return;
                     }
                     final String path = getPathFromType(type);
@@ -348,7 +349,7 @@ class FirestoreRepository {
                     if (list == null || list.isEmpty()){
                         android.util.Log.d(TAG, "onComplete: empty approved partner list ");
                         partners.postValue(listUsers);
-                        return ;
+                        return;
                     }
                     List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
                     for (DocumentReference documentReference : list) {
@@ -374,7 +375,6 @@ class FirestoreRepository {
                     });
                 } else {
                         android.util.Log.d(TAG, "onComplete: failed getting partners");
-                        android.util.Log.d(TAG, "onComplete: create partner list");
                         createPartnerList(uid);
                     }
             }
@@ -382,14 +382,17 @@ class FirestoreRepository {
         return partners;
     }
 
-    private void createPartnerList(final String uid){
+    public LiveData<List<User>> createPartnerList(final String uid){
         PartnerList pl = new PartnerList(uid);
+        final List<User> listUsers = new ArrayList<>();
         firestoreDB.collection("partners").document(uid).set(pl).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 android.util.Log.d(TAG, "onComplete: created new partner/requests list for "+uid);
+                partners.postValue(listUsers);
             }
         });
+        return partners;
     }
 
 
@@ -554,12 +557,8 @@ class FirestoreRepository {
         // check if convo initiated - if one of the uids is set to this user's uid
         if ((!dbRef.child("uid1").toString().equals(uid1)) && (!dbRef.child("uid1").toString().equals(uid2))){
             // Set up new convo
-//            addConversationToUsersLists(uid1, uid2);
             dbRef.child("uid1").setValue(uid1);
             dbRef.child("uid2").setValue(uid2);
-//            dbRef.child("otherUser").setValue(otherUser);
-//            DocumentReference user1ref = firestoreDB.collection("users").document(uid1);
-//            DocumentReference user2ref = firestoreDB.collection("users").document(uid2);
 
             firestoreDB.collection("users").document(uid1).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
@@ -581,6 +580,7 @@ class FirestoreRepository {
             }
         });
         dbRef.child("lastMsg").setValue(msg);
+        dbRef.child("unread").setValue(true);
     }
 
     private String generateConversationID(String uid1, String uid2){
@@ -593,8 +593,8 @@ class FirestoreRepository {
     }
 
     public LiveData<List<Conversation>> getConversations(String uid) {
-        Query myConversations = mDatabase.child("convos").orderByChild("uid1").equalTo(uid);
-        Query myConversations2 = mDatabase.child("convos").orderByChild("uid2").equalTo(uid);
+        Query myConversations = mDatabase.child("convos").orderByChild("uid1").equalTo(uid); // if the user is user 1
+        Query myConversations2 = mDatabase.child("convos").orderByChild("uid2").equalTo(uid); // if the user is user 2
 
         final List<Conversation> conversationList = new ArrayList<>();
 

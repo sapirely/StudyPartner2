@@ -1,6 +1,7 @@
 package postpc.studypartner2.chat;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,8 +141,31 @@ public class ConversationRecyclerUtils {
             setPartnerAvatar(partner.getImage_url());
             if (conversation.getLastMessage() != null) {
                 lastMsg.setText(conversation.getLastMessage().getMessageText());
+
+                // set conversation in bold
+                if (conversation.getUnread() != null ) {
+                    if (conversation.getUnread() && !conversation.getLastMsg().getSenderUID().equals(thisUser.getUid())) {
+//                        lastMsg.setTypeface(lastMsg.getTypeface(), Typeface.BOLD);
+                        setUnreadView(true);
+                    } else {
+//                        lastMsg.setTypeface(lastMsg.getTypeface(), Typeface.NORMAL);
+                        setUnreadView(false);
+                    }
+                }
             }
             timeOfLastMsg.setText(conversation.getLastMessage().getPrettySentTime());
+        }
+
+        private void setUnreadView(boolean isUnread){
+            if (isUnread) {
+                lastMsg.setTypeface(lastMsg.getTypeface(), Typeface.BOLD);
+                partnerName.setTypeface(lastMsg.getTypeface(), Typeface.BOLD);
+                timeOfLastMsg.setTypeface(lastMsg.getTypeface(), Typeface.BOLD);
+            } else {
+                lastMsg.setTypeface(lastMsg.getTypeface(), Typeface.NORMAL);
+                partnerName.setTypeface(lastMsg.getTypeface(), Typeface.NORMAL);
+                timeOfLastMsg.setTypeface(lastMsg.getTypeface(), Typeface.NORMAL);
+            }
         }
 
         private void setPartnerAvatar(String url){

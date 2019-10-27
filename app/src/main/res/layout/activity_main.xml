@@ -54,11 +54,12 @@
         android:background="@color/colorAccent"
         android:visibility="visible">
 
+        <!-- "@drawable/ic_college_graduation" -->
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_college_graduation"
+            app:srcCompat="@drawable/ic_studywithmelogo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

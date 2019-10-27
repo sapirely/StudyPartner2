@@ -69,9 +69,9 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.getUsersByCourseComplex(courseNum, null, null);
     }
 
-    public LiveData<List<User>> getUsersQuery(String courseNum, List<String> studyTimes, List<String> environments) {
+    public LiveData<List<User>> getUsersQuery(String courseName, List<String> studyTimes, List<String> environments) {
 //        return fRepository.getUsersByCourseOnly(courseNum);
-        return fRepository.getUsersByCourseComplex(courseNum, studyTimes, environments);
+        return fRepository.getUsersByCourseComplex(courseName, studyTimes, environments);
     }
 
     public LiveData<String> uploadProfileImageToStorage(String uid, Uri localUri){
@@ -179,6 +179,7 @@ public class UserViewModel extends AndroidViewModel {
     public void addUser(User user){
         // Add to netowrk db (Firestore)
         fRepository.addUser(user);
+        fRepository.createPartnerList(user.getUid());
 
         // Add to local db (Room)
 //        mRepository.insert(user);

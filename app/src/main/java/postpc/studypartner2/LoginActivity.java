@@ -48,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private enum LogInState {IN_PROGRESS, FAILED}
 
+    private Bundle bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
     }
 
     @Override
@@ -72,7 +73,11 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
-            goToMainActivity(SRC_LOGIN_EXISTING);
+            Intent notificationIntent = getIntent();
+            if (notificationIntent != null){
+                bundle = notificationIntent.getExtras();
+            }
+            goToMainActivity(SRC_LOGIN_EXISTING, bundle);
         }
 
         // set up UI
@@ -81,11 +86,14 @@ public class LoginActivity extends AppCompatActivity {
         setUpRegisterButton();
     }
 
-    private void goToMainActivity(String source){
+    private void goToMainActivity(String source, Bundle bundle){
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(SRC_KEY, source);
+            if (bundle != null) {
+                intent.putExtras(bundle);
+            }
             Log.d(TAG, "goToMainActivity: authenticated, moving to MainActivity");
             startActivity(intent);
         } else {
@@ -162,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            goToMainActivity(SRC_LOGIN_NEW);
+                            goToMainActivity(SRC_LOGIN_NEW, null);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -183,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            goToMainActivity(SRC_LOGIN_EXISTING);
+                            goToMainActivity(SRC_LOGIN_EXISTING, null);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -247,7 +255,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            goToMainActivity(SRC_GOOGLE);
+                            goToMainActivity(SRC_GOOGLE, null);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

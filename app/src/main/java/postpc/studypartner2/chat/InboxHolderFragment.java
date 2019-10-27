@@ -60,6 +60,8 @@ public class InboxHolderFragment extends Fragment {
             String isRequest = bundle.getString("isRequest", "");
             if (isRequest.equals("true")){
                 viewPager.setCurrentItem(1);
+            } else {
+                viewPager.setCurrentItem(0);
             }
         } else {
             Log.d(TAG, "onCreateView: Got to InboxHolder without user info");

@@ -25,6 +25,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import postpc.studypartner2.LoginActivity;
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 
@@ -88,8 +89,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         int i = Integer.parseInt(user.replaceAll("[\\D]", ""));
         Bundle bundle = new Bundle();
         bundle.putString("theirUid", user);
-        // todo: skipped the activity/intent stuff
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -125,7 +125,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         bundle.putString("isRequest", isRequest);
         // todo: skipped the activity/intent stuff
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
