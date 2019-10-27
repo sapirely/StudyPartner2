@@ -245,6 +245,10 @@ public class UserViewModel extends AndroidViewModel {
         return fRepository.getConversations(uid);
     }
 
+    public void updateUnreadConversation(String uid1, String uid2, Boolean isUnread){
+        fRepository.updateUnreadConversation(uid1, uid2, isUnread);
+    }
+
     public void sendPartnerRequest(String userUID, String partnerUID) {
         fRepository.sendPartnerRequest(userUID, partnerUID);
     }

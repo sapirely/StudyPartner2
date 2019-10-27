@@ -77,9 +77,23 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
         adapter.setOnItemClickListener(new ConversationRecyclerUtils.ConversationsAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
+
+
+
                 Bundle bundle = new Bundle();
-                Conversation conv = adapter.getConversation(position);
-                User otherUser = getOtherUserFromConversation(conv);
+                Conversation conversation = adapter.getConversation(position);
+                User otherUser = getOtherUserFromConversation(conversation);
+
+                // todo: unread per user
+                if (conversation.getUnread() != null ) {
+                    if (conversation.getUnread() && !conversation.getLastMsg().getSenderUID().equals(MainActivity.getCurrentUserID())) {
+                        conversation.setUnread(false);
+                        viewModel.updateUnreadConversation(conversation.getUid1(), conversation.getUid2(), false);
+                    }
+                }
+                //////////
+
+
                 bundle.putString("otherChatUserUID", otherUser.getUid());
                 bundle.putParcelable("otherChatUser", otherUser);
                 Log.d(TAG, "onItemClick position: " + position);
@@ -96,6 +110,8 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
         String uid = determineOtherUserUIDFromConversation(conversation);
         return conversation.getUsers().get(uid);
     }
+
+
 
     private void loadConversations(){
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -149,14 +165,6 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
     @Override
     public void onConversationClick(Conversation conversation, View view) {
         if (view.getId() == R.id.conv_avatar){
-
-            // todo: unread per user 
-            if (conversation.getUnread() != null ) {
-                if (conversation.getUnread() && !conversation.getLastMsg().getSenderUID().equals(MainActivity.getCurrentUserID())) {
-                    conversation.setUnread(false);
-                }
-            }
-            //////////
 
             User user = getOtherUserFromConversation(conversation);
             showPopup(user);

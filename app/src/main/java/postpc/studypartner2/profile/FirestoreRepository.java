@@ -48,6 +48,7 @@ import static postpc.studypartner2.profile.UserViewModel.ALL_TIME_VALUES;
 
 class FirestoreRepository {
 
+
     public enum PartnerListType {PARTNERS, REQUESTS};
     private final int MAX_STUDY_TIMES = 3;
     private final int MAX_ENVS = 2;
@@ -468,6 +469,9 @@ class FirestoreRepository {
         return usersQuery;
     }
 
+
+
+
     public void updateUser(final String uid, final String key, final Object value){
         DocumentReference docRef = firestoreDB.collection("users").document(uid);
         docRef
@@ -590,6 +594,12 @@ class FirestoreRepository {
         } else {
             return uid2+uid1;
         }
+    }
+
+    public void updateUnreadConversation(String uid1, String uid2, Boolean isUnread) {
+        String conversationID = generateConversationID(uid1, uid2);
+        final DatabaseReference dbRef = mDatabase.child("convos").child(conversationID);
+        dbRef.child("unread").setValue(isUnread);
     }
 
     public LiveData<List<Conversation>> getConversations(String uid) {
