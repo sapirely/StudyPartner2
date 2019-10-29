@@ -1,11 +1,22 @@
 package postpc.studypartner2.utils;
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.firestore.GeoPoint;
 
 import postpc.studypartner2.MainActivity;
+import postpc.studypartner2.R;
 import postpc.studypartner2.chat.Conversation;
 import postpc.studypartner2.profile.User;
 
@@ -84,5 +95,46 @@ public class HelperFunctions {
 
     public static double metresToKm(double distance){
         return distance/1000;
+    }
+
+    public static void showPopup(Context context, View currentView, User user) {
+        // set up pop up
+        View popupView = LayoutInflater.from(context).inflate(R.layout.popup_profile, null);
+        TextView profileName = popupView.findViewById(R.id.profile_name);
+        TextView profileDesc = popupView.findViewById(R.id.profile_desc);
+        ImageView profilePic = popupView.findViewById(R.id.profile_image);
+        TextView loc = popupView.findViewById(R.id.profile_popup_location);
+
+        loadImage(context, user.getImage_url(), profilePic);
+        profileName.setText(user.getName());
+        profileDesc.setText(user.getDescription());
+        if (!user.getPrettyLocation(context).isEmpty()) {
+            loc.setText(user.getPrettyLocation(context));
+        }
+
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        popupWindow.showAtLocation(currentView, Gravity.CENTER, 0, 0);
+
+//        // dismiss the popup window when touched
+//        popupView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                popupWindow.dismiss();
+//                return true;
+//            }
+//        });
+    }
+
+    private static void loadImage(Context context, String image_uri, ImageView imageView) {
+        Glide.with(context)
+                .load(image_uri)
+                .placeholder(R.drawable.default_avatar)
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageView);
     }
 }

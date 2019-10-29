@@ -25,11 +25,12 @@ import postpc.studypartner2.Search.results.ResultRecyclerUtils;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
+import postpc.studypartner2.utils.HelperFunctions;
 
 import static android.view.View.GONE;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements ResultRecyclerUtils.ResultClickCallBack{
 
     private UserViewModel viewModel;
 
@@ -121,6 +122,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.partnerRecyclerView);
 
         mRecyclerView.setAdapter(adapter);
+        adapter.callBack = this;
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(
                 view.getContext(),
@@ -128,5 +130,11 @@ public class HomeFragment extends Fragment {
                 false));
     }
 
+    @Override
+    public void onResultClick(User user, View view) {
+        if (view.getId() == R.id.iv_result_img){
+            HelperFunctions.showPopup(getContext(), getView(), user);
+        }
+    }
 
 }

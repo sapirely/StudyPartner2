@@ -39,6 +39,7 @@ import postpc.studypartner2.R;
 //import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
+import postpc.studypartner2.utils.HelperFunctions;
 
 import static android.view.View.GONE;
 import static postpc.studypartner2.utils.HelperFunctions.determineOtherUserUIDFromConversation;
@@ -167,50 +168,49 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
         if (view.getId() == R.id.conv_avatar){
 
             User user = getOtherUserFromConversation(conversation);
-            showPopup(user);
+            HelperFunctions.showPopup(getContext(), getView(), user);
         }
 
     }
 
-    public void showPopup(User user) {
-        // set up pop up
-        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popup_profile, null);
-        TextView profileName = popupView.findViewById(R.id.profile_name);
-        TextView profileDesc = popupView.findViewById(R.id.profile_desc);
-        ImageView profilePic = popupView.findViewById(R.id.profile_image);
-        TextView loc = popupView.findViewById(R.id.profile_popup_location);
+//    public void showPopup(User user) {
+//        // set up pop up
+//        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.popup_profile, null);
+//        TextView profileName = popupView.findViewById(R.id.profile_name);
+//        TextView profileDesc = popupView.findViewById(R.id.profile_desc);
+//        ImageView profilePic = popupView.findViewById(R.id.profile_image);
+//        TextView loc = popupView.findViewById(R.id.profile_popup_location);
+//
+//        loadImage(user.getImage_url(), profilePic);
+//        profileName.setText(user.getName());
+//        profileDesc.setText(user.getDescription());
+//        if (!user.getPrettyLocation(getContext()).isEmpty()) {
+//            loc.setText(user.getPrettyLocation(getContext()));
+//        }
+//
+//        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        boolean focusable = true; // lets taps outside the popup also dismiss it
+//        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+//
+//        // show the popup window
+//        popupWindow.showAtLocation(currentView, Gravity.CENTER, 0, 0);
+//
+////        // dismiss the popup window when touched
+////        popupView.setOnTouchListener(new View.OnTouchListener() {
+////            @Override
+////            public boolean onTouch(View v, MotionEvent event) {
+////                popupWindow.dismiss();
+////                return true;
+////            }
+////        });
+//    }
 
-        loadImage(user.getImage_url(), profilePic);
-        profileName.setText(user.getName());
-        profileDesc.setText(user.getDescription());
-        if (!user.getPrettyLocation(getContext()).isEmpty()) {
-            loc.setText(user.getPrettyLocation(getContext()));
-        }
-
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
-        popupWindow.showAtLocation(currentView, Gravity.CENTER, 0, 0);
-
-//        // dismiss the popup window when touched
-//        popupView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                popupWindow.dismiss();
-//                return true;
-//            }
-//        });
-    }
-
-    private void loadImage(String image_uri, ImageView imageView) {
-        Glide.with(this)
-                .load(image_uri)
-                .placeholder(R.drawable.default_avatar)
-                .apply(RequestOptions.circleCropTransform())
-                .into(imageView);
-    }
+//    private void loadImage(String image_uri, ImageView imageView) {
+//        Glide.with(this)
+//                .load(image_uri)
+//                .placeholder(R.drawable.default_avatar)
+//                .apply(RequestOptions.circleCropTransform())
+//                .into(imageView);
+//    }
 }

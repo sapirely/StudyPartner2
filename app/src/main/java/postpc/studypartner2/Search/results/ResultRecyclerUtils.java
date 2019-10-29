@@ -47,13 +47,14 @@ public class ResultRecyclerUtils {
     }
 
     public interface ResultClickCallBack{
-        void onResultLongClick(User user);
+        void onResultClick(User user, View view);
     }
 
 //    static class ResultsAdapter extends FirestoreRecyclerAdapter<User,ResultHolder> {
     public static class ResultsAdapter extends ListAdapter<User, ResultRecyclerUtils.ResultHolder> {
         private List<User> results = new ArrayList<>();
         private Context context;
+        public ResultClickCallBack callBack;
 
         public ResultsAdapter(Context context) {
 
@@ -70,7 +71,7 @@ public class ResultRecyclerUtils {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ResultHolder holder, int position) {
+        public void onBindViewHolder(final @NonNull ResultHolder holder, final int position) {
             final User currentResult = results.get(position);
                 holder.setData(currentResult);
                 holder.msgIcon.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +96,14 @@ public class ResultRecyclerUtils {
                         }
                     }
                 });
+            holder.profileImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (callBack != null){
+                        callBack.onResultClick(results.get(position), view);
+                    }
+                }
+            });
         }
 
         @Override

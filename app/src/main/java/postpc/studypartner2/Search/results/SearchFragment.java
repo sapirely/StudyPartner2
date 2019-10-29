@@ -29,6 +29,7 @@ import postpc.studypartner2.profile.ProfileFragment;
 import postpc.studypartner2.profile.User;
 import postpc.studypartner2.profile.UserViewModel;
 import postpc.studypartner2.R;
+import postpc.studypartner2.utils.HelperFunctions;
 
 
 public class SearchFragment extends Fragment implements ResultRecyclerUtils.ResultClickCallBack{
@@ -153,6 +154,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     private void setUpRecyclerView(View view) {
 
         mRecyclerView.setAdapter(adapter);
+        adapter.callBack = this;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(
                 view.getContext(),
                 LinearLayoutManager.VERTICAL,
@@ -160,7 +162,10 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     }
 
     @Override
-    public void onResultLongClick(User user) {
+    public void onResultClick(User user, View view) {
+        if (view.getId() == R.id.iv_result_img){
+            HelperFunctions.showPopup(getContext(), getView(), user);
+        }
     }
 
 
