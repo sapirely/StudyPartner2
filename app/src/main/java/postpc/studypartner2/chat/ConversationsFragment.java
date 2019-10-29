@@ -78,14 +78,10 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
         adapter.setOnItemClickListener(new ConversationRecyclerUtils.ConversationsAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-
-
-
                 Bundle bundle = new Bundle();
                 Conversation conversation = adapter.getConversation(position);
                 User otherUser = getOtherUserFromConversation(conversation);
 
-                // todo: unread per user
                 if (conversation.getUnread() != null ) {
                     if (conversation.getUnread() && !conversation.getLastMsg().getSenderUID().equals(MainActivity.getCurrentUserID())) {
                         conversation.setUnread(false);

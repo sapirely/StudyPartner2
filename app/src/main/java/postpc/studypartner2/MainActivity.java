@@ -12,7 +12,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,10 +20,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthMethodPickerLayout;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,13 +30,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import postpc.studypartner2.chat.MyLocation;
@@ -106,29 +100,42 @@ public class MainActivity extends AppCompatActivity {
 
     private void actOnIntent(){
         Intent intent = getIntent();
-        if (intent != null){
+        if (intent != null) {
             String source = intent.getStringExtra(SRC_KEY);
 
-            // intent is from notifications
+
 //            if (source == null || source.isEmpty()) {
-                Bundle bundle = intent.getExtras();
-                if (bundle != null) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
 //                    saveLocation();
 
-                    // handle intent
-                    String isRequest = bundle.getString("isRequest");
+                // handle intent
+                String isRequest = bundle.getString("isRequest");
+                if (isRequest != null) {
+                    // intent is from notifications
                     Log.d(TAG, "onCreate: isRequest: " + isRequest);
-                    Navigation.findNavController(this, R.id.nav_host_fragment)
-                            .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
+//                    Navigation.findNavController(this, R.id.nav_host_fragment)
+//                            .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
+                    goToInboxAndRequests(bundle);
                 }
-//            } else { // intent is from login \ register \ google sign-in
+            }
+
+            if (source != null) {
                 actAccordingToSource(source);
-//            }
+            } else {
+                Log.d(TAG, "actOnIntent: got to main activity with no source");
+            }
         } else {
             // shouldn't get here
             Log.d(TAG, "actOnIntent: got to main activity with no intent");
         }
     }
+
+    private void goToInboxAndRequests(Bundle bundle) {
+        Navigation.findNavController(this, R.id.nav_host_fragment)
+                .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
+    }
+
 
 
     // called from register user and existing user (google calls both of them)
@@ -185,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
             viewModel.loadUser(authUser.getUid()).observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(User user) {
-                    if (user.getName().isEmpty()){
+                    if (user.getName() == null || user.getName().isEmpty()){
                         // new user
                         registerNewUser();
                     } else {
