@@ -18,7 +18,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,10 +36,11 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import postpc.studypartner2.chat.MyLocation;
-import postpc.studypartner2.notifications.Token;
-import postpc.studypartner2.profile.User;
-import postpc.studypartner2.profile.UserViewModel;
+import postpc.studypartner2.model.MyLocation;
+import postpc.studypartner2.model.notifications.Token;
+import postpc.studypartner2.model.User;
+import postpc.studypartner2.repository.UserViewModel;
+import postpc.studypartner2.utils.Log;
 
 import static android.view.View.GONE;
 import static postpc.studypartner2.utils.HelperFunctions.SP_UID;
@@ -103,19 +103,13 @@ public class MainActivity extends AppCompatActivity {
         if (intent != null) {
             String source = intent.getStringExtra(SRC_KEY);
 
-
-//            if (source == null || source.isEmpty()) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
-//                    saveLocation();
-
                 // handle intent
                 String isRequest = bundle.getString("isRequest");
                 if (isRequest != null) {
                     // intent is from notifications
                     Log.d(TAG, "onCreate: isRequest: " + isRequest);
-//                    Navigation.findNavController(this, R.id.nav_host_fragment)
-//                            .navigate(R.id.action_homeFragment_to_inboxHolderFragment, bundle);
                     goToInboxAndRequests(bundle);
                 }
             }
@@ -175,8 +169,6 @@ public class MainActivity extends AppCompatActivity {
     private void registerNewUser(){
         FirebaseUser authUser = mAuth.getCurrentUser();
         if (authUser != null){
-//            Intent intent = new Intent(this, RegisterActivity.class);
-//            startActivity(intent);
             User user = new User(authUser.getUid());
             viewModel.addUser(user);
             continueAfterDB();

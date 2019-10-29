@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +24,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import postpc.studypartner2.utils.Log;
 
 import static postpc.studypartner2.utils.HelperFunctions.SRC_GOOGLE;
 import static postpc.studypartner2.utils.HelperFunctions.SRC_KEY;
@@ -174,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                             goToMainActivity(SRC_LOGIN_NEW, null);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Log.d(TAG, "createUserWithEmail:failure: "+ task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(LogInState.FAILED);
@@ -195,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
                             goToMainActivity(SRC_LOGIN_EXISTING, null);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Log.d(TAG, "signInWithEmail:failure: "+task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(LogInState.FAILED);
@@ -259,7 +260,7 @@ public class LoginActivity extends AppCompatActivity {
                             goToMainActivity(SRC_GOOGLE, null);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.d(TAG, "signInWithCredential:failure "+task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication Failed.", Toast.LENGTH_LONG).show();
                             updateUI(LogInState.FAILED);
                         }

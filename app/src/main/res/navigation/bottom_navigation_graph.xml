@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="postpc.studypartner2.partners.HomeFragment"
+        android:name="postpc.studypartner2.ui.fragments.HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="postpc.studypartner2.Search.results.SearchFragment"
+        android:name="postpc.studypartner2.ui.fragments.SearchFragment"
         tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_chatFragment"
@@ -47,14 +47,9 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="postpc.studypartner2.profile.ProfileFragment"
+        android:name="postpc.studypartner2.ui.fragments.ProfileFragment"
         tools:layout="@layout/fragment_profile">
     </fragment>
-    <fragment
-        android:id="@+id/calendarFragment"
-        android:name="postpc.studypartner2.calendar.CalendarFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" />
     <activity
         android:id="@+id/mainActivity"
         android:name="postpc.studypartner2.MainActivity"
@@ -62,7 +57,7 @@
         tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/chatFragment"
-        android:name="postpc.studypartner2.chat.ChatFragment"
+        android:name="postpc.studypartner2.ui.fragments.inbox.ChatFragment"
         android:label="ChatFragment" >
         <action
             android:id="@+id/action_chatFragment_to_conversationsFragment2"
@@ -73,7 +68,7 @@
     </fragment>
     <fragment
         android:id="@+id/conversationsFragment2"
-        android:name="postpc.studypartner2.chat.ConversationsFragment"
+        android:name="postpc.studypartner2.ui.fragments.inbox.ConversationsFragment"
         android:label="fragment_conversations"
         tools:layout="@layout/fragment_conversations" >
         <action
@@ -82,7 +77,7 @@
     </fragment>
     <fragment
         android:id="@+id/inboxHolderFragment"
-        android:name="postpc.studypartner2.chat.InboxHolderFragment"
+        android:name="postpc.studypartner2.ui.fragments.inbox.InboxHolderFragment"
         android:label="fragment_inbox_holder"
         tools:layout="@layout/fragment_inbox_holder" >
         <action

@@ -17,8 +17,8 @@ import com.google.firebase.firestore.GeoPoint;
 
 import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
-import postpc.studypartner2.chat.Conversation;
-import postpc.studypartner2.profile.User;
+import postpc.studypartner2.model.Conversation;
+import postpc.studypartner2.model.User;
 
 public class HelperFunctions {
 
@@ -57,8 +57,6 @@ public class HelperFunctions {
 
         if (u1==null){
             u1 = new User();
-//            u1.setMyLocation(new GeoPoint(37.4219983,-122.084)); // todo remove
-            u1.setLocation(37.4219983,-122.084); // todo remove
         }
 //        else if (u1==null || u2==null){
         if (u2==null){
@@ -78,7 +76,6 @@ public class HelperFunctions {
         Location.distanceBetween( lat1, lon1,
                 lat2, lon2, distance);
 
-//            return distance[0];
         return (int) metresToKm(Math.floor(distance[0]));
     }
 
@@ -120,14 +117,6 @@ public class HelperFunctions {
         // show the popup window
         popupWindow.showAtLocation(currentView, Gravity.CENTER, 0, 0);
 
-//        // dismiss the popup window when touched
-//        popupView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                popupWindow.dismiss();
-//                return true;
-//            }
-//        });
     }
 
     private static void loadImage(Context context, String image_uri, ImageView imageView) {
