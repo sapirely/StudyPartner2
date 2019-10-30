@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,7 +41,9 @@ import postpc.studypartner2.model.MyLocation;
 import postpc.studypartner2.model.notifications.Token;
 import postpc.studypartner2.model.User;
 import postpc.studypartner2.repository.UserViewModel;
+import postpc.studypartner2.utils.HelperFunctions;
 import postpc.studypartner2.utils.Log;
+import retrofit2.http.Headers;
 
 import static android.view.View.GONE;
 import static postpc.studypartner2.utils.HelperFunctions.SP_UID;
@@ -59,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private final int PERMISSION_REQUEST_CODE = 101;
 //    private final int RC_SIGN_IN = 123;
 //    private final int RC_REGISTER = 124;
+
+    private MyLocation currentLovation = null;
+    public static User currentUser = null;
 
     private ConstraintLayout splashScreen;
 
@@ -87,16 +93,23 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         current_user_uid = mAuth.getUid();
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        saveLocation();
 
         // for notifications
         updateToken();
         saveUIDToSP(current_user_uid);
+        ;
 
-        // determine source of intent and do stuff accordingly
+//        // determine source of intent and do stuff accordingly
         actOnIntent();
     }
 
-
+    public void saveUIDToSP(String uid){
+        SharedPreferences sp = getSharedPreferences(SP_UID, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("Current_USERID", uid);
+        editor.apply();
+    }
 
     private void actOnIntent(){
         Intent intent = getIntent();
@@ -131,10 +144,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void saveLocation(){
+        android.util.Log.d(TAG, "saveLocation: saving");
+        viewModel.getLocation().observe(this, new Observer<MyLocation>() {
+            @Override
+            public void onChanged(MyLocation myLocation) {
+                currentLovation = myLocation;
+                if (currentUser != null){
+                    updateLocation(currentLovation);
+                }
+                android.util.Log.d(TAG, "onChanged: got location");
+            }
+        });
+    }
 
     // called from register user and existing user (google calls both of them)
     private void continueAfterDB(){
-        saveLocation();
+//        saveLocation();
+        if (currentLovation != null){
+            updateLocation(currentLovation);
+        } else {
+            Log.d(TAG, "continueAfterDB: didn't get location");
+        }
         splashScreen.setVisibility(GONE);
         setUpNavigation();
     }
@@ -157,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel.loadUser(current_user_uid).observe(this, new Observer<User>() {
             @Override
             public void onChanged(User loadedUser) {
+                currentUser = loadedUser;
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("user", loadedUser);
                 saveCurrentUserToSP(loadedUser);
@@ -170,8 +202,9 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser authUser = mAuth.getCurrentUser();
         if (authUser != null){
             User user = new User(authUser.getUid());
+            currentUser = user;
             viewModel.addUser(user);
-            saveLocation();
+//            saveLocation();
             continueAfterDB();
             Log.d(TAG, "registerNewUser: added new user to db");
         } else {
@@ -202,21 +235,27 @@ public class MainActivity extends AppCompatActivity {
 
 
     /***Location related **/
-    private void saveLocation(){
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            Log.d(TAG, "onSuccess: got location "+location.toString());
-                            MyLocation geo = new MyLocation(location.getLatitude(), location.getLongitude());
-                            viewModel.updateUser(current_user_uid, "location", geo);
-                        } else {
-                            Log.d(TAG, "onSuccess: location is null");
-                        }
-                    }
-                });
+//    private void saveLocation(){
+//        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        fusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        if (location != null) {
+//                            Log.d(TAG, "onSuccess: got location "+location.toString());
+//                            MyLocation geo = new MyLocation(location.getLatitude(), location.getLongitude());
+//                            currentLovation = geo;
+//                            // determine source of intent and do stuff accordingly
+//                            actOnIntent();
+//                        } else {
+//                            Log.d(TAG, "onSuccess: location is null");
+//                        }
+//                    }
+//                });
+//    }
+
+    private void updateLocation(MyLocation geo){
+        viewModel.updateUser(current_user_uid, "location", geo);
     }
 
     /**/
@@ -246,12 +285,12 @@ public class MainActivity extends AppCompatActivity {
      * SP Related
      */
 
-    private void saveUIDToSP(String uid){
-        SharedPreferences sp = getSharedPreferences(SP_UID, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("Current_USERID", uid);
-        editor.apply();
-    }
+//    private void saveUIDToSP(String uid){
+//        SharedPreferences sp = getSharedPreferences(SP_UID, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sp.edit();
+//        editor.putString("Current_USERID", uid);
+//        editor.apply();
+//    }
 
     private void saveCurrentUserToSP(User user){
         SharedPreferences sp = getSharedPreferences(SP_USER, MODE_PRIVATE);
@@ -347,6 +386,8 @@ public class MainActivity extends AppCompatActivity {
     public static String getCurrentUserID(){
         return current_user_uid;
     }
+
+    public static User getCurrentUser() { return currentUser; }
 
     public static void signOut(Activity currentActivity){
         FirebaseAuth.getInstance().signOut();

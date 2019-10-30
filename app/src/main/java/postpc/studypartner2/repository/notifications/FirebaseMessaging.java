@@ -25,6 +25,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import postpc.studypartner2.LoginActivity;
+import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.model.notifications.Token;
 
 public class FirebaseMessaging extends FirebaseMessagingService {
@@ -58,6 +59,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         // get current user from shared preferences
         SharedPreferences sp = getSharedPreferences("SP_USER", MODE_PRIVATE);
         String savedCurrentUser = sp.getString("Current_USERID", "None");
+//        String savedCurrentUser = MainActivity.getCurrentUserID();
 
         String sent = remoteMessage.getData().get("sent");
         String user = remoteMessage.getData().get("user");

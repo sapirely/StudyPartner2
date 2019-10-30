@@ -63,7 +63,6 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
             loadRequests();
         }
 
-
         return view;
     }
 

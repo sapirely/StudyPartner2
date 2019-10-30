@@ -162,6 +162,8 @@ public class ProfileFragment extends Fragment implements CourseRecyclerUtils.Cou
                 profileName.setVisibility(View.VISIBLE);
                 editNameLayout.setVisibility(GONE);
                 viewModel.updateUser(MainActivity.getCurrentUserID(), "name", value);
+                // todo:
+                MainActivity.currentUser.setName(value);
             }
         });
 

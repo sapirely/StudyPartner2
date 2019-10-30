@@ -72,7 +72,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
     private TextView otherUserName;
 
     private User otherUser;
-    private User user;
+    private User currentUser;
 
     // notifications
     final private String FCM_API = "https://fcm.googleapis.com/";
@@ -105,9 +105,9 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         this.backArrow = view.findViewById(R.id.chat_back_arrow);
 
         viewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        user = getCurrentUser();
+        currentUser = getCurrentUser();
         otherUser = getOtherUser();
-        setUpPartnerFeatures(user.getUid(), otherUser.getUid());
+        setUpPartnerFeatures(currentUser.getUid(), otherUser.getUid());
 
         // set up top bar
         this.otherUserName = view.findViewById(R.id.chat_other_user_name);
@@ -142,6 +142,10 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         Log.d(TAG, "onCreate: current_size_of_msg_list: "+currentMessages.size());
 
         return view;
+    }
+
+    private void setUpUser(User user) {
+        this.currentUser = user;
     }
 
     private void setUpPartnerFeatures(final String userUID, final String otherUserUID) {
@@ -194,7 +198,27 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
         return user;
     }
 
-    private User getCurrentUser(){
+    private User getCurrentUser() {
+        User temp;
+        temp = MainActivity.getCurrentUser();
+        if (temp == null) {
+            Log.d(TAG, "getCurrentUser: didn't get user from Main");
+            Bundle bundle = this.getArguments();
+            User user = new User();
+            if (bundle != null) {
+                user = bundle.getParcelable("chatUser");
+                Log.d(TAG, "onCreateView: got parcelable user " + user.getName());
+            } else {
+                Log.d(TAG, "onCreateView: Got to chat without user info");
+                return getCurrentUserFromSP();
+            }
+            return user;
+        } else {
+            return temp;
+        }
+    }
+
+    private User getCurrentUserFromSP(){
         SharedPreferences sp = getActivity().getSharedPreferences(SP_USER, MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sp.getString("Current_USER", "");
@@ -264,8 +288,8 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
             public void onClick(View view) {
                 switch (view.getId()){
                     case R.id.chat_add_friend:
-                        viewModel.sendPartnerRequest(user.getUid(), otherUser.getUid());
-                        sendMessageNotification(otherUser.getUid(), user.getName(), "", true);
+                        viewModel.sendPartnerRequest(currentUser.getUid(), otherUser.getUid());
+                        sendMessageNotification(otherUser.getUid(), currentUser.getName(), "", true);
                         Toast.makeText
                                 (view.getContext(), "Sent partner request", Toast.LENGTH_SHORT).show();
                         break;
@@ -306,7 +330,7 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                 if (notify){
                     String otherUserUID = otherUser.getUid();
 
-                    sendMessageNotification(otherUserUID, user.getName(), msgContent, false);
+                    sendMessageNotification(otherUserUID, currentUser.getName(), msgContent, false);
                 }
             }
 

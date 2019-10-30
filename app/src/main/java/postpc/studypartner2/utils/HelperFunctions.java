@@ -1,6 +1,7 @@
 package postpc.studypartner2.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,6 +20,8 @@ import postpc.studypartner2.MainActivity;
 import postpc.studypartner2.R;
 import postpc.studypartner2.model.Conversation;
 import postpc.studypartner2.model.User;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class HelperFunctions {
 
@@ -52,6 +55,8 @@ public class HelperFunctions {
             return conversation.getUid1();
         }
     }
+
+
 
     public static int getDistanceBetweenTwoUsers(User u1, User u2) {
 

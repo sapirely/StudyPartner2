@@ -1,27 +1,39 @@
 package postpc.studypartner2.repository;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import postpc.studypartner2.model.Conversation;
 import postpc.studypartner2.model.Message;
 
 import postpc.studypartner2.model.Course;
+import postpc.studypartner2.model.MyLocation;
 import postpc.studypartner2.model.User;
 import postpc.studypartner2.repository.FirestoreRepository.PartnerListType;
+import postpc.studypartner2.utils.Log;
 
 /***
  * A class that mediates between the UI and the data operations.
  */
 public class UserViewModel extends AndroidViewModel {
+
+    MutableLiveData<MyLocation> loc = new MutableLiveData<>();
 
     private static final String TAG = "UserViewModel";
     public static final ArrayList<String> ALL_ENV_VALUES = (new ArrayList<String>(
@@ -81,6 +93,25 @@ public class UserViewModel extends AndroidViewModel {
         } else {
             fRepository.updateUser(uid, key, value);
         }
+    }
+
+    public LiveData<MyLocation> getLocation(){
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            Log.d(TAG, "onSuccess: got location "+location.toString());
+                            MyLocation geo = new MyLocation(location.getLatitude(), location.getLongitude());
+                            loc.postValue(geo);
+
+                        } else {
+                            Log.d(TAG, "onSuccess: location is null");
+                        }
+                    }
+                });
+        return loc;
     }
 
     public void addCourse(String uid, Course course){

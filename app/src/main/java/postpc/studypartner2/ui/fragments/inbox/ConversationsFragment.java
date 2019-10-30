@@ -68,6 +68,7 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
                 Bundle bundle = new Bundle();
                 Conversation conversation = adapter.getConversation(position);
                 User otherUser = getOtherUserFromConversation(conversation);
+                User user = conversation.getUsers().get(MainActivity.getCurrentUserID());
 
                 if (conversation.getUnread() != null ) {
                     if (conversation.getUnread() && !conversation.getLastMsg().getSenderUID().equals(MainActivity.getCurrentUserID())) {
@@ -80,6 +81,7 @@ public class ConversationsFragment extends Fragment implements ConversationRecyc
 
                 bundle.putString("otherChatUserUID", otherUser.getUid());
                 bundle.putParcelable("otherChatUser", otherUser);
+                bundle.putParcelable("chatUser", user);
                 Log.d(TAG, "onItemClick position: " + position);
                 Navigation.findNavController((AppCompatActivity) getContext(), R.id.nav_host_fragment)
 //                        .navigate(R.id.action_conversationsFragment2_to_chatFragment, bundle);
