@@ -60,9 +60,11 @@ public class HomeFragment extends Fragment implements ResultRecyclerUtils.Result
         adapter = new ResultRecyclerUtils.ResultsAdapter(getContext());
         setUpRecyclerView(view);
         setUpFAB(view);
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         if (MainActivity.getCurrentUserID() != null) {
             // logged in
+            setCurrentUserForLocation();
             loadPartners();
         }
 
@@ -94,7 +96,7 @@ public class HomeFragment extends Fragment implements ResultRecyclerUtils.Result
     }
 
     private void loadPartners(){
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
         viewModel.getPartners(MainActivity.getCurrentUserID())
                 .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                     @Override
@@ -115,6 +117,16 @@ public class HomeFragment extends Fragment implements ResultRecyclerUtils.Result
         } else {
             emptyPartnerListMessage.setVisibility(GONE);
         }
+    }
+
+    private void setCurrentUserForLocation() {
+
+        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                adapter.setCurrentUser(user);
+            }
+        });
     }
 
     private void setUpRecyclerView(View view) {
