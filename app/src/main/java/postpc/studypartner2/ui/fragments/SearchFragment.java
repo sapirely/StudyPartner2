@@ -84,6 +84,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
         setUpSelectables(ProfileFragment.SelectableType.ENV, environmentsTextViews, user_environments);
 
         // Set up results
+        setCurrentUserForLocation();
         setUpRecyclerView(view);
 
         return view;
@@ -121,7 +122,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
                     public void onChanged(List<User> users) {
                         Log.d(TAG, "onChanged: updated query ");
                         adapter.setResults(users);
-                        setCurrentUserForLocation();
+//                        setCurrentUserForLocation();
                         updateUI();
                     }
                 });

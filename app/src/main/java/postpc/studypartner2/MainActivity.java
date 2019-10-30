@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         if (authUser != null){
             User user = new User(authUser.getUid());
             viewModel.addUser(user);
+            saveLocation();
             continueAfterDB();
             Log.d(TAG, "registerNewUser: added new user to db");
         } else {
@@ -207,9 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
                         if (location != null) {
-                            // Logic to handle location object
                             Log.d(TAG, "onSuccess: got location "+location.toString());
                             MyLocation geo = new MyLocation(location.getLatitude(), location.getLongitude());
                             viewModel.updateUser(current_user_uid, "location", geo);
