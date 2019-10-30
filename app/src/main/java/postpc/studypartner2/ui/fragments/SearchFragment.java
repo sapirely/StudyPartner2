@@ -84,8 +84,9 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
         setUpSelectables(ProfileFragment.SelectableType.ENV, environmentsTextViews, user_environments);
 
         // Set up results
-        setCurrentUserForLocation();
+        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
         setUpRecyclerView(view);
+        setCurrentUserForLocation();
 
         return view;
     }
@@ -115,7 +116,7 @@ public class SearchFragment extends Fragment implements ResultRecyclerUtils.Resu
     }
 
     private void loadResults(String courseName, List<String> studyTimes, List<String> environments){
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+//        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
         viewModel.getUsersQuery(courseName, studyTimes, environments)
                 .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                     @Override
