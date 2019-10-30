@@ -49,8 +49,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private enum LogInState {IN_PROGRESS, FAILED}
 
-    private Bundle bundle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        bundle = null;
+        Bundle bundle = null;
         if (currentUser != null){
             Intent notificationIntent = getIntent();
             if (notificationIntent != null){
@@ -171,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+//                            FirebaseUser user = mAuth.getCurrentUser();
                             goToMainActivity(SRC_LOGIN_NEW, null);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -192,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+//                            FirebaseUser user = mAuth.getCurrentUser();
                             goToMainActivity(SRC_LOGIN_EXISTING, null);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -256,7 +254,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+//                            FirebaseUser user = mAuth.getCurrentUser();
                             goToMainActivity(SRC_GOOGLE, null);
                         } else {
                             // If sign in fails, display a message to the user.

@@ -329,7 +329,14 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                     Token token = ds.getValue(Token.class);
                     String notificationBody = generateNotificationBody(nameOfUser, msgContent, isRequest);
 
-                    Data data = new Data(otherUserUID, notificationBody, null, otherUserUID, R.drawable.ic_chat, isRequest);
+                    int icon;
+                    if (isRequest)
+                    {
+                        icon = R.drawable.ic_add_friend;
+                    } else {
+                        icon = R.drawable.ic_chat;
+                    }
+                    Data data = new Data(otherUserUID, notificationBody, null, otherUserUID, icon, isRequest);
                     Sender sender = new Sender(data, token.getToken());
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<Response>() {

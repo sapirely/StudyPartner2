@@ -12,10 +12,10 @@ public class Course {
         this.name = name;
     }
 
-    public Course(String id, String name){
-        this.id = id;
-        this.name = name;
-    }
+//    public Course(String id, String name){
+//        this.id = id;
+//        this.name = name;
+//    }
 
     public String getId() {
         return id;

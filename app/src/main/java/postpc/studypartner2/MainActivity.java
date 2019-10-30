@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private final String[] PERMISSIONS =
             {Manifest.permission.ACCESS_FINE_LOCATION};
     private final int PERMISSION_REQUEST_CODE = 101;
-    private final int RC_SIGN_IN = 123;
-    private final int RC_REGISTER = 124;
+//    private final int RC_SIGN_IN = 123;
+//    private final int RC_REGISTER = 124;
 
     private ConstraintLayout splashScreen;
 
@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private static String current_user_uid;
 
     // Navigation
-    BottomNavigationView bottomNavigationView;
-    NavController navController;
+//    BottomNavigationView bottomNavigationView;
+//    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,9 +270,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean checkPermissions(String[] permissions){
         Log.d(TAG, "checkPermissions: checking permissions");
         for(String permission : permissions){
-            if(checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)
-                Log.d(TAG, "checkPermissions: permission not granted for "+permission);
+            if(checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "checkPermissions: permission not granted for " + permission);
                 return false;
+            }
         }
         Log.d(TAG, "checkPermissions: permissions granted");
         return true;

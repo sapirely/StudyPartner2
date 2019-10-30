@@ -2,9 +2,6 @@ package postpc.studypartner2.model;
 
 import java.util.HashMap;
 
-import postpc.studypartner2.model.Message;
-import postpc.studypartner2.model.User;
-
 /***
  * Represents a conversation between two users.
  */

@@ -8,11 +8,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
+//import androidx.room.ColumnInfo;
+//import androidx.room.Entity;
+//import androidx.room.Ignore;
+//import androidx.room.PrimaryKey;
+//import androidx.room.TypeConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,14 +29,14 @@ import postpc.studypartner2.utils.Log;
  * A class that represents an app user.
  */
 
-@Entity(tableName = "users")
+//@Entity(tableName = "users")
 public class User implements Parcelable {
 
     private static final String TAG = "User";
 
-    @NonNull
-    @PrimaryKey
-    @ColumnInfo(name = "uid")
+//    @NonNull
+//    @PrimaryKey
+//    @ColumnInfo(name = "uid")
     private String uid;
 
     private String name;
@@ -49,7 +49,7 @@ public class User implements Parcelable {
 
     public User(){}
 
-    @Ignore
+//    @Ignore
     public User(@NonNull String uid, String name, String description, String image_url, String coursesList_string)
     {
         this.uid = uid;
@@ -190,7 +190,7 @@ public class User implements Parcelable {
 //            String cityName = addresses.get(0).getAddressLine(0);
             String cityName = addresses.get(0).getLocality();
             String stateName = addresses.get(0).getAdminArea();
-            String countryName = addresses.get(0).getAddressLine(2);
+//            String countryName = addresses.get(0).getAddressLine(2);
             return cityName+", "+stateName;
         } catch (IOException e){
             android.util.Log.d(TAG, "setUpLocation: couldn't get city: ");
@@ -272,22 +272,22 @@ public class User implements Parcelable {
         this.study_time_afternoon = study_time_afternoon;
     }
 
-    public class CoursesListConverter {
-        @TypeConverter
-        public List<String> storedStringToCoursesList(String value) {
-            List<String> coursesList = Arrays.asList(value.split("\\s*,\\s*"));
-            return coursesList;
-        }
-    
-        @TypeConverter
-        public String coursesListToStoredString(List<String> cl) {
-            String value = "";
-    
-            for (String course :cl)
-                value += course + ",";
-    
-            return value;
-        }
-    }
+//    public class CoursesListConverter {
+////        @TypeConverter
+//        public List<String> storedStringToCoursesList(String value) {
+//            List<String> coursesList = Arrays.asList(value.split("\\s*,\\s*"));
+//            return coursesList;
+//        }
+//
+////        @TypeConverter
+//        public String coursesListToStoredString(List<String> cl) {
+//            String value = "";
+//
+//            for (String course :cl)
+//                value += course + ",";
+//
+//            return value;
+//        }
+//    }
 
 }

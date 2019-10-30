@@ -17,9 +17,6 @@
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_calendarFragment"
-            app:destination="@id/calendarFragment" />
-        <action
             android:id="@+id/action_homeFragment_self"
             app:destination="@id/homeFragment" />
         <action
