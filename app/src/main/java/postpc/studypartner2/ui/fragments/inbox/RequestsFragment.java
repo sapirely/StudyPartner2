@@ -58,6 +58,8 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
 
         if (MainActivity.getCurrentUserID() != null) {
             // logged in
+            viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+            setCurrentUserForLocation();
             loadRequests();
         }
 
@@ -67,7 +69,7 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
 
 
     private void loadRequests(){
-        viewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
         viewModel.getRequests(MainActivity.getCurrentUserID())
                 .observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                     @Override
@@ -92,6 +94,16 @@ public class RequestsFragment extends Fragment implements RequestRecyclerUtils.R
                 view.getContext(),
                 LinearLayoutManager.VERTICAL,
                 false));
+    }
+
+    private void setCurrentUserForLocation() {
+
+        viewModel.loadUser(MainActivity.getCurrentUserID()).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                adapter.setCurrentUser(user);
+            }
+        });
     }
 
     @Override

@@ -109,6 +109,10 @@ public class RequestRecyclerUtils {
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, getItemCount());
         }
+
+        public void setCurrentUser(User user){
+            currentUser = user;
+        }
     }
 
     static class RequestHolder
