@@ -361,7 +361,14 @@ public class ChatFragment extends Fragment implements MessageRecyclerUtils.Messa
                         icon = R.drawable.ic_chat;
                     }
                     Data data = new Data(otherUserUID, notificationBody, null, otherUserUID, icon, isRequest);
-                    Sender sender = new Sender(data, token.getToken());
+                    Sender sender;
+                    if (token != null) {
+                        sender = new Sender(data, token.getToken());
+                    } else {
+                        sender = new Sender(data, token.getToken());
+                        Log.d(TAG, "onDataChange: token is null for user "+nameOfUser);
+
+                    }
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<Response>() {
                                 @Override
